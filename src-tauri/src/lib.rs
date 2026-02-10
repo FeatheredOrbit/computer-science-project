@@ -16,7 +16,7 @@ pub fn run() {
 
             // Tauri has this nice function where it can keep structures alive for the duration of the app in the form of states.
             // I'm taking advantage of that by creating the database structure and letting Tauri manage it for me.
-            app.manage(Database::try_from_file(app.handle()));
+            app.manage(Database::try_from_file(app.handle().clone()));
 
             Ok(())
         })
