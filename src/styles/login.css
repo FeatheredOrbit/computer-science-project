@@ -1,0 +1,132 @@
+.login-label-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 1.5%;
+    left: 1%;
+
+    width: 40%;
+    height: 12.5%;
+
+    outline: 2px solid black;
+}
+.login-label {
+    text-align: center;
+
+    font-size: 45px;
+
+    line-height: 50%;
+}
+
+.email-label-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 22.5%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+}
+.email-label {
+    text-align: center;
+
+    font-size: 35px;
+
+    line-height: 10%;
+}
+
+.email-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 29.5%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+
+.email-error-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 36.5%;
+    left: 1%;
+
+    width: 40%;
+    height: 4.5%;
+
+    outline: 2px solid black;
+}
+.email-error {
+    text-align: left;
+
+    color: red;
+
+    font-size: 13px;
+
+    line-height: 10%;
+}
+
+.password-label-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 47.5%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+}
+.password-label {
+    text-align: center;
+
+    font-size: 35px;
+
+    line-height: 10%;
+}
+
+.password-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 54.5%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+
+.show-password-button {
+    position: absolute;
+    top: 54.5%;
+    left: 37%;
+
+    font-size: 25px;
+
+    transform: translateY(-50%);
+}
+
+input {
+    all: unset;
+}
+input:focus {
+    outline-width: 3px;
+}
