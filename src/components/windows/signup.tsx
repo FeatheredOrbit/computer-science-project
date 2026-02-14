@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import "../../styles/login.css";
+import "../../styles/signup.css";
 
 type Props = {
     onNavigate: (input: string) => void
 };
 
-export default function LoginWindow({onNavigate}: Props) {
+export default function SignupWindow({onNavigate}: Props) {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
         <div>   
-            <div className="login-label-container">
-                <h1 className="login-label"> LOG IN </h1>
+            <div className="signup-label-container">
+                <h1 className="signup-label"> SIGN IN </h1>
             </div>
 
             <div className="email-label-container">
@@ -40,13 +40,13 @@ export default function LoginWindow({onNavigate}: Props) {
                 <p className="password-error"> Bad password </p>
             </div>
 
-            <button className="login-button" disabled={true}> LOG IN </button>
+            <button className="signup-button" disabled={true}> SIGN UP </button>
 
             <img className="logo-image" src="assets/logo.png"/>
 
-            <div className="signup-redirect-container">
-                <p className="signup-redirect"> DON'T HAVE AN ACCOUNT? 
-                    <span style={{textDecoration: "underline"}} onClick={function() {onNavigate("/signup")}}> CLICK HERE. </span> 
+            <div className="login-redirect-container">
+                <p className="login-redirect"> ALREADY HAVE AN ACCOUNT? 
+                    <span style={{textDecoration: "underline"}} onClick={function() {onNavigate("/")}}> CLICK HERE. </span> 
                 </p>
             </div>
         </div>  
