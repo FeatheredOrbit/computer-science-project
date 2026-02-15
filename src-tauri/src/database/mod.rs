@@ -10,6 +10,7 @@ pub mod staff;
 pub mod event;
 pub mod reservation;
 pub mod support_request;
+pub mod functions;
 
 const DATABASE_FILE_PATH: &'static str = "database/database.moonlight_db";
 

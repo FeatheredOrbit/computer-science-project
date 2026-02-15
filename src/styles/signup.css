@@ -64,7 +64,7 @@
     left: 1%;
 
     width: 40%;
-    height: 4.5%;
+    height: 6%;
 
     outline: 2px solid black;
 }
@@ -75,7 +75,7 @@
 
     font-size: 13px;
 
-    line-height: 10%;
+    line-height: 85%;
 }
 
 .password-label-container {
@@ -133,18 +133,19 @@
     left: 1%;
 
     width: 40%;
-    height: 4.5%;
+    height: 6%;
 
     outline: 2px solid black;
 }
 .password-error {
     text-align: left;
+    text-align: start;
 
     color: red;
 
     font-size: 13px;
 
-    line-height: 10%;
+    line-height: 85%;
 }
 
 .signup-button {

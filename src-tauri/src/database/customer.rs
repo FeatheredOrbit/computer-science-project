@@ -8,7 +8,7 @@ pub struct CustomerId(usize);
 #[derive(Serialize, Deserialize)]
 pub struct CustomerData {
     name: String,
-    email: String,
+    pub email: String,
     password_hash: String,
     password_salt: String,
     phone_number: String,
@@ -20,7 +20,7 @@ pub struct CustomerData {
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct CustomerTable {
-    main: HashMap<CustomerId, CustomerData>,
+    pub main: HashMap<CustomerId, CustomerData>,
     from_name: HashMap<String, CustomerId>,
     from_email: HashMap<String, CustomerId>
 }

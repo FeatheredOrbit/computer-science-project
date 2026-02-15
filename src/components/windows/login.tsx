@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import "../../styles/login.css";
 
 type Props = {
@@ -7,6 +7,20 @@ type Props = {
 
 export default function LoginWindow({onNavigate}: Props) {
     const [showPassword, setShowPassword] = useState(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+    const [emailInput, setEmailInput] = useState("");
+    const [passwordInput, setPasswordInput] = useState("");
+
+    React.useEffect(function() {
+
+        if (emailInput.trim().length > 0 && passwordInput.trim().length > 0) {
+            setIsButtonDisabled(false);
+        } else {
+            setIsButtonDisabled(true);
+        }
+
+    }, [emailInput, passwordInput]);
 
     return (
         <div>   
@@ -17,7 +31,12 @@ export default function LoginWindow({onNavigate}: Props) {
             <div className="email-label-container">
                 <h1 className="email-label"> EMAIL </h1>
             </div>
-            <input className="email-input" type="text" placeholder="person@gmail.com" />
+            <input 
+            className="email-input" 
+            type="email" 
+            placeholder="person@gmail.com"
+            onChange={(e) => {setEmailInput(e.target.value)}} 
+            />
             <div className="email-error-container">
                 <p className="email-error"> Bad email </p>
             </div>
@@ -28,7 +47,8 @@ export default function LoginWindow({onNavigate}: Props) {
             <input 
                 className="password-input" 
                 type={showPassword ? "text" : "password"}
-                placeholder="b@:ybz3VD#@:PyBJe" 
+                placeholder="b@:ybz3VD#@:PyBJe"
+                onChange={(e) => {setPasswordInput(e.target.value)}}
             />
             <p 
                 className="show-password-button" 
@@ -40,13 +60,13 @@ export default function LoginWindow({onNavigate}: Props) {
                 <p className="password-error"> Bad password </p>
             </div>
 
-            <button className="login-button" disabled={true}> LOG IN </button>
+            <button className="login-button" disabled={isButtonDisabled}> LOG IN </button>
 
             <img className="logo-image" src="assets/logo.png"/>
 
             <div className="signup-redirect-container">
-                <p className="signup-redirect"> DON'T HAVE AN ACCOUNT? 
-                    <span style={{textDecoration: "underline"}} onClick={function() {onNavigate("/signup")}}> CLICK HERE. </span> 
+                <p className="signup-redirect"> DON'T HAVE AN ACCOUNT? { }
+                    <span style={{textDecoration: "underline"}} onClick={function() {onNavigate("/signup")}}>CLICK HERE. </span> 
                 </p>
             </div>
         </div>  
