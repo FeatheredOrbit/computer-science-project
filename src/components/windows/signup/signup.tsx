@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import "../../styles/signup.css";
+import "../../../styles/signup.css";
 import { invoke } from '@tauri-apps/api/core';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { LogicalSize } from '@tauri-apps/api/dpi';
 
 type Props = {
     onNavigate: (input: string) => void
@@ -16,9 +18,28 @@ export default function SignupWindow({onNavigate}: Props) {
     const [passwordInput, setPasswordInput] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
+    async function changeWindowSize() {
+        const appWindow = getCurrentWebviewWindow();
+
+        appWindow.setSize(new LogicalSize(800, 640));
+    }
+
+    React.useEffect(function() {
+        changeWindowSize();
+    }, []);
+
+    React.useEffect(function() {
+
+        if (emailInput.trim().length > 0 && passwordInput.trim().length > 0) {
+            setIsButtonDisabled(false);
+        } else {
+            setIsButtonDisabled(true);
+        }
+
+    }, [emailInput, passwordInput]);
+
     async function signupClicked() {
         // These regexes were grabbed off Google, ain't no way I'll write these myself.
-
         let valid = true;
 
         // Validates the email's format, writing an error if failed.
@@ -58,7 +79,7 @@ export default function SignupWindow({onNavigate}: Props) {
             return;
         }
 
-        await invoke("create_signup_subwindow");
+        onNavigate("/signup-set-info");
     }
 
     React.useEffect(function() {

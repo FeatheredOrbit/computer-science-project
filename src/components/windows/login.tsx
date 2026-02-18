@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import "../../styles/login.css";
+import { LogicalSize } from '@tauri-apps/api/window';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 type Props = {
     onNavigate: (input: string) => void
@@ -11,6 +13,16 @@ export default function LoginWindow({onNavigate}: Props) {
 
     const [emailInput, setEmailInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
+
+    async function changeWindowSize() {
+        const appWindow = getCurrentWebviewWindow();
+
+        appWindow.setSize(new LogicalSize(800, 640));
+    }
+
+    React.useEffect(function() {
+        changeWindowSize();
+    }, []);
 
     React.useEffect(function() {
 

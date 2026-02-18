@@ -1,0 +1,207 @@
+.name-label-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 1.5%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 60%;
+    height: 9%;
+
+    outline: 2px solid black;
+}
+.name-label {
+    text-align: center;
+
+    font-size: 50px;
+
+    line-height: 50%;
+}
+.name-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 10.5%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 60%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+.name-error-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 17.5%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 60%;
+    height: 6%;
+
+    outline: 2px solid black;
+}
+.name-error {
+    text-align: left;
+
+    color: red;
+
+    font-size: 13px;
+
+    line-height: 85%;
+}
+
+.phone-label-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 25.5%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 60%;
+    height: 12.5%;
+
+    outline: 2px solid black;
+}
+.phone-label {
+    text-align: center;
+
+    font-size: 50px;
+
+    line-height: 50%;
+}
+.phone-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 38%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 60%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+.phone-error-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 45%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 60%;
+    height: 6%;
+
+    outline: 2px solid black;
+}
+.phone-error {
+    text-align: left;
+
+    color: red;
+
+    font-size: 13px;
+
+    line-height: 85%;
+}
+
+.requirements-label-container {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 53%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 80%;
+    height: 12.5%;
+
+    outline: 2px solid black;
+}
+.requirements-label {
+    text-align: center;
+
+    font-size: 50px;
+
+    line-height: 50%;
+}
+.requirements-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 65.75%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 80%;
+    height: 14%;
+
+    text-align: start;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+
+.skip-button {
+    position: absolute;
+
+    width: 30%;
+    height: 15%;
+
+    font-size: 52px;
+
+    border-radius: 7.5%;
+
+    bottom: 3%;
+
+    left: 25%;
+
+    transform: translateX(-50%);
+}
+
+.save-button {
+    position: absolute;
+
+    width: 30%;
+    height: 15%;
+
+    font-size: 52px;
+
+    border-radius: 7.5%;
+
+    bottom: 3%;
+
+    right: 25%;
+
+    transform: translateX(50%);
+}
+
+input {
+    all: unset;
+}
+input:focus {
+    outline-width: 3px;
+}

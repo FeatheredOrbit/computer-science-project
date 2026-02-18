@@ -1,11 +1,16 @@
 use tauri::{Manager, WindowEvent};
-use crate::database::Database;
+use crate::database::{Database, customer::CustomerId, staff::StaffId};
 
 mod database;
 mod windows;
 
-use database::functions::signup_validate_details;
-use windows::create_signup_subwindow;
+use database::functions::{signup_validate_details, signup_add_extra};
+
+pub enum LoggedUser {
+    None,
+    Customer(CustomerId),
+    Staff(StaffId)
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -17,6 +22,9 @@ pub fn run() {
             // Tauri has this nice function where it can keep structures alive for the duration of the app in the form of states.
             // I'm taking advantage of that by creating the database structure and letting Tauri manage it for me.
             app.manage(Database::try_from_file(app_handle.clone()));
+
+            // We also manage an enum to store a potentially logged user's id. Defaults to none.
+            app.manage(LoggedUser::None);
 
             // As this program takes use of multiple windows, we need a way to exit the program when the main window closes.
             // Tauri exits the program when all the windows have been closed, or when manually exited, this means that if the main window is closed,
@@ -41,8 +49,8 @@ pub fn run() {
         })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            create_signup_subwindow,
-            signup_validate_details
+            signup_validate_details,
+            signup_add_extra
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
