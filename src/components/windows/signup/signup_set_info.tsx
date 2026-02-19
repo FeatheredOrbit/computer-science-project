@@ -12,10 +12,10 @@ export default function SignupSetInfo({onNavigate}: Props) {
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const [nameInput, setNameInput] = useState("");
-    const [nameError, setNameError] = useState("Bad name");
+    const [nameError, setNameError] = useState("");
 
     const [phoneInput, setPhoneInput] = useState("");
-    const [phoneError, setPhoneError] = useState("Bad phone number");
+    const [phoneError, setPhoneError] = useState("");
 
     const [requirementsInput, setRequirementsInput] = useState("");
 
@@ -28,6 +28,12 @@ export default function SignupSetInfo({onNavigate}: Props) {
             valid = false;
         }
 
+        // Checks if the field is empty, if so shows an error.
+        if (nameInput.trim().length === 0) {
+            setNameError("Field can't be empty");
+            valid = false;
+        }
+
         // We check if the phone numbers is only made of digits, if not shows an error.
         const digitsOnly = phoneInput.replace(/\D/g, '');
         if (!(digitsOnly.length > 0 && digitsOnly === phoneInput.replace(/[^0-9+]/g, ''))) {
@@ -35,7 +41,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
             valid = false;
         }
 
-        // Check if the phone number sits between 10 and 15 digits, which apparently is the range of phone numbers? If not shows an error.
+        // Check if the phone number sits between 10 and 15 digits, apparently there isn't a standard length? If not shows an error.
         if (digitsOnly.length < 10 || digitsOnly.length > 15) {
             setPhoneError("Phone number must be between 10 and 15 digits");
             valid = false;
@@ -45,13 +51,13 @@ export default function SignupSetInfo({onNavigate}: Props) {
 
         await invoke("signup_add_extra", {name: nameInput, phoneNumber: phoneInput, otherRequirements: requirementsInput});
 
-        onNavigate("/");
+        onNavigate("/customer-menu");
     }
 
     async function changeWindowSize() {
         const appWindow = getCurrentWebviewWindow();
 
-        appWindow.setSize(new LogicalSize(800, 900));
+        await appWindow.setSize(new LogicalSize(800, 900));
     }
 
     React.useEffect(function() {
@@ -114,7 +120,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
 
             <button 
             className="skip-button" 
-            onClick={() => {onNavigate("/")}}> SKIP </button>
+            onClick={() => {onNavigate("/customer-menu")}}> SKIP </button>
 
             <button 
             className="save-button" 

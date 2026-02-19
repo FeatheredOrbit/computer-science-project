@@ -18,14 +18,16 @@ export default function SignupWindow({onNavigate}: Props) {
     const [passwordInput, setPasswordInput] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
-    async function changeWindowSize() {
+    async function handleMount() {
         const appWindow = getCurrentWebviewWindow();
 
-        appWindow.setSize(new LogicalSize(800, 640));
+        await appWindow.setSize(new LogicalSize(800, 640));
+
+        await invoke("sign_out", {});
     }
 
     React.useEffect(function() {
-        changeWindowSize();
+        handleMount();
     }, []);
 
     React.useEffect(function() {

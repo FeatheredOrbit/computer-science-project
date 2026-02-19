@@ -1,0 +1,68 @@
+.logo-image {
+    position: absolute;
+    left: 4%;
+    top: 16%;
+
+    width: 50%;
+    height: 50%;
+}
+
+.back-to-login-button {
+    position: absolute;
+
+    width: 25%;
+    height: 10%;
+
+    font-size: 18px;
+
+    border-radius: 7.5%;
+
+    bottom: 4%;
+
+    left: 4%;;
+}
+
+.reservation-creator-button {
+    position: absolute;
+
+    width: 40%;
+    height: 15%;
+
+    font-size: 28px;
+
+    border-radius: 7.5%;
+
+    top: 12%;
+
+    left: 58%;;
+}
+
+.your-reservations-button {
+    position: absolute;
+
+    width: 40%;
+    height: 15%;
+
+    font-size: 28px;
+
+    border-radius: 7.5%;
+
+    top: 32%;
+
+    left: 58%;;
+}
+
+.customer-account-button {
+    position: absolute;
+
+    width: 40%;
+    height: 15%;
+
+    font-size: 28px;
+
+    border-radius: 7.5%;
+
+    top: 52%;
+
+    left: 58%;;
+}

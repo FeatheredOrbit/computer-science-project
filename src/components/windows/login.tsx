@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "../../styles/login.css";
 import { LogicalSize } from '@tauri-apps/api/window';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { invoke } from '@tauri-apps/api/core';
 
 type Props = {
     onNavigate: (input: string) => void
@@ -12,16 +13,33 @@ export default function LoginWindow({onNavigate}: Props) {
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const [emailInput, setEmailInput] = useState("");
-    const [passwordInput, setPasswordInput] = useState("");
+    const [emailError, setEmailError] = useState("");
 
-    async function changeWindowSize() {
+    const [passwordInput, setPasswordInput] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+
+    async function handleMount() {
         const appWindow = getCurrentWebviewWindow();
 
-        appWindow.setSize(new LogicalSize(800, 640));
+        await appWindow.setSize(new LogicalSize(800, 640));
+
+        await invoke("sign_out", {});
+    }
+
+    async function loginClicked() {
+        const message = await invoke<[string, string]>("login_validate_details", {email: emailInput, password: passwordInput});
+
+        // If the messages are empty, then the function succeded.
+        if (message[0].trim().length === 0 && message[1].trim().length === 0) {
+            onNavigate("/customer-menu");
+        }
+
+        setEmailError(message[0]);
+        setPasswordError(message[1]);
     }
 
     React.useEffect(function() {
-        changeWindowSize();
+        handleMount();
     }, []);
 
     React.useEffect(function() {
@@ -50,7 +68,7 @@ export default function LoginWindow({onNavigate}: Props) {
             onChange={(e) => {setEmailInput(e.target.value)}} 
             />
             <div className="email-error-container">
-                <p className="email-error"> Bad email </p>
+                <p className="email-error"> {emailError} </p>
             </div>
 
             <div className="password-label-container">
@@ -69,10 +87,10 @@ export default function LoginWindow({onNavigate}: Props) {
                 👁 
             </p>
             <div className="password-error-container">
-                <p className="password-error"> Bad password </p>
+                <p className="password-error"> {passwordError} </p>
             </div>
 
-            <button className="login-button" disabled={isButtonDisabled}> LOG IN </button>
+            <button className="login-button" disabled={isButtonDisabled}onClick={loginClicked}> LOG IN </button>
 
             <img className="logo-image" src="assets/logo.png"/>
 

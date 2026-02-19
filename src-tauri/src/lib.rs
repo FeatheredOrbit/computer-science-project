@@ -1,15 +1,26 @@
+use std::sync::Mutex;
+
 use tauri::{Manager, WindowEvent};
 use crate::database::{Database, customer::CustomerId, staff::StaffId};
 
 mod database;
 mod windows;
 
-use database::functions::{signup_validate_details, signup_add_extra};
+use database::functions::{signup_validate_details, signup_add_extra, login_validate_details, sign_out};
 
 pub enum LoggedUser {
     None,
     Customer(CustomerId),
     Staff(StaffId)
+}
+
+pub struct Session {
+    pub state: LoggedUser
+}
+impl Session {
+    pub fn change(&mut self, new_state: LoggedUser) {
+        self.state = new_state;
+    }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -23,8 +34,8 @@ pub fn run() {
             // I'm taking advantage of that by creating the database structure and letting Tauri manage it for me.
             app.manage(Database::try_from_file(app_handle.clone()));
 
-            // We also manage an enum to store a potentially logged user's id. Defaults to none.
-            app.manage(LoggedUser::None);
+            // We also manage a struct to store a potentially logged user's id. Defaults to none.
+            app.manage(Mutex::new(Session{ state: LoggedUser::None }));
 
             // As this program takes use of multiple windows, we need a way to exit the program when the main window closes.
             // Tauri exits the program when all the windows have been closed, or when manually exited, this means that if the main window is closed,
@@ -50,7 +61,9 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             signup_validate_details,
-            signup_add_extra
+            signup_add_extra,
+            login_validate_details,
+            sign_out
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
