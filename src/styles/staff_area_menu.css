@@ -22,7 +22,7 @@
     left: 4%;;
 }
 
-.reservation-creator-button {
+.search-customer-button {
     position: absolute;
 
     width: 40%;
@@ -37,7 +37,7 @@
     left: 58%;;
 }
 
-.your-reservations-button {
+.search-event-button {
     position: absolute;
 
     width: 40%;
@@ -52,7 +52,7 @@
     left: 58%;;
 }
 
-.customer-account-button {
+.staff-account-button {
     position: absolute;
 
     width: 40%;

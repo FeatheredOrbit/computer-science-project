@@ -3,7 +3,7 @@ use std::{error::Error, fs::File, io::{Read, Write}, sync::{Arc, Mutex}, thread}
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 
-use crate::database::{customer::CustomerTable, event::EventTable, reservation::ReservationTable, staff::StaffTable, support_request::SupportRequestTable};
+use crate::database::{customer::CustomerTable, event::EventTable, reservation::ReservationTable, staff::{StaffData, StaffTable}, support_request::SupportRequestTable};
 
 pub mod customer;
 pub mod staff;
@@ -16,11 +16,11 @@ const DATABASE_FILE_PATH: &'static str = "database/database.moonlight_db";
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct Database {
-    customer_table: CustomerTable,
-    staff_table: StaffTable,
-    event_table: EventTable,
-    reservation_table: ReservationTable,
-    support_request_table: SupportRequestTable
+    pub customer_table: CustomerTable,
+    pub staff_table: StaffTable,
+    pub event_table: EventTable,
+    pub reservation_table: ReservationTable,
+    pub support_request_table: SupportRequestTable
 }
 impl Database {
     /// Tries to build and return a [`Database`] structure from a possibly existing database file. 

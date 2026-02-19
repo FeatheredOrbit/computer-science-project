@@ -1,13 +1,13 @@
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import React from "react";
-import "../../../styles/customer_area_menu.css";
+import "../../../styles/staff_area_menu.css";
 
 type Props = {
     onNavigate: (input: string) => void
 };
 
-export default function CustomerAreaMenu({onNavigate}: Props) {
+export default function StaffAreaMenu({onNavigate}: Props) {
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
@@ -24,9 +24,9 @@ export default function CustomerAreaMenu({onNavigate}: Props) {
 
             <button className="back-to-login-button" onClick={() => {onNavigate("/")}}> BACK TO LOGIN </button>
 
-            <button className="reservation-creator-button" onClick={() => {onNavigate("")}}> RESERVATION CREATOR </button>
-            <button className="your-reservations-button" onClick={() => {onNavigate("")}}> YOUR RESERVATIONS </button>
-            <button className="customer-account-button" onClick={() => {onNavigate("")}}> ACCOUNT </button>
+            <button className="search-customer-button" onClick={() => {onNavigate("")}}> SEARCH CUSTOMER </button>
+            <button className="search-event-button" onClick={() => {onNavigate("")}}> SEARCH EVENT </button>
+            <button className="staff-account-button" onClick={() => {onNavigate("")}}> ACCOUNT </button>
         </div>
     );
 }

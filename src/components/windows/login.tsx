@@ -27,11 +27,16 @@ export default function LoginWindow({onNavigate}: Props) {
     }
 
     async function loginClicked() {
-        const message = await invoke<[string, string]>("login_validate_details", {email: emailInput, password: passwordInput});
+        const message = await invoke<[string, string, string]>("login_validate_details", {email: emailInput, password: passwordInput});
 
         // If the messages are empty, then the function succeded.
         if (message[0].trim().length === 0 && message[1].trim().length === 0) {
-            onNavigate("/customer-menu");
+            if (message[2] === "customer") {
+                onNavigate("/customer-menu");
+            }
+            else if (message[2] === "staff") {
+                onNavigate("/staff-menu");
+            }
         }
 
         setEmailError(message[0]);

@@ -17,44 +17,54 @@ pub fn login_validate_details(
     session: State<Mutex<Session>>,
     email: String, 
     password: String
-) -> (String, String) {
+) -> (String, String, String) {
     let database = database.lock().unwrap();
-
     let email = email.to_lowercase();
-
-    // We check if there's no associated customer under that email, returning error messages if so.
-    if let None = database.customer_table.from_email.get(&email) {
-        return (
-            String::from("No account associated with this email"),
-            String::from("Incorrect password")
-        );
-    };
-
-    // If the previous check succeded, then we can safely unwrap the the result.
-    let id = database.customer_table.from_email.get(&email).unwrap();
-
-    // We check if the given email compares to the stored one, we unwrap the result, as the only thing capable of failing in the function is the argon hash,
-    // which is out of my control.
-    let password_success = database.customer_table.verify_password(*id, password).unwrap();
-
-    // If the password doesn't match, return an error.
-    if !password_success {
-        return (
-            String::from(""),
-            String::from("Incorrect password")
-        );
-    };
-
-    // If the previous check succeded, it's safe to assume the login was successfull, so we insert the logged user and we return an empty result.
-    let mut session = session.lock().unwrap();
-
-    session.change(LoggedUser::Customer(*id));
-
-    return (
-        String::from(""),
-        String::from("")
-    );
     
+    // We set up some generic errors, to avoid having to rewrite them constantly.
+    let email_error = String::from("Invalid email or password");
+    let password_error = String::from("Invalid email or password");
+    let login_type = String::new(); // Empty by default
+    
+    // We check both customer and staff table for an available id.
+    let customer_id = database.customer_table.from_email.get(&email).copied();
+    let staff_id = database.staff_table.from_email.get(&email).copied();
+    
+    // We determine which type of user logged in by checking each scenario.
+    let user_type = match (customer_id, staff_id) {
+        (Some(id), _) => Some((LoggedUser::Customer(id), "customer")),
+        (_, Some(id)) => Some((LoggedUser::Staff(id), "staff")),
+        (None, None) => None,
+    };
+    
+    if let Some((user_type, type_str)) = user_type {
+        // We verify the password.
+        let password_valid = match user_type {
+            LoggedUser::Customer(id) => {
+                database.customer_table.verify_password(id, password)
+                    .unwrap_or(false) 
+            }
+            LoggedUser::Staff(id) => {
+                database.staff_table.verify_password(id, password)
+                    .unwrap_or(false)
+            }
+            LoggedUser::None => unreachable!(), // This should never run
+        };
+        
+        if password_valid {
+            // Yippie login successfull.
+            let mut session = session.lock().unwrap();
+            session.change(user_type);
+            return (
+                String::new(),    
+                String::new(),      
+                type_str.to_string()
+            );
+        }
+    }
+    
+    // If this is reached, it means something failed, so we simply return the errors.
+    (email_error, password_error, login_type)
 }
 
 #[tauri::command]
@@ -69,8 +79,11 @@ pub fn signup_validate_details(
     let email = email.to_lowercase();
 
     // We need to check if the email is already in use, we wan't to avoid accounts sharing an email for obvious reasons. To do so we check if in the
-    // email lookup table there's any linked customer id.
+    // email lookup table there's any linked customer id or staff id.
     if let Some(_) = database.customer_table.from_email.get(&email) {
+        return "Email is already in use".to_string();
+    }
+    if let Some(_) = database.staff_table.from_email.get(&email) {
         return "Email is already in use".to_string();
     }
 
