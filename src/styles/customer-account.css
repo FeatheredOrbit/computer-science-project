@@ -1,0 +1,110 @@
+.account-label {
+    position: absolute;
+    top: 3%;  
+    left: 5%;    
+    width: 90%;
+    height: 8%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Found out you can style multiple at a time, cool I think? */
+.name-label,
+.name-text,
+.email-label,
+.email-text,
+.phone-label,
+.phone-text {
+    position: absolute;
+    left: 2%;  
+    width: 30%;
+    height: 8%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.name-label {
+    top: 19.5%; 
+}
+
+
+.name-text {
+    top: 27.5%;  
+}
+
+
+.email-label {
+    top: 42.5%;  
+}
+
+
+.email-text {
+    top: 50.5%;  
+}
+
+
+.phone-label {
+    top: 63.5%;  
+}
+
+
+.phone-text {
+    top: 71.5%; 
+    
+}
+
+.requirements-label,
+.requirements-text {
+    position: absolute;
+    right: 2%;
+    width: 55%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.requirements-label {
+    top: 19.5%;  
+    height: 8%; 
+}
+
+.requirements-text {
+    top: 27.5%;
+    height: 52%;
+}
+
+.back-to-menu-button-customer-account {
+    position: absolute;
+
+    bottom: 2.5%;
+    left: 2.5%;
+
+    width: 20%;
+    height: 10%;
+
+    border-radius: 7.5%;
+
+    font-size: 20px;
+}
+
+.change-info-button-customer-account {
+    position: absolute;
+
+    bottom: 2.5%;
+    right: 2.5%;
+
+    width: 20%;
+    height: 10%;
+
+    border-radius: 7.5%;
+
+    font-size: 20px;
+}

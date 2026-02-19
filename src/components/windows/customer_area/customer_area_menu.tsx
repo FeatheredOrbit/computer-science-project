@@ -26,7 +26,7 @@ export default function CustomerAreaMenu({onNavigate}: Props) {
 
             <button className="reservation-creator-button" onClick={() => {onNavigate("")}}> RESERVATION CREATOR </button>
             <button className="your-reservations-button" onClick={() => {onNavigate("")}}> YOUR RESERVATIONS </button>
-            <button className="customer-account-button" onClick={() => {onNavigate("")}}> ACCOUNT </button>
+            <button className="customer-account-button" onClick={() => {onNavigate("customer-menu/account")}}> ACCOUNT </button>
         </div>
     );
 }
