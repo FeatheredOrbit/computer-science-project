@@ -1,0 +1,64 @@
+.customer-account-new-info .insert-info-label {
+    position: absolute;  
+    width: 100%;
+    left: 0%;
+    top: 0%;
+    height: 25%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.customer-account-new-info .insert-info-input {
+    position: absolute;  
+    width: 100%;
+    height: 20%;
+
+    top: 25%;
+    left: 0%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.customer-account-new-info .show-password-button {
+    position: absolute;
+    top: 35%;
+    right: 5%;
+
+    font-size: 45px;
+
+    z-index: 5; /* For some reason it was appearing below the input field, nah nah */
+
+    transform: translateY(-100%);
+}
+.customer-account-new-info .info-error {
+    position: absolute;  
+    width: 100%;
+    height: 15%;
+
+    top: 45%;
+    left: 0%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customer-account-new-info .confirm-button {
+    position: absolute;
+    left: 50%;
+    bottom: 10%;
+    transform: translateX(-50%);  
+    width: 55%;
+    height: 20%;  
+    outline: 2px solid black;
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7.5%;
+}

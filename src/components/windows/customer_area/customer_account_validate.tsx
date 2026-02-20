@@ -41,7 +41,6 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
             setPasswordError("Password doesn;t match");
         }
 
-        console.log("Hello boisssss!!! ............ And you girls too I guess ... ");
         onNavigate("/customer-menu/account/new-info");
     }
 
