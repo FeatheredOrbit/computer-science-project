@@ -1,4 +1,4 @@
-.login-label-container {
+.login-window .login-label-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -11,7 +11,7 @@
 
     outline: 2px solid black;
 }
-.login-label {
+.login-window .login-label {
     text-align: center;
 
     font-size: 45px;
@@ -19,7 +19,7 @@
     line-height: 50%;
 }
 
-.email-label-container {
+.login-window .email-label-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -32,7 +32,7 @@
 
     outline: 2px solid black;
 }
-.email-label {
+.login-window .email-label {
     text-align: center;
 
     font-size: 35px;
@@ -40,7 +40,7 @@
     line-height: 10%;
 }
 
-.email-input {
+.login-window .email-input {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -55,7 +55,7 @@
     appearance: none;
 }
 
-.email-error-container {
+.login-window .email-error-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -68,7 +68,7 @@
 
     outline: 2px solid black;
 }
-.email-error {
+.login-window .email-error {
     text-align: left;
 
     color: red;
@@ -78,7 +78,7 @@
     line-height: 85%;
 }
 
-.password-label-container {
+.login-window .password-label-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -91,7 +91,7 @@
 
     outline: 2px solid black;
 }
-.password-label {
+.login-window .password-label {
     text-align: center;
 
     font-size: 35px;
@@ -99,7 +99,7 @@
     line-height: 10%;
 }
 
-.password-input {
+.login-window .password-input {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -114,7 +114,7 @@
     appearance: none;
 }
 
-.show-password-button {
+.login-window .show-password-button {
     position: absolute;
     top: 54.5%;
     left: 37%;
@@ -124,7 +124,7 @@
     transform: translateY(-50%);
 }
 
-.password-error-container {
+.login-window .password-error-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -137,7 +137,7 @@
 
     outline: 2px solid black;
 }
-.password-error {
+.login-window .password-error {
     text-align: left;
 
     color: red;
@@ -147,7 +147,7 @@
     line-height: 85%;
 }
 
-.login-button {
+.login-window .login-button {
     position: absolute;
 
     width: 32.5%;
@@ -164,7 +164,7 @@
     transform: translateX(-50%);
 }
 
-.logo-image {
+.login-window .logo-image {
     position: absolute;
     right: 1.75%;
     top: 8.5%;
@@ -173,7 +173,7 @@
     height: 55%;
 }
 
-.signup-redirect-container {
+.login-window .signup-redirect-container {
     position: absolute;
     bottom: 7.5%;
     right: 29.25%;
@@ -187,7 +187,7 @@
     background-color: #EDEBE6;
     
 }
-.signup-redirect {
+.login-window .signup-redirect {
     font-weight: bold;
     text-align: center;
     text-align: center;

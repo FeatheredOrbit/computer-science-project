@@ -9,12 +9,12 @@ type Props = {
 };
 
 export default function LoginWindow({onNavigate}: Props) {
-    const [showPassword, setShowPassword] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const [emailInput, setEmailInput] = useState("");
     const [emailError, setEmailError] = useState("");
 
+    const [showPassword, setShowPassword] = useState(false);
     const [passwordInput, setPasswordInput] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
@@ -58,7 +58,7 @@ export default function LoginWindow({onNavigate}: Props) {
     }, [emailInput, passwordInput]);
 
     return (
-        <div>   
+        <div className="login-window">   
             <div className="login-label-container">
                 <h1 className="login-label"> LOG IN </h1>
             </div>
@@ -95,7 +95,7 @@ export default function LoginWindow({onNavigate}: Props) {
                 <p className="password-error"> {passwordError} </p>
             </div>
 
-            <button className="login-button" disabled={isButtonDisabled}onClick={loginClicked}> LOG IN </button>
+            <button className="login-button" disabled={isButtonDisabled} onClick={loginClicked}> LOG IN </button>
 
             <img className="logo-image" src="assets/logo.png"/>
 

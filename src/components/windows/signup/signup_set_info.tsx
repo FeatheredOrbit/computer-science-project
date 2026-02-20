@@ -73,7 +73,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
     }, [nameInput, phoneInput]);
 
     return (
-        <div>   
+        <div className="signup-set-info">   
             <div className="name-label-container">
                 <h1 className="name-label"> FULL NAME </h1>
             </div>

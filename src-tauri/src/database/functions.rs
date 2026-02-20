@@ -117,3 +117,78 @@ pub fn signup_add_extra(
 
     }
 }
+
+#[tauri::command]
+pub fn account_get_info(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>
+) -> (String, String, String, String) {
+    let session = session.lock().unwrap();
+    
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let database = database.lock().unwrap();
+
+            // If the id is present its safe to assume the data is too, so we unwrap.
+            let data = database.customer_table.main.get(&id).unwrap();
+
+            return (
+                data.name.clone(),
+                data.email.clone(),
+                data.phone_number.clone(),
+                data.other_requirements.clone()
+            );
+        },
+        LoggedUser::Staff(id) => {
+            let database = database.lock().unwrap();
+
+            // If the id is present its safe to assume the data is too, so we unwrap.
+            let data = database.staff_table.main.get(&id).unwrap();
+
+            return (
+                data.name.clone(),
+                data.email.clone(),
+                data.phone_number.clone(),
+                String::from("")
+            );
+        },
+        LoggedUser::None => {
+            return (
+                String::from("No logged user"),
+                String::from("No logged user"),
+                String::from("No logged user"),
+                String::from("No logged user")
+            );
+        }
+    };
+}
+
+#[tauri::command]
+pub fn account_validate_password(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>,
+    password: String
+) -> bool {
+    let session = session.lock().unwrap();
+
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let database = database.lock().unwrap();
+
+            // Again, blabla we unwrap because the only thing capable of failing in here is the argon hash blablabla. 
+            return database.customer_table.verify_password(id, password).unwrap();
+        }
+
+        LoggedUser::Staff(id) => {
+            let database = database.lock().unwrap();
+
+            // Again, blabla we unwrap because the only thing capable of failing in here is the argon hash blablabla. 
+            return database.staff_table.verify_password(id, password).unwrap();
+        }
+
+        LoggedUser::None => {
+            // As you can't skip signup or login pages straight to here, and they force a spawn of a LoggedUser, this is ...
+            unreachable!();
+        }
+    };
+}

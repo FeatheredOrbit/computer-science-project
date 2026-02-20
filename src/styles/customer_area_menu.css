@@ -1,4 +1,4 @@
-.logo-image-menu {
+.customer-area-menu .logo-image-menu {
     position: absolute;
     left: 4%;
     top: 16%;
@@ -7,7 +7,7 @@
     height: 50%;
 }
 
-.back-to-login-button {
+.customer-area-menu .back-to-login-button {
     position: absolute;
 
     width: 25%;
@@ -22,7 +22,7 @@
     left: 4%;;
 }
 
-.reservation-creator-button {
+.customer-area-menu .reservation-creator-button {
     position: absolute;
 
     width: 40%;
@@ -37,7 +37,7 @@
     left: 58%;;
 }
 
-.your-reservations-button {
+.customer-area-menu .your-reservations-button {
     position: absolute;
 
     width: 40%;
@@ -52,7 +52,7 @@
     left: 58%;;
 }
 
-.customer-account-button {
+.customer-area-menu .customer-account-button {
     position: absolute;
 
     width: 40%;

@@ -1,4 +1,4 @@
-.account-label {
+.customer-account .account-label {
     position: absolute;
     top: 3%;  
     left: 5%;    
@@ -12,10 +12,13 @@
 }
 
 /* Found out you can style multiple at a time, cool I think? */
+.customer-account
 .name-label,
 .name-text,
+.customer-account
 .email-label,
 .email-text,
+.customer-account
 .phone-label,
 .phone-text {
     position: absolute;
@@ -29,36 +32,37 @@
     justify-content: center;
 }
 
-.name-label {
+.customer-account .name-label {
     top: 19.5%; 
 }
 
 
-.name-text {
+.customer-account .name-text {
     top: 27.5%;  
 }
 
 
-.email-label {
+.customer-account .email-label {
     top: 42.5%;  
 }
 
 
-.email-text {
+.customer-account .email-text {
     top: 50.5%;  
 }
 
 
-.phone-label {
+.customer-account .phone-label {
     top: 63.5%;  
 }
 
 
-.phone-text {
+.customer-account .phone-text {
     top: 71.5%; 
     
 }
 
+.customer-account
 .requirements-label,
 .requirements-text {
     position: absolute;
@@ -71,17 +75,17 @@
     justify-content: center;
 }
 
-.requirements-label {
+.customer-account .requirements-label {
     top: 19.5%;  
     height: 8%; 
 }
 
-.requirements-text {
+.customer-account .requirements-text {
     top: 27.5%;
     height: 52%;
 }
 
-.back-to-menu-button-customer-account {
+.customer-account .back-to-menu-button-customer-account {
     position: absolute;
 
     bottom: 2.5%;
@@ -95,7 +99,7 @@
     font-size: 20px;
 }
 
-.change-info-button-customer-account {
+.customer-account .change-info-button-customer-account {
     position: absolute;
 
     bottom: 2.5%;

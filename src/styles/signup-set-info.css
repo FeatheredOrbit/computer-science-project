@@ -1,4 +1,4 @@
-.name-label-container {
+.signup-set-info .name-label-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -13,14 +13,14 @@
 
     outline: 2px solid black;
 }
-.name-label {
+.signup-set-info .name-label {
     text-align: center;
 
     font-size: 50px;
 
     line-height: 50%;
 }
-.name-input {
+.signup-set-info .name-input {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -36,7 +36,7 @@
     outline: 2px solid black;
     appearance: none;
 }
-.name-error-container {
+.signup-set-info .name-error-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -51,7 +51,7 @@
 
     outline: 2px solid black;
 }
-.name-error {
+.signup-set-info .name-error {
     text-align: left;
 
     color: red;
@@ -61,7 +61,7 @@
     line-height: 85%;
 }
 
-.phone-label-container {
+.signup-set-info .phone-label-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -76,14 +76,14 @@
 
     outline: 2px solid black;
 }
-.phone-label {
+.signup-set-info .phone-label {
     text-align: center;
 
     font-size: 50px;
 
     line-height: 50%;
 }
-.phone-input {
+.signup-set-info .phone-input {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -99,7 +99,7 @@
     outline: 2px solid black;
     appearance: none;
 }
-.phone-error-container {
+.signup-set-info .phone-error-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -114,7 +114,7 @@
 
     outline: 2px solid black;
 }
-.phone-error {
+.signup-set-info .phone-error {
     text-align: left;
 
     color: red;
@@ -124,7 +124,7 @@
     line-height: 85%;
 }
 
-.requirements-label-container {
+.signup-set-info .requirements-label-container {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -139,14 +139,14 @@
 
     outline: 2px solid black;
 }
-.requirements-label {
+.signup-set-info .requirements-label {
     text-align: center;
 
     font-size: 50px;
 
     line-height: 50%;
 }
-.requirements-input {
+.signup-set-info .requirements-input {
     background-color: #EDEBE6;
 
     position: absolute;
@@ -165,7 +165,7 @@
     appearance: none;
 }
 
-.skip-button {
+.signup-set-info .skip-button {
     position: absolute;
 
     width: 30%;
@@ -182,7 +182,7 @@
     transform: translateX(-50%);
 }
 
-.save-button {
+.signup-set-info .save-button {
     position: absolute;
 
     width: 30%;

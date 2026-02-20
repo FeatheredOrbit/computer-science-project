@@ -95,7 +95,7 @@ export default function SignupWindow({onNavigate}: Props) {
     }, [emailInput, passwordInput]);
 
     return (
-        <div>   
+        <div className="signup-window">   
             <div className="signup-label-container">
                 <h1 className="signup-label"> SIGN IN </h1>
             </div>

@@ -6,7 +6,7 @@ use crate::database::{Database, customer::CustomerId, staff::StaffId};
 mod database;
 mod windows;
 
-use database::functions::{signup_validate_details, signup_add_extra, login_validate_details, sign_out};
+use database::functions::{signup_validate_details, signup_add_extra, login_validate_details, sign_out, account_get_info, account_validate_password};
 
 pub enum LoggedUser {
     None,
@@ -63,7 +63,9 @@ pub fn run() {
             signup_validate_details,
             signup_add_extra,
             login_validate_details,
-            sign_out
+            sign_out,
+            account_get_info,
+            account_validate_password
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
