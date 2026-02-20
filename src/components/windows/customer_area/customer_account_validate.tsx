@@ -14,7 +14,7 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
 
     const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
 
-    const [showPassword, setShowPassword] = React.useState(true);
+    const [showPassword, setShowPassword] = React.useState(false);
 
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();

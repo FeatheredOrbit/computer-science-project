@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use tauri::State;
 
-use crate::{LoggedUser, Session, database::Database};
+use crate::{LoggedUser, Session, database::{self, Database}};
 
 #[tauri::command]
 pub fn sign_out(session: State<Mutex<Session>>) {
@@ -191,4 +191,163 @@ pub fn account_validate_password(
             unreachable!();
         }
     };
+}
+
+#[tauri::command]
+pub fn change_name(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>,
+    name: String
+) {
+    let session = session.lock().unwrap();
+
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            let data = database.customer_table.main.get_mut(&id).unwrap();
+
+            let old_name = data.name.clone();
+
+            data.name = name.clone();
+
+            // We need to update the look up table with the new name.
+            database.customer_table.from_name.remove(&old_name);
+            database.customer_table.from_name.insert(name.clone(), id);
+        }
+        LoggedUser::Staff(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            let data = database.staff_table.main.get_mut(&id).unwrap();
+
+            data.name = name;
+        }
+        LoggedUser::None => {unreachable!()}
+    }
+}
+
+#[tauri::command]
+pub fn change_email(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>,
+    email: String
+) -> String {
+    let session = session.lock().unwrap();
+
+    let mut database = database.lock().unwrap();
+
+    if let Some(_) = database.customer_table.from_email.get(&email) {
+        return "Email already in use".to_string();
+    }
+    if let Some(_) = database.staff_table.from_email.get(&email) {
+        return "Email already in use".to_string();
+    }
+
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let data = database.customer_table.main.get_mut(&id).unwrap();
+
+            // ✅ FIXED: Use email, not name
+            let old_email = data.email.clone();
+
+            data.email = email.clone();
+
+            database.customer_table.from_email.remove(&old_email);
+            database.customer_table.from_email.insert(email.clone(), id);
+
+            return "".to_string();
+        }
+        LoggedUser::Staff(id) => {
+            let data = database.staff_table.main.get_mut(&id).unwrap();
+
+            // ✅ FIXED: Use email, not name
+            let old_email = data.email.clone();
+
+            data.email = email.clone();
+
+            database.staff_table.from_email.remove(&old_email);
+            database.staff_table.from_email.insert(email.clone(), id);
+
+            return "".to_string();
+        }
+        LoggedUser::None => {unreachable!()}
+    };
+}
+
+#[tauri::command]
+pub fn change_password(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>,
+    password: String
+) {
+    let session = session.lock().unwrap();
+
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            database.customer_table.new_password(id, password);
+        }
+        LoggedUser::Staff(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            database.staff_table.new_password(id, password);
+        }
+        LoggedUser::None => {unreachable!()}
+    }
+}
+
+#[tauri::command]
+pub fn change_phone_number(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>,
+    phone_number: String
+) {
+    let session = session.lock().unwrap();
+
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            let data = database.customer_table.main.get_mut(&id).unwrap();
+
+            data.phone_number = phone_number;
+        }
+        LoggedUser::Staff(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            let data = database.staff_table.main.get_mut(&id).unwrap();
+
+            data.phone_number = phone_number;
+        }
+        LoggedUser::None => {unreachable!()}
+    }
+}
+
+#[tauri::command]
+pub fn change_requirements(
+    session: State<Mutex<Session>>,
+    database: State<Arc<Mutex<Database>>>,
+    requirements: String
+) {
+    let session = session.lock().unwrap();
+
+    match session.state {
+        LoggedUser::Customer(id) => {
+            let mut database = database.lock().unwrap();
+
+            // We safely assume there's data at that id.
+            let data = database.customer_table.main.get_mut(&id).unwrap();
+
+            data.other_requirements = requirements;
+        }
+        LoggedUser::Staff(id) => {unreachable!()}
+        LoggedUser::None => {unreachable!()}
+    }
 }

@@ -31,7 +31,7 @@ export default function App() {
 
     return (
         <Routes>
-            <Route path="/a" element={<LoginWindow onNavigate={onNavigate} />} />
+            <Route path="/" element={<LoginWindow onNavigate={onNavigate} />} />
             <Route path="/signup" element={<SignupWindow onNavigate={onNavigate} />} />
             <Route path="/signup-set-info" element={<SignupSetInfo onNavigate={onNavigate} />} />
 
@@ -40,7 +40,7 @@ export default function App() {
             <Route path="/customer-account" element={<CustomerAccountWindow onNavigate={onNavigate} />} />
             <Route path="/customer-account-change-info" element={<CustomerChangeAccount onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
             <Route path="/customer-account-validate" element={<CustomerAccountValidate onNavigate={onNavigate} />} />
-            <Route path="/" element={<CustomerAccountNewInfo onNavigate={onNavigate} customerAccountChange={customerAccountChange} setCustomerAccountChange={setCustomerAccountChange} />} />
+            <Route path="/customer-menu/account/new-info" element={<CustomerAccountNewInfo onNavigate={onNavigate} customerAccountChange={customerAccountChange}/>} />
 
             <Route path="/staff-menu" element={<StaffAreaMenu onNavigate={onNavigate} />} />
         </Routes>
