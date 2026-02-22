@@ -11,6 +11,7 @@ import React from "react";
 import CustomerAccountValidate from "./windows/customer_area/customer_account_validate";
 import { AccountChange } from "../misc";
 import CustomerAccountNewInfo from "./windows/customer_area/customer_account_new_info";
+import ReservationCreatorWindow from "./windows/customer_area/reservation_creator";
 
 export default function App() {
     const navigate = useNavigate();
@@ -31,11 +32,13 @@ export default function App() {
 
     return (
         <Routes>
-            <Route path="/" element={<LoginWindow onNavigate={onNavigate} />} />
+            <Route path="/a" element={<LoginWindow onNavigate={onNavigate} />} />
             <Route path="/signup" element={<SignupWindow onNavigate={onNavigate} />} />
             <Route path="/signup-set-info" element={<SignupSetInfo onNavigate={onNavigate} />} />
 
             <Route path="/customer-menu" element={<CustomerAreaMenu onNavigate={onNavigate} />} />
+
+            <Route path="/" element={<ReservationCreatorWindow onNavigate={onNavigate} />} />
 
             <Route path="/customer-account" element={<CustomerAccountWindow onNavigate={onNavigate} />} />
             <Route path="/customer-account-change-info" element={<CustomerChangeAccount onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />

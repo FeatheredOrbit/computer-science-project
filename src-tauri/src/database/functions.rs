@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use tauri::State;
+use tauri::{EventId, State};
 
 use crate::{LoggedUser, Session, database::{self, Database}};
 
@@ -13,7 +13,7 @@ pub fn sign_out(session: State<Mutex<Session>>) {
 
 #[tauri::command]
 pub fn login_validate_details(
-    database: State<Arc<Mutex<Database>>>, 
+    database: State<Mutex<Database>>, 
     session: State<Mutex<Session>>,
     email: String, 
     password: String
@@ -70,7 +70,7 @@ pub fn login_validate_details(
 #[tauri::command]
 pub fn signup_validate_details(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>, 
+    database: State<Mutex<Database>>, 
     email: String, 
     password: String
 ) -> String {
@@ -101,7 +101,7 @@ pub fn signup_validate_details(
 #[tauri::command]
 pub fn signup_add_extra(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     name: String,
     phone_number: String,
     other_requirements: String
@@ -121,7 +121,7 @@ pub fn signup_add_extra(
 #[tauri::command]
 pub fn account_get_info(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>
+    database: State<Mutex<Database>>
 ) -> (String, String, String, String) {
     let session = session.lock().unwrap();
     
@@ -166,7 +166,7 @@ pub fn account_get_info(
 #[tauri::command]
 pub fn account_validate_password(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     password: String
 ) -> bool {
     let session = session.lock().unwrap();
@@ -196,7 +196,7 @@ pub fn account_validate_password(
 #[tauri::command]
 pub fn change_name(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     name: String
 ) {
     let session = session.lock().unwrap();
@@ -231,7 +231,7 @@ pub fn change_name(
 #[tauri::command]
 pub fn change_email(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     email: String
 ) -> String {
     let session = session.lock().unwrap();
@@ -279,7 +279,7 @@ pub fn change_email(
 #[tauri::command]
 pub fn change_password(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     password: String
 ) {
     let session = session.lock().unwrap();
@@ -304,7 +304,7 @@ pub fn change_password(
 #[tauri::command]
 pub fn change_phone_number(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     phone_number: String
 ) {
     let session = session.lock().unwrap();
@@ -333,7 +333,7 @@ pub fn change_phone_number(
 #[tauri::command]
 pub fn change_requirements(
     session: State<Mutex<Session>>,
-    database: State<Arc<Mutex<Database>>>,
+    database: State<Mutex<Database>>,
     requirements: String
 ) {
     let session = session.lock().unwrap();
@@ -350,4 +350,25 @@ pub fn change_requirements(
         LoggedUser::Staff(id) => {unreachable!()}
         LoggedUser::None => {unreachable!()}
     }
+}
+
+#[tauri::command]
+pub fn get_events(database: State<Mutex<Database>>) -> Vec<(u32, String, String, String, String)> {
+    let database = database.lock().unwrap();
+
+    let mut events: Vec<(u32, String, String, String, String)> = vec![];
+
+    // We iterate through ever event in the event table to insert in the vector above, pretty useless as there's a single hardcoded event, but it's at least
+    // supposed to allow for multiple existing events, and I perhaps might add more, who knows (I won't).
+    for (id, event) in database.event_table.main.clone().into_iter() {
+        events.push((
+            id.0 as u32,
+            event.name,
+            event.event_date.to_string(),
+            event.image_path,
+            event.extra_information
+        ));
+    }
+
+    return events;
 }

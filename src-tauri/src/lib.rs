@@ -8,7 +8,8 @@ mod windows;
 
 use database::functions::{
     signup_validate_details, signup_add_extra, login_validate_details, sign_out, account_get_info, 
-    account_validate_password, change_name, change_email, change_password, change_phone_number, change_requirements
+    account_validate_password, change_name, change_email, change_password, change_phone_number, change_requirements,
+    get_events
 };
 
 pub enum LoggedUser {
@@ -35,7 +36,7 @@ pub fn run() {
 
             // Tauri has this nice function where it can keep structures alive for the duration of the app in the form of states.
             // I'm taking advantage of that by creating the database structure and letting Tauri manage it for me.
-            app.manage(Database::try_from_file(app_handle.clone()));
+            app.manage(Mutex::new(Database::try_from_file(app_handle.clone())));
 
             // We also manage a struct to store a potentially logged user's id. Defaults to none.
             app.manage(Mutex::new(Session{ state: LoggedUser::None }));
@@ -73,7 +74,8 @@ pub fn run() {
             change_email,
             change_password,
             change_phone_number,
-            change_requirements
+            change_requirements,
+            get_events
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
