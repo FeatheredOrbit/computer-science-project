@@ -1,5 +1,5 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
-import "../../../styles/customer-account.css";
+import "../../../../styles/customer-account.css";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import React from "react";
 import { invoke } from "@tauri-apps/api/core";

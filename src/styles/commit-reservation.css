@@ -1,0 +1,46 @@
+.commit-reservation .label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 0%;
+    left: 0%;
+
+    width: 100%;
+    height: 50%;
+
+    align-items: center;
+    align-content: center;
+
+    outline: 2px solid black;
+}
+
+.commit-reservation .no-button {
+    position: absolute;
+
+    width: 38.5%;
+    height: 20%;
+
+    font-size: 32px;
+
+    border-radius: 7.5%;
+
+    bottom: 12.5%;
+
+    left: 5%;
+} 
+
+.commit-reservation .yes-button {
+    position: absolute;
+
+    width: 38.5%;
+    height: 20%;
+
+    font-size: 32px;
+
+    border-radius: 7.5%;
+
+    bottom: 12.5%;
+
+    right: 5%;
+} 

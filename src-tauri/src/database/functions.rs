@@ -1,8 +1,8 @@
 use std::sync::{Arc, Mutex};
 
-use tauri::{EventId, State};
+use tauri::{AppHandle, State, WebviewWindowBuilder};
 
-use crate::{LoggedUser, Session, database::{self, Database}};
+use crate::{LoggedUser, Session, database::{Database, event::EventId}};
 
 #[tauri::command]
 pub fn sign_out(session: State<Mutex<Session>>) {
@@ -371,4 +371,71 @@ pub fn get_events(database: State<Mutex<Database>>) -> Vec<(u32, String, String,
     }
 
     return events;
+}
+
+#[tauri::command]
+pub fn open_extra_information_window(
+    app: AppHandle,
+    information: String,
+    date: String
+) {
+
+    // Creating a new window though brings a few issues. It creates a new context on the frontend, meaning any data stored on the app on the main window is not
+    // directly accessible in the this new one. So we an alternative way of sharing it information. We do this by encoding the information into the url.
+        let url = format!("/event-information?date={}&info={}", 
+        urlencoding::encode(&date),
+        urlencoding::encode(&information)
+    );
+    
+
+    // We create a window which will display the component bound at "/event-information", and we force it to screen.
+    let window = WebviewWindowBuilder::new(&app, "event_information_window", tauri::WebviewUrl::App(url.into()))
+    .resizable(false)
+    .inner_size(600.0, 400.0)
+    .closable(false)
+    .title("Event Information")
+    .build()
+    .unwrap();
+
+    window.show().unwrap();
+}
+
+#[tauri::command]
+pub fn autofill_customer(
+    session: State<Mutex<Session>>,
+    database: State<Mutex<Database>>,
+) -> (String, String, String) {
+   let session = session.lock().unwrap();
+
+   if let LoggedUser::Customer(id) = session.state {
+        let database = database.lock().unwrap();
+
+        let data = database.customer_table.main.get(&id).unwrap();
+
+        return (
+            data.name.clone(),
+            data.phone_number.clone(),
+            data.other_requirements.clone()
+        );
+   };
+
+   return ("".to_string(), "".to_string(), "".to_string()); 
+}
+
+#[tauri::command]
+pub fn commit_reservation(
+    session: State<Mutex<Session>>,
+    database: State<Mutex<Database>>,
+    event_id: u32,
+    people_count: u8
+) {
+    let session = session.lock().unwrap();
+
+    if let LoggedUser::Customer(id) = session.state {
+        let mut database = database.lock().unwrap();
+
+        let event_id = EventId(event_id as usize);
+
+        database.reservation_table.add_event(event_id, id, people_count);
+    }
 }

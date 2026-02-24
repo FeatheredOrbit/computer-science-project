@@ -1,7 +1,7 @@
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import React from "react";
-import "../../../styles/customer_account_validate.css";
+import "../../../../styles/customer_account_validate.css";
 import { invoke } from "@tauri-apps/api/core";
 
 type Props = {

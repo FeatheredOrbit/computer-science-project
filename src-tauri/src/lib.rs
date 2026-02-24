@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use tauri::{Manager, WindowEvent};
+use tauri::{AppHandle, Manager, WindowEvent};
 use crate::database::{Database, customer::CustomerId, staff::StaffId};
 
 mod database;
@@ -9,7 +9,7 @@ mod windows;
 use database::functions::{
     signup_validate_details, signup_add_extra, login_validate_details, sign_out, account_get_info, 
     account_validate_password, change_name, change_email, change_password, change_phone_number, change_requirements,
-    get_events
+    get_events, autofill_customer, open_extra_information_window, commit_reservation
 };
 
 pub enum LoggedUser {
@@ -24,6 +24,15 @@ pub struct Session {
 impl Session {
     pub fn change(&mut self, new_state: LoggedUser) {
         self.state = new_state;
+    }
+}
+
+#[tauri::command]
+fn close_extra_windows(app: AppHandle) {
+    for (label, window) in app.webview_windows().iter_mut() {
+        if label == "main" { continue; }
+
+        window.close().unwrap();
     }
 }
 
@@ -75,7 +84,11 @@ pub fn run() {
             change_password,
             change_phone_number,
             change_requirements,
-            get_events
+            get_events,
+            autofill_customer,
+            open_extra_information_window,
+            commit_reservation,
+            close_extra_windows
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

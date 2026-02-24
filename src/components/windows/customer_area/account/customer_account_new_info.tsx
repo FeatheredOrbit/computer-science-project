@@ -1,9 +1,9 @@
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import React, { useState, useEffect } from "react";
-import "../../../styles/customer_account_new_info.css";
+import "../../../../styles/customer_account_new_info.css";
 import { invoke } from "@tauri-apps/api/core";
-import { AccountChange } from "../../../misc";
+import { AccountChange } from "../../../../misc";
 
 type Props = {
     onNavigate: (input: string) => void,

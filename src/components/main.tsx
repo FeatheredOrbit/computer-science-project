@@ -5,13 +5,15 @@ import SignupWindow from "./windows/signup/signup";
 import SignupSetInfo from "./windows/signup/signup_set_info";
 import CustomerAreaMenu from "./windows/customer_area/customer_area_menu";
 import StaffAreaMenu from "./windows/staff_area/staff_area_menu";
-import CustomerAccountWindow from "./windows/customer_area/customer_account";
-import CustomerChangeAccount from "./windows/customer_area/customer-change-account";
+import CustomerAccountWindow from "./windows/customer_area/account/customer_account";
+import CustomerChangeAccount from "./windows/customer_area/account/customer-change-account";
 import React from "react";
-import CustomerAccountValidate from "./windows/customer_area/customer_account_validate";
+import CustomerAccountValidate from "./windows/customer_area/account/customer_account_validate";
 import { AccountChange } from "../misc";
-import CustomerAccountNewInfo from "./windows/customer_area/customer_account_new_info";
-import ReservationCreatorWindow from "./windows/customer_area/reservation_creator";
+import CustomerAccountNewInfo from "./windows/customer_area/account/customer_account_new_info";
+import ReservationCreatorWindow from "./windows/customer_area/reservation_creator/reservation_creator";
+import EventInformation from "./windows/customer_area/reservation_creator/event-information";
+import CommitReservation from "./windows/customer_area/reservation_creator/commit-reservation";
 
 export default function App() {
     const navigate = useNavigate();
@@ -21,6 +23,8 @@ export default function App() {
     // To allow this communication, we can set up a state in the App component. Then we can pass either the state itself or the function to change it based on
     // whether the components requires read or write, or both.
     const [customerAccountChange, setCustomerAccountChange] = React.useState(AccountChange.None);
+    const [chosenEventId, setChosenEventId] = React.useState<number | null>(null);
+    const [peopleCount, setPeopleCount] = React.useState<string>("");
 
     function onNavigate(input: string) {
         if (location.pathname === input) {
@@ -32,13 +36,15 @@ export default function App() {
 
     return (
         <Routes>
-            <Route path="/a" element={<LoginWindow onNavigate={onNavigate} />} />
+            <Route path="/" element={<LoginWindow onNavigate={onNavigate} />} />
             <Route path="/signup" element={<SignupWindow onNavigate={onNavigate} />} />
             <Route path="/signup-set-info" element={<SignupSetInfo onNavigate={onNavigate} />} />
 
             <Route path="/customer-menu" element={<CustomerAreaMenu onNavigate={onNavigate} />} />
 
-            <Route path="/" element={<ReservationCreatorWindow onNavigate={onNavigate} />} />
+            <Route path="/reservation-creator" element={<ReservationCreatorWindow onNavigate={onNavigate} setChosenEventId={setChosenEventId} setPeopleCount={setPeopleCount}/>} />
+            <Route path="/event-information" element={<EventInformation/>} />
+            <Route path="/commit-reservation" element={<CommitReservation onNavigate={onNavigate} chosenEventId={chosenEventId} peopleCount={peopleCount}/>} />
 
             <Route path="/customer-account" element={<CustomerAccountWindow onNavigate={onNavigate} />} />
             <Route path="/customer-account-change-info" element={<CustomerChangeAccount onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />

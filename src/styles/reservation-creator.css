@@ -16,18 +16,238 @@
     text-align: center;
 }
 
+.reservation-creator .autofill-button {
+    position: absolute;
+    bottom: 2.5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20%;
+    height: 10%;
+    border-radius: 7.5%;
+    font-size: 20px;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.reservation-creator .continue-button {
+    position: absolute;
+    bottom: 2.5%;
+    right: 2.5%;
+    width: 20%;
+    height: 10%;
+    border-radius: 7.5%;
+    font-size: 20px;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .reservation-creator .select-play-label {
     position: absolute;
     left: 1%;
     top: 2.5%;  
     width: 25%;
-    height: 25%;
+    height: 20%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+.reservation-creator .select-play-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 22.5%;
+    left: 1%;
+
+    width: 25%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+
+.reservation-creator .name-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 30%;
+    left: 1%;
+
+    width: 40%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.reservation-creator .name-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 39%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+.reservation-creator .name-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 46%;
+    left: 1%;
+
+    width: 40%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+
+.reservation-creator .phone-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 55%;
+    left: 1%;
+
+    width: 40%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.reservation-creator .phone-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 64%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+
+}
+.reservation-creator .phone-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 71%;
+    left: 1%;
+
+    width: 40%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+
+.reservation-creator .requirements-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 30%;
+    left: 44%;
+
+    width: 53.5%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.reservation-creator .requirements-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 39%;
+    left: 44%;
+
+    width: 53.5%;
+    height: 18%;
+
+    outline: 2px solid black;
+    appearance: none;
+
+}
+
+.reservation-creator .people-count-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 62.05%;
+    left: 44%;
+
+    width: 48%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.people-count-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 62.05%;
+    left: 92.25%;
+
+    width: 5%;
+    height: 8.7%;
+
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+.reservation-creator .people-count-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 71.05%;
+    left: 44%;
+
+    width: 48%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+
 .reservation-creator .events-scroll-container {
     position: absolute;
     top: 2.5%;
@@ -97,7 +317,7 @@
     transition: background-color 0.2s ease;
 }
 
-/* Turn the selected event blue, for visual feedback */
+/* Turn the selected event blue, for visual feedback, wow this is so user friendly woooooowww */
 .reservation-creator .event-name-box.selected {
     background-color: #2196F3; 
     outline: 2px solid #0b5e9e; 
