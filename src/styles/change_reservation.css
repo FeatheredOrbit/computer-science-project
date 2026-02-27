@@ -1,0 +1,218 @@
+.change-reservation .back-button {
+    position: absolute;
+    bottom: 2.5%;
+    left: 2.5%;
+    width: 25%;
+    height: 10%;
+    border-radius: 7.5%;
+    font-size: 20px;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.change-reservation .update-button {
+    position: absolute;
+    bottom: 2.5%;
+    right: 2.5%;
+    width: 20%;
+    height: 10%;
+    border-radius: 7.5%;
+    font-size: 20px;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.change-reservation .change-reservation-label {
+    position: absolute;
+    left: 1%;
+    top: 2.5%;  
+    width: 98%;
+    height: 20%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.change-reservation .name-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 30%;
+    left: 1%;
+
+    width: 40%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.change-reservation .name-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 39%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+.change-reservation .name-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 46%;
+    left: 1%;
+
+    width: 40%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+
+.change-reservation .phone-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 55%;
+    left: 1%;
+
+    width: 40%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.change-reservation .phone-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 64%;
+    left: 1%;
+
+    width: 40%;
+    height: 7%;
+
+    outline: 2px solid black;
+    appearance: none;
+
+}
+.change-reservation .phone-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 71%;
+    left: 1%;
+
+    width: 40%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+
+.change-reservation .requirements-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 30%;
+    left: 44%;
+
+    width: 53.5%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.change-reservation .requirements-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 39%;
+    left: 44%;
+
+    width: 53.5%;
+    height: 18%;
+
+    outline: 2px solid black;
+    appearance: none;
+
+}
+
+.change-reservation .people-count-label {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 62.05%;
+    left: 44%;
+
+    width: 48%;
+    height: 9%;
+
+    align-items: center;
+    justify-content: center;
+
+    outline: 2px solid black;
+}
+.change-reservation .people-count-input {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 62.05%;
+    left: 92.25%;
+
+    width: 5%;
+    height: 8.7%;
+
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    outline: 2px solid black;
+    appearance: none;
+}
+.change-reservation .people-count-error {
+    background-color: #EDEBE6;
+
+    position: absolute;
+
+    top: 71.05%;
+    left: 44%;
+
+    width: 48%;
+    height: 5%;
+
+    outline: 2px solid black;
+}
+

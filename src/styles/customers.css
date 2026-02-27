@@ -1,0 +1,230 @@
+.customers .back-to-menu-button {
+    position: absolute;
+    bottom: 2.5%;
+    left: 2.5%;
+    width: 20%;
+    height: 8%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7.5%;
+}
+
+.customers .customer-label {
+    position: absolute;
+    top: 1%;  
+    left: 1%;    
+    width: 98%;
+    height: 12%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customers .amount-of-selections {
+    position: absolute;
+    top: 65%;
+    left: 2.5%;
+    width: 45%;
+    height: 12.5%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.customers .delete-button {
+    position: absolute;
+    top: 67.5%;
+    right: 2.5%;
+    width: 45%;
+    height: 12.5%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7.5%;
+}
+
+.customers .change-button {
+    position: absolute;
+    bottom: 2.5%;
+    right: 2.5%;
+    width: 45%;
+    height: 12.5%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7.5%;
+}
+
+/* Main container rectangle */
+.customers .customers-container {
+    position: absolute;
+    top: 15%;
+    left: 2.5%;
+    width: 95%;
+    height: 50%;
+    background-color: #f0f0f0;
+    outline: 2px solid black;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header - FIXED, doesn't scroll */
+.customers .customers-header {
+    width: 100%;
+    height: 12%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1%;
+    box-sizing: border-box;
+    border-bottom: 2px solid black;
+    background-color: #f0f0f0;
+}
+
+.customers .labels-container {
+    display: flex;
+    align-items: center;
+    gap: 2%;
+    height: 100%;
+    flex: 1;
+}
+
+.customers .header-label {
+    height: 70%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.customers .sorting-dropdown {
+    height: 70%;
+    width: 160px;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 16px;
+    padding: 0 10px;
+    cursor: pointer;
+    box-sizing: border-box;
+    margin-left: 10px;
+}
+
+/* Scrollable customers area */
+.customers .customers-scroll-area {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    background-color: #f0f0f0;
+}
+
+/* Scrollbar styling */
+.customers .customers-scroll-area::-webkit-scrollbar {
+    width: 10px;
+}
+
+.customers .customers-scroll-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.customers .customers-scroll-area::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.customers .customers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.customers .customer-card {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    padding: 0 10px;
+}
+
+/* Selected state */
+.customers .customer-card.selected {
+    background-color: #2196F3;
+    outline: 2px solid #0b5e9e;
+}
+
+.customers .customer-card.selected .customer-field {
+    color: white;
+}
+
+.customers .customer-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 100%;
+    border-right: 2px solid black;
+}
+
+/* Remove border from last field */
+.customers .customer-field.third-field {
+    border-right: none;
+}
+
+.customers .first-field {
+    font-weight: bold;
+}
+
+.customers .loading-message,
+.customers .no-customers-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #666;
+    white-space: nowrap;
+}

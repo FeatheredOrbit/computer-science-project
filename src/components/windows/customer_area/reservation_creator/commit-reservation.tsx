@@ -8,10 +8,13 @@ import { invoke } from "@tauri-apps/api/core";
 type Props = {
     onNavigate: (input: string) => void
     chosenEventId: number | null
-    peopleCount: string
+    peopleCount: string,
+    name: string,
+    phoneNumber: string,
+    requirements: String
 };
 
-export default function CommitReservation({onNavigate, chosenEventId, peopleCount}: Props) {
+export default function CommitReservation({onNavigate, chosenEventId, peopleCount, name, phoneNumber, requirements}: Props) {
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
         await appWindow.setSize(new LogicalSize(500, 250));
@@ -22,7 +25,7 @@ export default function CommitReservation({onNavigate, chosenEventId, peopleCoun
     }
 
     async function yesClicked() {
-        await invoke("commit_reservation", {eventId: chosenEventId, peopleCount: Number(peopleCount)});
+        await invoke("commit_reservation", {name: name, phoneNumber: phoneNumber, requirements: requirements, eventId: chosenEventId, peopleCount: Number(peopleCount)});
 
         onNavigate("/customer-menu");
     }

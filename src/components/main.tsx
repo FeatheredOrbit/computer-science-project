@@ -14,6 +14,12 @@ import CustomerAccountNewInfo from "./windows/customer_area/account/customer_acc
 import ReservationCreatorWindow from "./windows/customer_area/reservation_creator/reservation_creator";
 import EventInformation from "./windows/customer_area/reservation_creator/event-information";
 import CommitReservation from "./windows/customer_area/reservation_creator/commit-reservation";
+import YourReservations from "./windows/customer_area/reservation_search/your_reservations";
+import ChangeReservation from "./windows/customer_area/reservation_search/change_reservation";
+import ReservationSearch from "./windows/customer_area/reservation_search/reservation_search";
+import Customers from "./windows/staff_area/customer_search/customers";
+import ChangeCustomer from "./windows/staff_area/customer_search/change_customer";
+import ChangeCustomerInfo from "./windows/staff_area/customer_search/change_customer_info";
 
 export default function App() {
     const navigate = useNavigate();
@@ -23,8 +29,15 @@ export default function App() {
     // To allow this communication, we can set up a state in the App component. Then we can pass either the state itself or the function to change it based on
     // whether the components requires read or write, or both.
     const [customerAccountChange, setCustomerAccountChange] = React.useState(AccountChange.None);
+    
     const [chosenEventId, setChosenEventId] = React.useState<number | null>(null);
+    const [chosenName, setChosenName] = React.useState<string>("");
+    const [chosenPhoneNumber, setChosenPhoneNumber] = React.useState<string>("");
+    const [chosenRequirements, setChosenRequirements] = React.useState<string>("");
     const [peopleCount, setPeopleCount] = React.useState<string>("");
+
+    const [customerId, setCustomerId] = React.useState<number | undefined>();
+    const [reservationId, setReservationId] = React.useState<number | undefined>();
 
     function onNavigate(input: string) {
         if (location.pathname === input) {
@@ -36,15 +49,33 @@ export default function App() {
 
     return (
         <Routes>
-            <Route path="/" element={<LoginWindow onNavigate={onNavigate} />} />
+            <Route path="/a" element={<LoginWindow onNavigate={onNavigate} />} />
             <Route path="/signup" element={<SignupWindow onNavigate={onNavigate} />} />
             <Route path="/signup-set-info" element={<SignupSetInfo onNavigate={onNavigate} />} />
 
             <Route path="/customer-menu" element={<CustomerAreaMenu onNavigate={onNavigate} />} />
 
-            <Route path="/reservation-creator" element={<ReservationCreatorWindow onNavigate={onNavigate} setChosenEventId={setChosenEventId} setPeopleCount={setPeopleCount}/>} />
+            <Route path="/reservation-creator" element={<ReservationCreatorWindow 
+                onNavigate={onNavigate} 
+                setChosenEventId={setChosenEventId} 
+                setPeopleCount={setPeopleCount}
+                setChosenName={setChosenName}
+                setChosenPhoneNumber={setChosenPhoneNumber}
+                setChosenRequirements={setChosenRequirements}
+            />} />
             <Route path="/event-information" element={<EventInformation/>} />
-            <Route path="/commit-reservation" element={<CommitReservation onNavigate={onNavigate} chosenEventId={chosenEventId} peopleCount={peopleCount}/>} />
+            <Route path="/commit-reservation" element={<CommitReservation 
+                onNavigate={onNavigate} 
+                chosenEventId={chosenEventId} 
+                peopleCount={peopleCount}
+                name={chosenName}
+                phoneNumber={chosenPhoneNumber}
+                requirements={chosenRequirements}
+            />} />
+
+            <Route path="/your-reservations" element={<YourReservations onNavigate={onNavigate} setReservationId={setReservationId}/>} />
+            <Route path="/reservation-search" element={<ReservationSearch onNavigate={onNavigate} setReservationId={setReservationId}/>} />
+            <Route path="/change-reservation" element={<ChangeReservation onNavigate={onNavigate} reservationId={reservationId}/>} />
 
             <Route path="/customer-account" element={<CustomerAccountWindow onNavigate={onNavigate} />} />
             <Route path="/customer-account-change-info" element={<CustomerChangeAccount onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
@@ -52,6 +83,9 @@ export default function App() {
             <Route path="/customer-menu/account/new-info" element={<CustomerAccountNewInfo onNavigate={onNavigate} customerAccountChange={customerAccountChange}/>} />
 
             <Route path="/staff-menu" element={<StaffAreaMenu onNavigate={onNavigate} />} />
+            <Route path="/customers" element={<Customers onNavigate={onNavigate} setCustomerId={setCustomerId} />} />
+            <Route path="/" element={<ChangeCustomer onNavigate={onNavigate} customerId={customerId} />} /> 
+            <Route path="change-customer-info" element={<ChangeCustomerInfo onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
         </Routes>
     );
 }

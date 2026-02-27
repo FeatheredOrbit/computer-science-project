@@ -8,13 +8,23 @@ type Props = {
     onNavigate: (input: string) => void
     setChosenEventId: React.Dispatch<React.SetStateAction<number | null>>
     setPeopleCount: React.Dispatch<React.SetStateAction<string>>
+    setChosenName: React.Dispatch<React.SetStateAction<string>>
+    setChosenPhoneNumber: React.Dispatch<React.SetStateAction<string>>
+    setChosenRequirements: React.Dispatch<React.SetStateAction<string>>
 };
 
 type EventData = [number, string, string, string, string];
 
 // Yeah there has been a bit of a misunderstanding with myself and I often found myself interchanging event and play. In this context they are the same thing!!!
 
-export default function ReservationCreatorWindow({onNavigate, setChosenEventId, setPeopleCount}: Props) {
+export default function ReservationCreatorWindow({
+    onNavigate, 
+    setChosenEventId, 
+    setPeopleCount,
+    setChosenName,
+    setChosenPhoneNumber,
+    setChosenRequirements
+}: Props) {
     const [events, setEvents] = React.useState<EventData[] | null>(null);
     const [selectedEventId, setSelectedEventId] = React.useState<number | null>(null);
 
@@ -118,6 +128,9 @@ export default function ReservationCreatorWindow({onNavigate, setChosenEventId, 
         // We make the event id anf people count global so that is it available in the next window.
         setChosenEventId(selectedEventId);
         setPeopleCount(peopleCountInput);
+        setChosenName(nameInput);
+        setChosenPhoneNumber(phoneInput);
+        setChosenRequirements(requirementsInput);
 
         await invoke("close_extra_windows", {});
 

@@ -9,7 +9,7 @@ use argon2::{
 use time::OffsetDateTime;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
-pub struct CustomerId(usize);
+pub struct CustomerId(pub usize);
 
 #[derive(Serialize, Deserialize)]
 pub struct CustomerData {
@@ -122,5 +122,12 @@ impl CustomerTable {
         let password_hash = argon2.hash_password(password.as_bytes(), &salt).unwrap().to_string();
 
         self.main.get_mut(&customer_id).unwrap().password_hash = password_hash;
+    }
+
+    pub fn remove_customer(&mut self, customer_id: CustomerId) {
+        if let Some(data) = self.main.remove(&customer_id) {
+            self.from_email.remove(&data.email);
+            self.from_name.remove(&data.name);
+        }
     }
 }

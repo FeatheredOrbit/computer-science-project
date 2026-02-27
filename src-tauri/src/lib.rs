@@ -9,7 +9,8 @@ mod windows;
 use database::functions::{
     signup_validate_details, signup_add_extra, login_validate_details, sign_out, account_get_info, 
     account_validate_password, change_name, change_email, change_password, change_phone_number, change_requirements,
-    get_events, autofill_customer, open_extra_information_window, commit_reservation
+    get_events, autofill_customer, open_extra_information_window, commit_reservation, delete_reservations,
+    get_reservation_info, update_reservation, get_reservations, get_customers, delete_customers, account_get_info_specific
 };
 
 pub enum LoggedUser {
@@ -88,7 +89,14 @@ pub fn run() {
             autofill_customer,
             open_extra_information_window,
             commit_reservation,
-            close_extra_windows
+            close_extra_windows,
+            delete_reservations,
+            get_reservation_info,
+            update_reservation,
+            get_reservations,
+            get_customers,
+            delete_customers,
+            account_get_info_specific
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../../../../styles/your_reservations.css";
+import "../../../../styles/reservation_search.css";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
@@ -11,16 +11,17 @@ type Props = {
     setReservationId: React.Dispatch<React.SetStateAction<number | undefined>>
 };
 
-type SortType = "event" | "creator";
-
-export default function YourReservations({onNavigate, setReservationId}: Props) {
+export default function ReservationSearch({onNavigate, setReservationId}: Props) {
     const [reservations, setReservations] = useState<ReservationData[] | null>(null);
-    const [sortType, setSortType] = useState<SortType>("event");
+    const [filteredReservations, setFilteredReservations] = useState<ReservationData[] | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    // Track selections by list index to avoid duplicate-ID issues from the backend
     const [selectedReservationIndexes, setSelectedReservationIndexes] = useState<Set<number>>(new Set());
 
     const [deleteDisabled, setDeleteDisabled] = useState(true);
     const [changeDisabled, setChangeDisabled] = useState(true);
 
+    // Refs to measure label widths
     const firstLabelRef = useRef<HTMLDivElement>(null);
     const secondLabelRef = useRef<HTMLDivElement>(null);
     const thirdLabelRef = useRef<HTMLDivElement>(null);
@@ -29,9 +30,9 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
     async function deleteClicked() {
         if (selectedReservationIndexes.size === 0) return;
 
-        const sorted = getSortedReservations();
+        // Map selected indexes back to their actual reservation ids
         const idsToDelete = Array.from(selectedReservationIndexes)
-            .map(i => sorted[i]?.[0])
+            .map(i => filteredReservations ? filteredReservations[i]?.[0] : undefined)
             .filter((id): id is number => typeof id === 'number');
 
         if (idsToDelete.length === 0) return;
@@ -47,8 +48,7 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         if (selectedReservationIndexes.size !== 1) return;
 
         const idx = selectedReservationIndexes.values().next().value as number;
-        const sorted = getSortedReservations();
-        const id = sorted[idx]?.[0];
+        const id = filteredReservations ? filteredReservations[idx]?.[0] : undefined;
         if (typeof id !== 'number') return;
 
         setReservationId(id);
@@ -58,27 +58,39 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
     async function getReservations() {
         const message = await invoke<ReservationData[]>("get_reservations", {});
         setReservations(message);
+        setFilteredReservations(message);
         
         // Clear index-based selections after refresh
         setSelectedReservationIndexes(new Set());
     }
 
-    // Sort reservations based on current sort type
-    const getSortedReservations = () => {
-        if (!reservations) return [];
-
-        const sorted = [...reservations];
+    // Search function
+    const performSearch = (query: string) => {
+        if (!reservations) return;
         
-        switch (sortType) {
-            case "event":
-                sorted.sort((a, b) => a[1].localeCompare(b[1]));
-                break;
-            case "creator":
-                sorted.sort((a, b) => a[2].localeCompare(b[2]));
-                break;
+        if (query.trim() === "") {
+            setFilteredReservations(reservations);
+            return;
         }
-        
-        return sorted;
+
+        const lowerQuery = query.toLowerCase();
+        const filtered = reservations.filter(reservation => {
+            // Search in creator name first
+            if (reservation[2].toLowerCase().includes(lowerQuery)) return true;
+            // Then search in event name
+            if (reservation[1].toLowerCase().includes(lowerQuery)) return true;
+            // Then search in date
+            if (reservation[4].toLowerCase().includes(lowerQuery)) return true;
+            return false;
+        });
+
+        setFilteredReservations(filtered);
+    };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value;
+        setSearchQuery(query);
+        performSearch(query);
     };
 
     async function resizeWindow() {
@@ -99,7 +111,7 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         getReservations();
     }, []);
 
-    // Measure label widths after render and when sort type changes
+    // Measure label widths after render
     useEffect(() => {
         if (firstLabelRef.current && secondLabelRef.current && thirdLabelRef.current) {
             setColumnWidths({
@@ -108,43 +120,32 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
                 third: thirdLabelRef.current.offsetWidth
             });
         }
-    }, [sortType, reservations]);
+    }, [filteredReservations]); // Re-measure when filtered results change
 
     const handleReservationClick = (index: number) => {
         setSelectedReservationIndexes(prev => {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
-                newSet.delete(index); // Unselect if already selected
+                newSet.delete(index);
             } else {
-                newSet.add(index); // Select if not selected
+                newSet.add(index);
             }
             return newSet;
         });
     };
 
-    const sortedReservations = getSortedReservations();
-
-    // Get label texts based on sort type
-    const getFirstLabel = () => {
-        return sortType === "creator" ? "CREATOR NAME" : "EVENT NAME";
-    };
-
-    const getSecondLabel = () => {
-        return sortType === "creator" ? "EVENT NAME" : "CREATOR NAME";
-    };
-
     return (
-        <div className="your-reservations">
-            <button className="back-to-menu-button" onClick={() => onNavigate("/customer-menu")}>
-                BACK TO MENU
+        <div className="reservation-search">
+            <button className="back-button" onClick={() => onNavigate("/your-reservations")}>
+                BACK TO RESERVATION VIEWER
             </button>
 
             <div className="reservation-label">
-                <h1 style={{fontSize:"38px"}}> YOUR RESERVATIONS </h1>
+                <h1 style={{ fontSize: "38px" }}> RESERVATION SEARCH </h1>
             </div>
 
             <div className="amount-of-selections">
-                <h1 style={{textAlign:"center"}}> {selectedReservationIndexes.size} SELECTED </h1>
+                <h1 style={{ textAlign: "center" }}> {selectedReservationIndexes.size} SELECTED </h1>
             </div>
 
             <button className="delete-button" disabled={deleteDisabled} onClick={deleteClicked}>
@@ -156,60 +157,62 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
             </button>
 
             <div className="reservations-container">
-                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={() => {onNavigate("/reservation-search")}}/>
+                <div className="search-container">
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search by creator, event, or date..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
+                    <img className="search-symbol" src="assets/mangifying_glass.png" alt="Search"/>
+                </div>
 
+                {/* Always show these three labels */}
                 <div className="reservations-header">
                     <div className="labels-container">
                         <div ref={firstLabelRef} className="header-label first-label">
-                            {getFirstLabel()}
+                            CREATOR NAME
                         </div>
                         <div ref={secondLabelRef} className="header-label second-label">
-                            {getSecondLabel()}
+                            EVENT NAME
                         </div>
                         <div ref={thirdLabelRef} className="header-label third-label">
                             DATE
                         </div>
                     </div>
-                    <select 
-                        className="sorting-dropdown"
-                        value={sortType}
-                        onChange={(e) => setSortType(e.target.value as SortType)}
-                    >
-                        <option value="event">Sort by Event</option>
-                        <option value="creator">Sort by Creator</option>
-                    </select>
                 </div>
 
                 <div className="reservations-scroll-area">
-                    {reservations === null ? (
+                    {filteredReservations === null ? (
                         <div className="loading-message">Loading reservations...</div>
-                    ) : sortedReservations.length === 0 ? (
+                    ) : filteredReservations.length === 0 ? (
                         <div className="no-reservations-message">No reservations found</div>
                     ) : (
                         <div className="reservations-list">
-                            {sortedReservations.map((reservation, index) => (
-                                <div 
-                                    key={`${reservation[0]}-${index}`}
-                                    className={`reservation-card ${selectedReservationIndexes.has(index) ? 'selected' : ''}`}
-                                    onClick={() => handleReservationClick(index)}
+                            {filteredReservations.map((reservation, idx) => (
+                                <div
+                                    key={`${reservation[0]}-${idx}`}
+                                    className={`reservation-card ${selectedReservationIndexes.has(idx) ? 'selected' : ''}`}
+                                    onClick={() => handleReservationClick(idx)}
                                 >
-                                    <div 
+                                    <div
                                         className="reservation-field first-field"
                                         style={{ width: columnWidths.first ? `${columnWidths.first}px` : 'auto' }}
                                     >
-                                        {sortType === "creator" ? reservation[2] : reservation[1]}
+                                        {reservation[2]} {/* Creator name */}
                                     </div>
-                                    <div 
+                                    <div
                                         className="reservation-field second-field"
                                         style={{ width: columnWidths.second ? `${columnWidths.second}px` : 'auto' }}
                                     >
-                                        {sortType === "creator" ? reservation[1] : reservation[2]}
+                                        {reservation[1]} {/* Event name */}
                                     </div>
-                                    <div 
+                                    <div
                                         className="reservation-field third-field"
                                         style={{ width: columnWidths.third ? `${columnWidths.third}px` : 'auto' }}
                                     >
-                                        {reservation[4]}
+                                        {reservation[4]} {/* Date */}
                                     </div>
                                     <div className="people-badge">
                                         👥 {reservation[3]}

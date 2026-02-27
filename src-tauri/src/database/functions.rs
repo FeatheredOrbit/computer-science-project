@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use tauri::{AppHandle, State, WebviewWindowBuilder};
 
-use crate::{LoggedUser, Session, database::{Database, event::EventId}};
+use crate::{LoggedUser, Session, database::{self, Database, customer::CustomerId, event::EventId, reservation::ReservationId}};
 
 #[tauri::command]
 pub fn sign_out(session: State<Mutex<Session>>) {
@@ -427,7 +427,10 @@ pub fn commit_reservation(
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     event_id: u32,
-    people_count: u8
+    people_count: u8,
+    name: String,
+    phone_number: String,
+    requirements: String
 ) {
     let session = session.lock().unwrap();
 
@@ -436,6 +439,136 @@ pub fn commit_reservation(
 
         let event_id = EventId(event_id as usize);
 
-        database.reservation_table.add_event(event_id, id, people_count);
+        database.reservation_table.add_reservation(name, phone_number, requirements, event_id, id, people_count);
     }
+}
+
+#[tauri::command]
+pub fn get_reservations(
+    database: State<Mutex<Database>>
+) -> Vec<(u32, String, String, u8, String)> {
+    let database = database.lock().unwrap();
+
+    let mut vec: Vec<(u32, String, String, u8, String)> = vec![];
+
+    for (res_id, data) in database.reservation_table.main.iter() {
+        let event_id = data.event_id;
+
+        let event_name = database.event_table.main.get(&event_id).unwrap().name.clone();
+        let event_date = database.event_table.main.get(&event_id).unwrap().event_date.to_string();
+
+        vec.push((
+            res_id.0 as u32,
+            event_name,
+            data.creator_name.clone(),
+            data.people_count,
+            event_date
+        ));
+    }
+
+    return vec;
+}
+
+#[tauri::command]
+pub fn delete_reservations(
+    database: State<Mutex<Database>>,
+    ids: Vec<u32>
+) {
+    let mut database = database.lock().unwrap();
+
+    for id in ids.iter() {
+        let id = ReservationId(*id as usize);
+
+        database.reservation_table.remove_reservation(id);
+    }
+}
+
+#[tauri::command]
+pub fn get_reservation_info(
+    database: State<Mutex<Database>>,
+    id: u32
+) -> (String, String, String, u8) {
+    let database = database.lock().unwrap();
+
+    let id = ReservationId(id as usize);
+
+    let reservation_data = database.reservation_table.main.get(&id).unwrap();
+
+    let people_count = reservation_data.people_count;
+    let name = reservation_data.creator_name.clone();
+    let phone = reservation_data.creator_phone_number.clone();
+    let requirements = reservation_data.requirements.clone();
+
+    return (name, phone, requirements, people_count);
+}
+
+#[tauri::command]
+pub fn update_reservation(
+    database: State<Mutex<Database>>,
+    id: u32,
+    name: String, 
+    phone: String, 
+    requirements: String, 
+    people_count: u8
+) {
+    let mut database = database.lock().unwrap();
+
+    let data = database.reservation_table.main.get_mut(&ReservationId(id as usize)).unwrap();
+
+    data.creator_name = name;
+    data.creator_phone_number = phone;
+    data.requirements = requirements;
+    data.people_count = people_count;
+}
+
+#[tauri::command]
+pub fn get_customers(
+    database: State<Mutex<Database>>
+) -> Vec<(u32, String, String, String)> {
+    let database = database.lock().unwrap();
+
+    let mut vec = vec![];
+
+    for (id, data) in database.customer_table.main.iter() {
+        vec.push((
+            id.0 as u32,
+            data.name.clone(),
+            data.email.clone(),
+            data.created_at.to_string()
+        ));
+    }
+
+    return vec;
+} 
+
+#[tauri::command]
+pub fn delete_customers(
+    database: State<Mutex<Database>>,
+    ids: Vec<u32>
+) {
+    let mut database = database.lock().unwrap();
+
+    for id in ids.iter() {
+        let id = CustomerId(*id as usize);
+
+        database.customer_table.remove_customer(id);
+    }
+}
+
+#[tauri::command]
+pub fn account_get_info_specific(
+    database: State<Mutex<Database>>,
+    id: u32
+) -> (String, String, String, String) {
+    
+    let database = database.lock().unwrap();
+
+    let data = database.customer_table.main.get(&CustomerId(id as usize)).unwrap();
+
+    return (
+        data.name.clone(),
+        data.email.clone(),
+        data.phone_number.clone(),
+        data.other_requirements.clone()
+    );
 }
