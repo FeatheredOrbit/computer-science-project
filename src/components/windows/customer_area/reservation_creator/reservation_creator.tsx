@@ -1,7 +1,7 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "../../../../styles/reservation-creator.css";
 import { LogicalSize } from "@tauri-apps/api/dpi";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 type Props = {
@@ -25,21 +25,21 @@ export default function ReservationCreatorWindow({
     setChosenPhoneNumber,
     setChosenRequirements
 }: Props) {
-    const [events, setEvents] = React.useState<EventData[] | null>(null);
-    const [selectedEventId, setSelectedEventId] = React.useState<number | null>(null);
+    const [events, setEvents] = useState<EventData[] | null>(null);
+    const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
-    const [eventError, setEventError] = React.useState("");
+    const [eventError, setEventError] = useState("");
 
-    const [nameInput, setNameInput] = React.useState("");
-    const [nameError, setNameError] = React.useState("");
+    const [nameInput, setNameInput] = useState("");
+    const [nameError, setNameError] = useState("");
 
-    const [phoneInput, setPhoneInput] = React.useState("");
-    const [phoneError, setPhoneError] = React.useState("");
+    const [phoneInput, setPhoneInput] = useState("");
+    const [phoneError, setPhoneError] = useState("");
 
-    const [requirementsInput, setRequirementsInput] = React.useState("");
+    const [requirementsInput, setRequirementsInput] = useState("");
 
-    const [peopleCountInput, setPeopleCountInput] = React.useState("1");
-    const [peopleCountError, setPeopleCountError] = React.useState("");
+    const [peopleCountInput, setPeopleCountInput] = useState("1");
+    const [peopleCountError, setPeopleCountError] = useState("");
 
 
     async function resizeWindow() {
@@ -137,7 +137,7 @@ export default function ReservationCreatorWindow({
         onNavigate("/commit-reservation");
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         resizeWindow();
         getEvents();
     }, []);
@@ -166,7 +166,7 @@ export default function ReservationCreatorWindow({
             <div className="name-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> FULL NAME </h1>
             </div>
-            <input className="name-input" type="text" placeholder="John" onChange={(e) => {setNameInput(e.target.value)}} value={nameInput}/>
+            <input className="name-input" type="text" placeholder="John" onChange={(e) => {setNameInput(e.target.value); setNameError("")}} value={nameInput}/>
             <div className="name-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {nameError} </p>
             </div>
@@ -174,7 +174,7 @@ export default function ReservationCreatorWindow({
             <div className="phone-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> PHONE NUMBER </h1>
             </div>
-            <input className="phone-input" type="text" placeholder="1234567890" onChange={(e) => {setPhoneInput(e.target.value)}} value={phoneInput}/>
+            <input className="phone-input" type="text" placeholder="1234567890" onChange={(e) => {setPhoneInput(e.target.value); setPhoneError("")}} value={phoneInput}/>
             <div className="phone-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {phoneError} </p>
             </div>
@@ -187,7 +187,7 @@ export default function ReservationCreatorWindow({
             <div className="people-count-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> NUMBER OF PEOPLE </h1>
             </div>
-            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={(e) => {setPeopleCountInput(e.target.value)}} />
+            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={(e) => {setPeopleCountInput(e.target.value); setPeopleCountError("")}} />
             <div className="people-count-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {peopleCountError} </p>
             </div>

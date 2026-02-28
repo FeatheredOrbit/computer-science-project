@@ -61,9 +61,14 @@ impl Database {
        let path = app.path().app_data_dir()?;
        let path_to_database = path.join(DATABASE_FILE_PATH);
 
+       // Ensure parent directory exists (File::create won't create parent dirs).
+       if let Some(parent) = path_to_database.parent() {
+           std::fs::create_dir_all(parent)?;
+       }
+
        let mut file = File::create(path_to_database)?;
 
-        file.write_all(&bytes)?;
+       file.write_all(&bytes)?;
 
        Ok(())
     }

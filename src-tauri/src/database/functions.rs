@@ -69,6 +69,7 @@ pub fn login_validate_details(
 
 #[tauri::command]
 pub fn signup_validate_details(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>, 
     email: String, 
@@ -94,12 +95,18 @@ pub fn signup_validate_details(
     let mut session = session.lock().unwrap();
     session.change(LoggedUser::Customer(user_id));
 
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
+
     // If all goes well we return an empty string. On the frontend we will check the length of the returned string to find out if it succeded.
     return "".to_string();
 }
 
 #[tauri::command]
 pub fn signup_add_extra(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     name: String,
@@ -114,6 +121,11 @@ pub fn signup_add_extra(
 
         // We unwrap the result, this should be fine as this is only reached if theres a stored user, if it still causes a crash, then thats out of my control.
         database.customer_table.fill_in_customer(id, name, phone_number, other_requirements).unwrap();
+
+        // Save the database; log error if it fails.
+        if let Err(e) = database.try_to_file(app) {
+            eprintln!("failed to save database: {}", e);
+        }
 
     }
 }
@@ -174,8 +186,10 @@ pub fn change_name(
 
         database.customer_table.set_name(id, name);
 
-        // We save the database to file, we take the risk and unwrap.
-        database.try_to_file(app).unwrap();
+            // Save the database; log error if it fails.
+            if let Err(e) = database.try_to_file(app) {
+                eprintln!("failed to save database: {}", e);
+            }
     }
 }
 
@@ -199,8 +213,10 @@ pub fn change_email(
     if let LoggedUser::Customer(id) = session.state {
         database.customer_table.set_email(id, email);
 
-        // We save the database to file, we take the risk and unwrap.
-        database.try_to_file(app).unwrap();
+            // Save the database; log error if it fails.
+            if let Err(e) = database.try_to_file(app) {
+                eprintln!("failed to save database: {}", e);
+            }
 
         return "".to_string();
     }
@@ -222,8 +238,10 @@ pub fn change_password(
         // We safely assume there's data at that id.
         database.customer_table.new_password(id, password);
 
-        // We save the database to file, we take the risk and unwrap.
-        database.try_to_file(app).unwrap();
+            // Save the database; log error if it fails.
+            if let Err(e) = database.try_to_file(app) {
+                eprintln!("failed to save database: {}", e);
+            }
     }
 }
 
@@ -240,8 +258,10 @@ pub fn change_phone_number(
 
         database.customer_table.set_phone_number(id, phone_number);
 
-        // We save the database to file, we take the risk and unwrap.
-        database.try_to_file(app).unwrap();
+            // Save the database; log error if it fails.
+            if let Err(e) = database.try_to_file(app) {
+                eprintln!("failed to save database: {}", e);
+            }
     }
 }
 
@@ -258,8 +278,10 @@ pub fn change_requirements(
 
         database.customer_table.set_requirements(id, requirements);
 
-        // We save the database to file, we take the risk and unwrap.
-        database.try_to_file(app).unwrap();
+        // Save the database; log error if it fails.
+        if let Err(e) = database.try_to_file(app) {
+            eprintln!("failed to save database: {}", e);
+        }
     }
 }
 
@@ -382,8 +404,10 @@ pub fn commit_reservation(
 
         database.reservation_table.add_reservation(name, phone_number, requirements, event_id, id, people_count);
 
-        // We save the database to file, we take the risk and unwrap.
-        database.try_to_file(app).unwrap();
+        // Save the database; log error if it fails.
+        if let Err(e) = database.try_to_file(app) {
+            eprintln!("failed to save database: {}", e);
+        }
     }
 }
 
@@ -427,8 +451,10 @@ pub fn delete_reservations(
         database.reservation_table.remove_reservation(id);
     }
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]
@@ -469,8 +495,10 @@ pub fn update_reservation(
     data.requirements = requirements;
     data.people_count = people_count;
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]
@@ -507,8 +535,10 @@ pub fn delete_customers(
         database.customer_table.remove_customer(id);
     }
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]
@@ -542,8 +572,10 @@ pub fn change_name_specific(
 
     database.customer_table.set_name(cust_id, name);
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]
@@ -566,8 +598,10 @@ pub fn change_email_specific(
 
     database.customer_table.set_email(cust_id, email);
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 
     return "".to_string();
 }
@@ -585,8 +619,10 @@ pub fn change_password_specific(
 
     database.customer_table.new_password(cust_id, password);
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]
@@ -602,8 +638,10 @@ pub fn change_phone_number_specific(
 
     database.customer_table.set_phone_number(cust_id, phone_number);
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]
@@ -619,8 +657,10 @@ pub fn change_requirements_specific(
 
     database.customer_table.set_requirements(cust_id, requirements);
 
-    // We save the database to file, we take the risk and unwrap.
-    database.try_to_file(app).unwrap();
+    // Save the database; log error if it fails.
+    if let Err(e) = database.try_to_file(app) {
+        eprintln!("failed to save database: {}", e);
+    }
 }
 
 #[tauri::command]

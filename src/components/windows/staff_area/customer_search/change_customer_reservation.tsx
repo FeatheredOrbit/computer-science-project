@@ -1,7 +1,7 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "../../../../styles/change_customer_reservation.css";
 import { LogicalSize } from "@tauri-apps/api/dpi";
-import React from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 type Props = {
@@ -12,16 +12,16 @@ type Props = {
 // Yeah there has been a bit of a misunderstanding with myself and I often found myself interchanging event and play. In this context they are the same thing!!!
 
 export default function ChangeCustomerReservation({onNavigate, reservationId}: Props) {
-    const [nameInput, setNameInput] = React.useState("");
-    const [nameError, setNameError] = React.useState("");
+    const [nameInput, setNameInput] = useState("");
+    const [nameError, setNameError] = useState("");
 
-    const [phoneInput, setPhoneInput] = React.useState("");
-    const [phoneError, setPhoneError] = React.useState("");
+    const [phoneInput, setPhoneInput] = useState("");
+    const [phoneError, setPhoneError] = useState("");
 
-    const [requirementsInput, setRequirementsInput] = React.useState("");
+    const [requirementsInput, setRequirementsInput] = useState("");
 
-    const [peopleCountInput, setPeopleCountInput] = React.useState("1");
-    const [peopleCountError, setPeopleCountError] = React.useState("");
+    const [peopleCountInput, setPeopleCountInput] = useState("1");
+    const [peopleCountError, setPeopleCountError] = useState("");
 
 
     async function resizeWindow() {
@@ -88,7 +88,7 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
         onNavigate("/customer-reservations");
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         resizeWindow();
         getReservationInfo();
     }, []);
@@ -110,7 +110,7 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
             <div className="name-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> FULL NAME </h1>
             </div>
-            <input className="name-input" type="text" placeholder="John" onChange={(e) => {setNameInput(e.target.value)}} value={nameInput}/>
+            <input className="name-input" type="text" placeholder="John" onChange={(e) => {setNameInput(e.target.value); setNameError("")}} value={nameInput}/>
             <div className="name-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {nameError} </p>
             </div>
@@ -118,7 +118,7 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
             <div className="phone-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> PHONE NUMBER </h1>
             </div>
-            <input className="phone-input" type="text" placeholder="1234567890" onChange={(e) => {setPhoneInput(e.target.value)}} value={phoneInput}/>
+            <input className="phone-input" type="text" placeholder="1234567890" onChange={(e) => {setPhoneInput(e.target.value); setPhoneError("")}} value={phoneInput}/>
             <div className="phone-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {phoneError} </p>
             </div>
@@ -131,7 +131,7 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
             <div className="people-count-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> NUMBER OF PEOPLE </h1>
             </div>
-            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={(e) => {setPeopleCountInput(e.target.value)}} />
+            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={(e) => {setPeopleCountInput(e.target.value); setPeopleCountError("")}} />
             <div className="people-count-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {peopleCountError} </p>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import "../../../styles/signup.css";
 import { invoke } from '@tauri-apps/api/core';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
@@ -26,11 +26,11 @@ export default function SignupWindow({onNavigate}: Props) {
         await invoke("sign_out", {});
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         handleMount();
     }, []);
 
-    React.useEffect(function() {
+    useEffect(function() {
 
         if (emailInput.trim().length > 0 && passwordInput.trim().length > 0) {
             setIsButtonDisabled(false);
@@ -84,7 +84,7 @@ export default function SignupWindow({onNavigate}: Props) {
         onNavigate("/signup-set-info");
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
 
         if (emailInput.trim().length > 0 && passwordInput.trim().length > 0) {
             setIsButtonDisabled(false);

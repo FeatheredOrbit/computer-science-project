@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import "../../../styles/signup-set-info.css";
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
@@ -60,11 +60,11 @@ export default function SignupSetInfo({onNavigate}: Props) {
         await appWindow.setSize(new LogicalSize(800, 900));
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         changeWindowSize();
     }, []);
 
-    React.useEffect(function() {
+    useEffect(function() {
         if (nameInput.trim().length > 0 && phoneInput.trim().length > 0) {
             setIsButtonDisabled(false);
         } else {

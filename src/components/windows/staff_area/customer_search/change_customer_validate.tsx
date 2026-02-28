@@ -1,6 +1,6 @@
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
-import React from "react";
+import { useState, useEffect } from "react";
 import "../../../../styles/change_customer_validate.css";
 import { invoke } from "@tauri-apps/api/core";
 
@@ -9,12 +9,12 @@ type Props = {
 };
 
 export default function ChangeCustomerValidate({onNavigate}: Props) {
-    const [passwordInput, setPasswordInput] = React.useState("");
-    const [passwordError, setPasswordError] = React.useState("");
+    const [passwordInput, setPasswordInput] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
-    const [isButtonDisabled, setIsButtonDisabled] = React.useState(true);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
@@ -22,11 +22,11 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
         await appWindow.setSize(new LogicalSize(600, 400));
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         resizeWindow();
     }, []);
 
-    React.useEffect(function() {
+    useEffect(function() {
         if (passwordInput.trim().length > 0) {
             setIsButtonDisabled(false);
         } else {
@@ -53,7 +53,7 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
             className="insert-password-input" 
             type={showPassword ? "text" : "password"} 
             placeholder="841234u2343bvdfjniudcru"
-            onChange={(e) => {setPasswordInput(e.target.value)}} 
+            onChange={(e) => {setPasswordInput(e.target.value); setPasswordError("")}} 
             />
             <p 
                 className="show-validate-password-button" 

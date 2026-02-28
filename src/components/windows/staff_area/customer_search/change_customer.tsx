@@ -1,7 +1,7 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "../../../../styles/change_customer.css";
 import { LogicalSize } from "@tauri-apps/api/dpi";
-import React from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 type Props = {
@@ -10,10 +10,10 @@ type Props = {
 };
 
 export default function ChangeCustomer({onNavigate, customerId}: Props) {
-    const [name, setName] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [phoneNumber, setPhoneNumber] = React.useState("");
-    const [requirements, setRequirements] = React.useState("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [requirements, setRequirements] = useState("");
 
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
@@ -30,7 +30,7 @@ export default function ChangeCustomer({onNavigate, customerId}: Props) {
         setRequirements(info[3]);
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         resizeWindow();
         getCustomerInfo();
     }, []);

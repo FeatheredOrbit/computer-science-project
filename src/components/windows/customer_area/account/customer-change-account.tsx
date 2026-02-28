@@ -1,7 +1,7 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import "../../../../styles/customer-change-account.css";
 import { LogicalSize } from "@tauri-apps/api/dpi";
-import React from "react";
+import React, { useEffect } from "react";
 import { AccountChange } from "../../../../misc";
 
 type Props = {
@@ -24,7 +24,7 @@ export default function CustomerChangeAccount({onNavigate, setCustomerAccountCha
         await appWindow.setSize(new LogicalSize(500, 700));
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         resizeWindow();
     }, []);
 

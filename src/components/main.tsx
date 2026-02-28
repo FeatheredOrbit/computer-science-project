@@ -7,7 +7,7 @@ import CustomerAreaMenu from "./windows/customer_area/customer_area_menu";
 import StaffAreaMenu from "./windows/staff_area/staff_area_menu";
 import CustomerAccountWindow from "./windows/customer_area/account/customer_account";
 import CustomerChangeAccount from "./windows/customer_area/account/customer-change-account";
-import React from "react";
+import { useState } from "react";
 import CustomerAccountValidate from "./windows/customer_area/account/customer_account_validate";
 import { AccountChange } from "../misc";
 import CustomerAccountNewInfo from "./windows/customer_area/account/customer_account_new_info";
@@ -36,16 +36,16 @@ export default function App() {
     // which one to change, but when you do that it changes to a new window, but how does said window know what happened in the one prior?
     // To allow this communication, we can set up a state in the App component. Then we can pass either the state itself or the function to change it based on
     // whether the components requires read or write, or both.
-    const [customerAccountChange, setCustomerAccountChange] = React.useState(AccountChange.None);
-    
-    const [chosenEventId, setChosenEventId] = React.useState<number | null>(null);
-    const [chosenName, setChosenName] = React.useState<string>("");
-    const [chosenPhoneNumber, setChosenPhoneNumber] = React.useState<string>("");
-    const [chosenRequirements, setChosenRequirements] = React.useState<string>("");
-    const [peopleCount, setPeopleCount] = React.useState<string>("");
+    const [customerAccountChange, setCustomerAccountChange] = useState(AccountChange.None);
 
-    const [customerId, setCustomerId] = React.useState<number | undefined>();
-    const [reservationId, setReservationId] = React.useState<number | undefined>();
+    const [chosenEventId, setChosenEventId] = useState<number | null>(null);
+    const [chosenName, setChosenName] = useState<string>("");
+    const [chosenPhoneNumber, setChosenPhoneNumber] = useState<string>("");
+    const [chosenRequirements, setChosenRequirements] = useState<string>("");
+    const [peopleCount, setPeopleCount] = useState<string>("");
+
+    const [customerId, setCustomerId] = useState<number | undefined>();
+    const [reservationId, setReservationId] = useState<number | undefined>();
 
     function onNavigate(input: string) {
         if (location.pathname === input) {

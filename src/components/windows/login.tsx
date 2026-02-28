@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import "../../styles/login.css";
-import { LogicalSize } from '@tauri-apps/api/window';
+import { LogicalSize } from '@tauri-apps/api/dpi';
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { invoke } from '@tauri-apps/api/core';
 
@@ -43,11 +43,11 @@ export default function LoginWindow({onNavigate}: Props) {
         setPasswordError(message[1]);
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         handleMount();
     }, []);
 
-    React.useEffect(function() {
+    useEffect(function() {
 
         if (emailInput.trim().length > 0 && passwordInput.trim().length > 0) {
             setIsButtonDisabled(false);

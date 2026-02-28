@@ -1,6 +1,6 @@
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
-import React from "react";
+import { useEffect } from "react";
 
 import "../../../../styles/commit-reservation.css";
 import { invoke } from "@tauri-apps/api/core";
@@ -30,7 +30,7 @@ export default function CommitReservation({onNavigate, chosenEventId, peopleCoun
         onNavigate("/customer-menu");
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         resizeWindow();
     }, []);
 

@@ -1,6 +1,6 @@
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
-import React from "react";
+import { useEffect } from "react";
 import "../../../styles/customer_area_menu.css";
 
 type Props = {
@@ -14,7 +14,7 @@ export default function CustomerAreaMenu({onNavigate}: Props) {
         await appWindow.setSize(new LogicalSize(800, 540));
     }
 
-    React.useEffect(function() {
+    useEffect(function() {
         resizeWindow();
     }, []);
 
