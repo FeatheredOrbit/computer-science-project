@@ -130,4 +130,40 @@ impl CustomerTable {
             self.from_name.remove(&data.name);
         }
     }
+
+    /// Set the customer's name and update the name lookup table.
+    pub fn set_name(&mut self, customer_id: CustomerId, new_name: String) {
+        let data = self.main.get_mut(&customer_id).unwrap();
+
+        let old_name = data.name.clone();
+
+        data.name = new_name.clone();
+
+        self.from_name.remove(&old_name);
+        self.from_name.insert(new_name, customer_id);
+    }
+
+    /// Set the customer's email and update the email lookup table.
+    pub fn set_email(&mut self, customer_id: CustomerId, new_email: String) {
+        let data = self.main.get_mut(&customer_id).unwrap();
+
+        let old_email = data.email.clone();
+
+        data.email = new_email.clone();
+
+        self.from_email.remove(&old_email);
+        self.from_email.insert(new_email, customer_id);
+    }
+
+    /// Set the customer's phone number.
+    pub fn set_phone_number(&mut self, customer_id: CustomerId, phone_number: String) {
+        let data = self.main.get_mut(&customer_id).unwrap();
+        data.phone_number = phone_number;
+    }
+
+    /// Set the customer's other requirements.
+    pub fn set_requirements(&mut self, customer_id: CustomerId, requirements: String) {
+        let data = self.main.get_mut(&customer_id).unwrap();
+        data.other_requirements = requirements;
+    }
 }

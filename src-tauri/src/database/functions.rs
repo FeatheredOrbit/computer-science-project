@@ -1,8 +1,8 @@
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 
 use tauri::{AppHandle, State, WebviewWindowBuilder};
 
-use crate::{LoggedUser, Session, database::{self, Database, customer::CustomerId, event::EventId, reservation::ReservationId}};
+use crate::{LoggedUser, Session, database::{Database, customer::CustomerId, event::EventId, reservation::ReservationId}};
 
 #[tauri::command]
 pub fn sign_out(session: State<Mutex<Session>>) {
@@ -124,43 +124,26 @@ pub fn account_get_info(
     database: State<Mutex<Database>>
 ) -> (String, String, String, String) {
     let session = session.lock().unwrap();
-    
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let database = database.lock().unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        let database = database.lock().unwrap();
 
-            // If the id is present its safe to assume the data is too, so we unwrap.
-            let data = database.customer_table.main.get(&id).unwrap();
+        // If the id is present its safe to assume the data is too, so we unwrap.
+        let data = database.customer_table.main.get(&id).unwrap();
 
-            return (
-                data.name.clone(),
-                data.email.clone(),
-                data.phone_number.clone(),
-                data.other_requirements.clone()
-            );
-        },
-        LoggedUser::Staff(id) => {
-            let database = database.lock().unwrap();
+        return (
+            data.name.clone(),
+            data.email.clone(),
+            data.phone_number.clone(),
+            data.other_requirements.clone()
+        );
+    }
 
-            // If the id is present its safe to assume the data is too, so we unwrap.
-            let data = database.staff_table.main.get(&id).unwrap();
-
-            return (
-                data.name.clone(),
-                data.email.clone(),
-                data.phone_number.clone(),
-                String::from("")
-            );
-        },
-        LoggedUser::None => {
-            return (
-                String::from("No logged user"),
-                String::from("No logged user"),
-                String::from("No logged user"),
-                String::from("No logged user")
-            );
-        }
-    };
+    return (
+        String::from("No logged user"),
+        String::from("No logged user"),
+        String::from("No logged user"),
+        String::from("No logged user")
+    );
 }
 
 #[tauri::command]
@@ -170,72 +153,40 @@ pub fn account_validate_password(
     password: String
 ) -> bool {
     let session = session.lock().unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        let database = database.lock().unwrap();
+        return database.customer_table.verify_password(id, password).unwrap();
+    }
 
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let database = database.lock().unwrap();
-
-            // Again, blabla we unwrap because the only thing capable of failing in here is the argon hash blablabla. 
-            return database.customer_table.verify_password(id, password).unwrap();
-        }
-
-        LoggedUser::Staff(id) => {
-            let database = database.lock().unwrap();
-
-            // Again, blabla we unwrap because the only thing capable of failing in here is the argon hash blablabla. 
-            return database.staff_table.verify_password(id, password).unwrap();
-        }
-
-        LoggedUser::None => {
-            // As you can't skip signup or login pages straight to here, and they force a spawn of a LoggedUser, this is ...
-            unreachable!();
-        }
-    };
+    return false;
 }
 
 #[tauri::command]
 pub fn change_name(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     name: String
 ) {
     let session = session.lock().unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        let mut database = database.lock().unwrap();
 
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let mut database = database.lock().unwrap();
+        database.customer_table.set_name(id, name);
 
-            // We safely assume there's data at that id.
-            let data = database.customer_table.main.get_mut(&id).unwrap();
-
-            let old_name = data.name.clone();
-
-            data.name = name.clone();
-
-            // We need to update the look up table with the new name.
-            database.customer_table.from_name.remove(&old_name);
-            database.customer_table.from_name.insert(name.clone(), id);
-        }
-        LoggedUser::Staff(id) => {
-            let mut database = database.lock().unwrap();
-
-            // We safely assume there's data at that id.
-            let data = database.staff_table.main.get_mut(&id).unwrap();
-
-            data.name = name;
-        }
-        LoggedUser::None => {unreachable!()}
+        // We save the database to file, we take the risk and unwrap.
+        database.try_to_file(app).unwrap();
     }
 }
 
 #[tauri::command]
 pub fn change_email(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     email: String
 ) -> String {
     let session = session.lock().unwrap();
-
     let mut database = database.lock().unwrap();
 
     if let Some(_) = database.customer_table.from_email.get(&email) {
@@ -245,110 +196,70 @@ pub fn change_email(
         return "Email already in use".to_string();
     }
 
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let data = database.customer_table.main.get_mut(&id).unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        database.customer_table.set_email(id, email);
 
-            // ✅ FIXED: Use email, not name
-            let old_email = data.email.clone();
+        // We save the database to file, we take the risk and unwrap.
+        database.try_to_file(app).unwrap();
 
-            data.email = email.clone();
+        return "".to_string();
+    }
 
-            database.customer_table.from_email.remove(&old_email);
-            database.customer_table.from_email.insert(email.clone(), id);
-
-            return "".to_string();
-        }
-        LoggedUser::Staff(id) => {
-            let data = database.staff_table.main.get_mut(&id).unwrap();
-
-            // ✅ FIXED: Use email, not name
-            let old_email = data.email.clone();
-
-            data.email = email.clone();
-
-            database.staff_table.from_email.remove(&old_email);
-            database.staff_table.from_email.insert(email.clone(), id);
-
-            return "".to_string();
-        }
-        LoggedUser::None => {unreachable!()}
-    };
+    return "No logged user".to_string();
 }
 
 #[tauri::command]
 pub fn change_password(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     password: String
 ) {
     let session = session.lock().unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        let mut database = database.lock().unwrap();
 
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let mut database = database.lock().unwrap();
+        // We safely assume there's data at that id.
+        database.customer_table.new_password(id, password);
 
-            // We safely assume there's data at that id.
-            database.customer_table.new_password(id, password);
-        }
-        LoggedUser::Staff(id) => {
-            let mut database = database.lock().unwrap();
-
-            // We safely assume there's data at that id.
-            database.staff_table.new_password(id, password);
-        }
-        LoggedUser::None => {unreachable!()}
+        // We save the database to file, we take the risk and unwrap.
+        database.try_to_file(app).unwrap();
     }
 }
 
 #[tauri::command]
 pub fn change_phone_number(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     phone_number: String
 ) {
     let session = session.lock().unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        let mut database = database.lock().unwrap();
 
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let mut database = database.lock().unwrap();
+        database.customer_table.set_phone_number(id, phone_number);
 
-            // We safely assume there's data at that id.
-            let data = database.customer_table.main.get_mut(&id).unwrap();
-
-            data.phone_number = phone_number;
-        }
-        LoggedUser::Staff(id) => {
-            let mut database = database.lock().unwrap();
-
-            // We safely assume there's data at that id.
-            let data = database.staff_table.main.get_mut(&id).unwrap();
-
-            data.phone_number = phone_number;
-        }
-        LoggedUser::None => {unreachable!()}
+        // We save the database to file, we take the risk and unwrap.
+        database.try_to_file(app).unwrap();
     }
 }
 
 #[tauri::command]
 pub fn change_requirements(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     requirements: String
 ) {
     let session = session.lock().unwrap();
+    if let LoggedUser::Customer(id) = session.state {
+        let mut database = database.lock().unwrap();
 
-    match session.state {
-        LoggedUser::Customer(id) => {
-            let mut database = database.lock().unwrap();
+        database.customer_table.set_requirements(id, requirements);
 
-            // We safely assume there's data at that id.
-            let data = database.customer_table.main.get_mut(&id).unwrap();
-
-            data.other_requirements = requirements;
-        }
-        LoggedUser::Staff(id) => {unreachable!()}
-        LoggedUser::None => {unreachable!()}
+        // We save the database to file, we take the risk and unwrap.
+        database.try_to_file(app).unwrap();
     }
 }
 
@@ -401,6 +312,35 @@ pub fn open_extra_information_window(
 }
 
 #[tauri::command]
+pub fn open_extra_information_window_from_id(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    id: u32
+) {
+    let database = database.lock().unwrap();
+    let data = database.event_table.main.get(&EventId(id as usize)).unwrap();
+
+    // Creating a new window though brings a few issues. It creates a new context on the frontend, meaning any data stored on the app on the main window is not
+    // directly accessible in the this new one. So we an alternative way of sharing it information. We do this by encoding the information into the url.
+        let url = format!("/event-information?date={}&info={}", 
+        urlencoding::encode(&data.event_date.to_string()),
+        urlencoding::encode(&data.extra_information)
+    );
+    
+
+    // We create a window which will display the component bound at "/event-information", and we force it to screen.
+    let window = WebviewWindowBuilder::new(&app, "event_information_window", tauri::WebviewUrl::App(url.into()))
+    .resizable(false)
+    .inner_size(600.0, 400.0)
+    .closable(false)
+    .title("Event Information")
+    .build()
+    .unwrap();
+
+    window.show().unwrap();
+}
+
+#[tauri::command]
 pub fn autofill_customer(
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
@@ -424,6 +364,7 @@ pub fn autofill_customer(
 
 #[tauri::command]
 pub fn commit_reservation(
+    app: AppHandle,
     session: State<Mutex<Session>>,
     database: State<Mutex<Database>>,
     event_id: u32,
@@ -440,6 +381,9 @@ pub fn commit_reservation(
         let event_id = EventId(event_id as usize);
 
         database.reservation_table.add_reservation(name, phone_number, requirements, event_id, id, people_count);
+
+        // We save the database to file, we take the risk and unwrap.
+        database.try_to_file(app).unwrap();
     }
 }
 
@@ -471,6 +415,7 @@ pub fn get_reservations(
 
 #[tauri::command]
 pub fn delete_reservations(
+    app: AppHandle,
     database: State<Mutex<Database>>,
     ids: Vec<u32>
 ) {
@@ -481,6 +426,9 @@ pub fn delete_reservations(
 
         database.reservation_table.remove_reservation(id);
     }
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
 }
 
 #[tauri::command]
@@ -504,6 +452,7 @@ pub fn get_reservation_info(
 
 #[tauri::command]
 pub fn update_reservation(
+    app: AppHandle,
     database: State<Mutex<Database>>,
     id: u32,
     name: String, 
@@ -519,6 +468,9 @@ pub fn update_reservation(
     data.creator_phone_number = phone;
     data.requirements = requirements;
     data.people_count = people_count;
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
 }
 
 #[tauri::command]
@@ -543,6 +495,7 @@ pub fn get_customers(
 
 #[tauri::command]
 pub fn delete_customers(
+    app: AppHandle,
     database: State<Mutex<Database>>,
     ids: Vec<u32>
 ) {
@@ -553,6 +506,9 @@ pub fn delete_customers(
 
         database.customer_table.remove_customer(id);
     }
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
 }
 
 #[tauri::command]
@@ -571,4 +527,183 @@ pub fn account_get_info_specific(
         data.phone_number.clone(),
         data.other_requirements.clone()
     );
+}
+
+#[tauri::command]
+pub fn change_name_specific(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    name: String,
+    id: u32
+) {
+    let mut database = database.lock().unwrap();
+
+    let cust_id = CustomerId(id as usize);
+
+    database.customer_table.set_name(cust_id, name);
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
+}
+
+#[tauri::command]
+pub fn change_email_specific(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    email: String,
+    id: u32
+) -> String {
+    let mut database = database.lock().unwrap();
+
+    if let Some(_) = database.customer_table.from_email.get(&email) {
+        return "Email already in use".to_string();
+    }
+    if let Some(_) = database.staff_table.from_email.get(&email) {
+        return "Email already in use".to_string();
+    }
+
+    let cust_id = CustomerId(id as usize);
+
+    database.customer_table.set_email(cust_id, email);
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
+
+    return "".to_string();
+}
+
+#[tauri::command]
+pub fn change_password_specific(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    password: String,
+    id: u32
+) {
+    let mut database = database.lock().unwrap();
+
+    let cust_id = CustomerId(id as usize);
+
+    database.customer_table.new_password(cust_id, password);
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
+}
+
+#[tauri::command]
+pub fn change_phone_number_specific(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    phone_number: String,
+    id: u32
+) {
+    let mut database = database.lock().unwrap();
+
+    let cust_id = CustomerId(id as usize);
+
+    database.customer_table.set_phone_number(cust_id, phone_number);
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
+}
+
+#[tauri::command]
+pub fn change_requirements_specific(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    requirements: String,
+    id: u32
+) {
+    let mut database = database.lock().unwrap();
+
+    let cust_id = CustomerId(id as usize);
+
+    database.customer_table.set_requirements(cust_id, requirements);
+
+    // We save the database to file, we take the risk and unwrap.
+    database.try_to_file(app).unwrap();
+}
+
+#[tauri::command]
+pub fn get_reservations_specific(
+    database: State<Mutex<Database>>,
+    id: u32
+) -> Vec<(u32, String, String, u8, String)> {
+    let database = database.lock().unwrap();
+
+    let mut vec: Vec<(u32, String, String, u8, String)> = vec![];
+
+    for (res_id, data) in database.reservation_table.main.iter() {
+        if data.customer_id != CustomerId(id as usize) { continue };
+
+        let event_id = data.event_id;
+
+        let event_name = database.event_table.main.get(&event_id).unwrap().name.clone();
+        let event_date = database.event_table.main.get(&event_id).unwrap().event_date.to_string();
+
+        vec.push((
+            res_id.0 as u32,
+            event_name,
+            data.creator_name.clone(),
+            data.people_count,
+            event_date
+        ));
+    }
+
+    return vec;
+}
+
+#[tauri::command]
+pub fn get_events_minimum(database: State<Mutex<Database>>) -> Vec<(String, String)> {
+    let database = database.lock().unwrap();
+
+    let mut events: Vec<(String, String)> = vec![];
+
+    // We iterate through ever event in the event table to insert in the vector above, pretty useless as there's a single hardcoded event, but it's at least
+    // supposed to allow for multiple existing events, and I perhaps might add more, who knows (I won't).
+    for (_, event) in database.event_table.main.clone().into_iter() {
+        events.push((
+            event.name.clone(),
+            event.event_date.to_string()
+        ));
+    }
+
+    return events;
+}
+
+#[tauri::command]
+pub fn open_analytics_window(
+    app: AppHandle,
+    database: State<Mutex<Database>>,
+    id: u32
+) {
+    let database = database.lock().unwrap();
+    let data = database.event_table.main.get(&EventId(id as usize)).unwrap();
+
+    let mut reservation_amount: u32 = 0;
+
+    // We find how many reservations are under said event.
+    for (_, reservation_data) in database.reservation_table.main.iter() {
+        if reservation_data.event_id == EventId(id as usize) {
+            reservation_amount += 1;
+        }
+    }
+
+    // Creating a new window though brings a few issues. It creates a new context on the frontend, meaning any data stored on the app on the main window is not
+    // directly accessible in the this new one. So we an alternative way of sharing it information. We do this by encoding the information into the url.
+        let url = format!("/analytics?reservation-amount={}&expected-revenue={}", 
+        urlencoding::encode(&reservation_amount.to_string()),
+        urlencoding::encode(&(reservation_amount * data.cost as u32).to_string())
+    );
+    
+
+    // We create a window which will display the component bound at "/event-information", and we force it to screen.
+    let window = WebviewWindowBuilder::new(&app, "analytics_window", tauri::WebviewUrl::App(url.into()))
+    .resizable(false)
+    .inner_size(300.0, 100.0)
+    .closable(false)
+    .title("Analytics")
+    .build()
+    .unwrap();
+
+    window.show().unwrap();
 }

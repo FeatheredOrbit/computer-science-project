@@ -1,4 +1,4 @@
-.customers .back-to-menu-button {
+.events .back-button {
     position: absolute;
     bottom: 2.5%;
     left: 2.5%;
@@ -15,7 +15,7 @@
     border-radius: 7.5%;
 }
 
-.customers .customer-label {
+.events .events-label {
     position: absolute;
     top: 1%;  
     left: 1%;    
@@ -28,7 +28,7 @@
     justify-content: center;
 }
 
-.customers .amount-of-selections {
+.events .amount-of-selections {
     position: absolute;
     top: 65%;
     left: 2.5%;
@@ -41,43 +41,16 @@
     justify-content: center;
 }
 
-.customers .search-symbol {
-    position: absolute;
-
-    bottom: 0%;
-    right: 0%;
-
-    width: 10%;
-    height: 17.5%;
-}
-
-.customers .delete-button {
-    position: absolute;
-    top: 67.5%;
-    right: 2.5%;
-    width: 45%;
-    height: 8%;
-    background-color: #EDEBE6;
-    outline: 2px solid black;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 7.5%;
-}
-
-.customers .reservations-button {
+.events .view-analytics-button {
     position: absolute;
     bottom: 2.5%;
     right: 2.5%;
     width: 45%;
-    height: 8%;
+    height: 12.5%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     border: none;
-    font-size: 24px;
+    font-size: 18px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -85,16 +58,16 @@
     border-radius: 7.5%;
 }
 
-.customers .change-button {
+.events .extra-information-button {
     position: absolute;
-    top: 78.5%;
+    top: 67.5%;
     right: 2.5%;
     width: 45%;
-    height: 8%;
+    height: 12.5%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     border: none;
-    font-size: 24px;
+    font-size: 18px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -103,7 +76,7 @@
 }
 
 /* Main container rectangle */
-.customers .customers-container {
+.events .events-container {
     position: absolute;
     top: 15%;
     left: 2.5%;
@@ -117,56 +90,78 @@
     overflow: hidden;
 }
 
-/* Header - FIXED, doesn't scroll */
-.customers .customers-header {
+/* Search container */
+.events .search-container {
     width: 100%;
     height: 12%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding: 0 1%;
+    box-sizing: border-box;
+    border-bottom: 2px solid black;
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+.events .search-input {
+    width: 100%;
+    height: 70%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 16px;
+    padding: 0 40px 0 15px;
+    box-sizing: border-box;
+}
+
+.events .search-symbol {
+    position: absolute;
+    right: 1.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+}
+
+/* Header - FIXED, doesn't scroll */
+.events .events-header {
+    width: 100%;
+    height: 12%;
+    display: flex;
+    align-items: center;
     padding: 0 1%;
     box-sizing: border-box;
     border-bottom: 2px solid black;
     background-color: #f0f0f0;
 }
 
-.customers .labels-container {
+.events .labels-container {
     display: flex;
     align-items: center;
     gap: 2%;
     height: 100%;
-    flex: 1;
+    width: 100%;
 }
 
-.customers .header-label {
+.events .header-label {
     height: 70%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 15px;
+    padding: 0 10px;
     font-size: 16px;
     font-weight: bold;
     white-space: nowrap;
     box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.customers .sorting-dropdown {
-    height: 70%;
-    width: 160px;
-    background-color: #EDEBE6;
-    outline: 2px solid black;
-    border: none;
-    font-size: 16px;
-    padding: 0 10px;
-    cursor: pointer;
-    box-sizing: border-box;
-    margin-left: 10px;
-}
-
-/* Scrollable customers area */
-.customers .customers-scroll-area {
+/* Scrollable events area */
+.events .events-scroll-area {
     width: 100%;
     flex: 1;
     overflow-y: auto;
@@ -175,21 +170,7 @@
     background-color: #f0f0f0;
 }
 
-/* Scrollbar styling */
-.customers .customers-scroll-area::-webkit-scrollbar {
-    width: 10px;
-}
-
-.customers .customers-scroll-area::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.customers .customers-scroll-area::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
-
-.customers .customers-list {
+.events .events-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -198,7 +179,7 @@
     box-sizing: border-box;
 }
 
-.customers .customer-card {
+.events .event-card {
     display: flex;
     align-items: center;
     width: 100%;
@@ -208,45 +189,51 @@
     box-sizing: border-box;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    padding: 0 10px;
+    padding: 0;
+    overflow: hidden;
 }
 
 /* Selected state */
-.customers .customer-card.selected {
+.events .event-card.selected {
     background-color: #2196F3;
     outline: 2px solid #0b5e9e;
 }
 
-.customers .customer-card.selected .customer-field {
+.events .event-card.selected .event-field {
     color: white;
 }
 
-.customers .customer-field {
+.events .event-field {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Changed from center for better text visibility */
     font-size: 16px;
     padding: 0 10px;
     box-sizing: border-box;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     height: 100%;
     border-right: 2px solid black;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 /* Remove border from last field */
-.customers .customer-field.third-field {
+.events .event-field.second-field {
     border-right: none;
 }
 
-.customers .first-field {
+.events .first-field {
     font-weight: bold;
 }
 
-.customers .loading-message,
-.customers .no-customers-message {
+.events .field-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.events .loading-message,
+.events .no-events-message {
     position: absolute;
     top: 50%;
     left: 50%;

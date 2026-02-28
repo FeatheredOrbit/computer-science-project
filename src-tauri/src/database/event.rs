@@ -11,6 +11,7 @@ pub struct EventData {
     pub event_date: OffsetDateTime,
     pub image_path: String,
     pub extra_information: String,
+    pub cost: u16
 }
 
 #[derive(Serialize, Deserialize)]
@@ -32,6 +33,7 @@ impl Default for EventTable {
             event_date: london_time,
             image_path: String::from("assets/events/wicked.png"),
             extra_information: String::from("She is green and she is wicked or something like that i dont know"),
+            cost: 5 // Pounds
         };
         
         let mut main = HashMap::new();

@@ -25,7 +25,7 @@ export default function StaffAreaMenu({onNavigate}: Props) {
             <button className="back-to-login-button" onClick={() => {onNavigate("/")}}> BACK TO LOGIN </button>
 
             <button className="search-customer-button" onClick={() => {onNavigate("/customers")}}> SEARCH CUSTOMER </button>
-            <button className="search-event-button" onClick={() => {onNavigate("")}}> SEARCH EVENT </button>
+            <button className="search-event-button" onClick={() => {onNavigate("/events")}}> SEARCH EVENT </button>
         </div>
     );
 }

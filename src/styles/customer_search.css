@@ -1,4 +1,4 @@
-.reservation-search .back-button {
+.customer-search .back-button {
     position: absolute;
     bottom: 2.5%;
     left: 2.5%;
@@ -15,7 +15,7 @@
     border-radius: 7.5%;
 }
 
-.reservation-search .reservation-label {
+.customer-search .customer-label {
     position: absolute;
     top: 1%;  
     left: 1%;    
@@ -28,7 +28,7 @@
     justify-content: center;
 }
 
-.reservation-search .amount-of-selections {
+.customer-search .amount-of-selections {
     position: absolute;
     top: 65%;
     left: 2.5%;
@@ -36,11 +36,12 @@
     height: 12.5%;
     background-color: #EDEBE6;
     outline: 2px solid black;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.reservation-search .delete-button {
+.customer-search .delete-button {
     position: absolute;
     top: 67.5%;
     right: 2.5%;
@@ -57,7 +58,7 @@
     border-radius: 7.5%;
 }
 
-.reservation-search .change-button {
+.customer-search .change-button {
     position: absolute;
     bottom: 2.5%;
     right: 2.5%;
@@ -75,79 +76,92 @@
 }
 
 /* Main container rectangle */
-.reservation-search .reservations-container {
+.customer-search .customers-container {
     position: absolute;
     top: 15%;
     left: 2.5%;
     width: 95%;
-    height: 50%; /* Leaves space for back button */
+    height: 50%;
     background-color: #f0f0f0;
     outline: 2px solid black;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Preents scrolling of the container itself */
+    overflow: hidden;
 }
 
-.reservation-search .search-symbol {
-    position: absolute;
-
-    bottom: 0%;
-    right: 0%;
-
-    width: 10%;
-    height: 17.5%;
-}
-
-/* Header - FIXED, doesn't scroll */
-.reservation-search .reservations-header {
+/* Search container */
+.customer-search .search-container {
     width: 100%;
     height: 12%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding: 0 1%;
+    box-sizing: border-box;
+    border-bottom: 2px solid black;
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+.customer-search .search-input {
+    width: 100%;
+    height: 70%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 16px;
+    padding: 0 40px 0 15px;
+    box-sizing: border-box;
+}
+
+.customer-search .search-symbol {
+    position: absolute;
+    right: 1.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+}
+
+/* Header - FIXED, doesn't scroll */
+.customer-search .customers-header {
+    width: 100%;
+    height: 12%;
+    display: flex;
+    align-items: center;
     padding: 0 1%;
     box-sizing: border-box;
     border-bottom: 2px solid black;
     background-color: #f0f0f0;
 }
 
-.reservation-search .labels-container {
+.customer-search .labels-container {
     display: flex;
     align-items: center;
     gap: 2%;
     height: 100%;
-    flex: 1;
+    width: 100%;
 }
 
-.reservation-search .header-label {
+.customer-search .header-label {
     height: 70%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 15px;
+    padding: 0 10px;
     font-size: 16px;
     font-weight: bold;
     white-space: nowrap;
     box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.reservation-search .first-label {
-    background-color: #EDEBE6;
-}
-
-.reservation-search .second-label {
-    background-color: #EDEBE6;
-}
-
-.reservation-search .third-label {
-    background-color: #EDEBE6;
-}
-
-/* Scrollable reservations area */
-.reservation-search .reservations-scroll-area {
+/* Scrollable customers area */
+.customer-search .customers-scroll-area {
     width: 100%;
     flex: 1;
     overflow-y: auto;
@@ -156,7 +170,21 @@
     background-color: #f0f0f0;
 }
 
-.reservation-search .reservations-list {
+/* Scrollbar styling */
+.customer-search .customers-scroll-area::-webkit-scrollbar {
+    width: 10px;
+}
+
+.customer-search .customers-scroll-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.customer-search .customers-scroll-area::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.customer-search .customers-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -165,7 +193,7 @@
     box-sizing: border-box;
 }
 
-.reservation-search .reservation-card {
+.customer-search .customer-card {
     display: flex;
     align-items: center;
     width: 100%;
@@ -178,18 +206,17 @@
     padding: 0 10px;
 }
 
-/* Make it blueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */
-.reservation-search .reservation-card.selected {
+/* Selected state */
+.customer-search .customer-card.selected {
     background-color: #2196F3;
     outline: 2px solid #0b5e9e;
 }
 
-.reservation-search .reservation-card.selected .reservation-field,
-.reservation-search .reservation-card.selected .people-badge {
+.customer-search .customer-card.selected .customer-field {
     color: white;
 }
 
-.reservation-search .reservation-field {
+.customer-search .customer-field {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -205,31 +232,16 @@
 }
 
 /* Remove border from last field */
-.reservation-search .reservation-field.third-field {
+.customer-search .customer-field.third-field {
     border-right: none;
 }
 
-.reservation-search .first-field {
+.customer-search .first-field {
     font-weight: bold;
 }
 
-.reservation-search .people-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    padding: 0 15px;
-    box-sizing: border-box;
-    white-space: nowrap;
-    margin-left: auto; /* Pushes to the right */
-    background-color: rgba(0,0,0,0.05);
-    outline: 1px solid black;
-    height: 70%;
-    border-radius: 15px;
-}
-
-.reservation-search .loading-message,
-.reservation-search .no-reservations-message {
+.customer-search .loading-message,
+.customer-search .no-customers-message {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -237,58 +249,4 @@
     font-size: 24px;
     color: #666;
     white-space: nowrap;
-}
-
-/* Replace the sorting-dropdown with search styles */
-.reservation-search .search-container {
-    width: 100%;
-    height: 12%;
-    display: flex;
-    align-items: center;
-    padding: 0 1%;
-    box-sizing: border-box;
-    border-bottom: 2px solid black;
-    background-color: #f0f0f0;
-    position: relative;
-}
-
-.reservation-search .search-input {
-    width: 100%;
-    height: 70%;
-    background-color: #EDEBE6;
-    outline: 2px solid black;
-    border: none;
-    font-size: 16px;
-    padding: 0 40px 0 15px; /* Right padding for the search icon */
-    box-sizing: border-box;
-}
-
-.reservation-search .search-symbol {
-    position: absolute;
-    right: 1.5%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    pointer-events: none; /* Allows clicking through to the input */
-}
-
-/* Update reservations-header to remove the space for dropdown */
-.reservation-search .reservations-header {
-    width: 100%;
-    height: 12%;
-    display: flex;
-    align-items: center;
-    padding: 0 1%;
-    box-sizing: border-box;
-    border-bottom: 2px solid black;
-    background-color: #f0f0f0;
-}
-
-.reservation-search .labels-container {
-    display: flex;
-    align-items: center;
-    gap: 2%;
-    height: 100%;
-    width: 100%; /* Take full width since dropdown is gone */
 }

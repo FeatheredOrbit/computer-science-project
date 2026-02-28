@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../../../../styles/your_reservations.css";
+import "../../../../styles/customer_reservations.css";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
@@ -9,11 +9,12 @@ type ReservationData = [number, string, string, number, string]; // [id, eventNa
 type Props = {
     onNavigate: (input: string) => void
     setReservationId: React.Dispatch<React.SetStateAction<number | undefined>>
+    customerId: number | undefined
 };
 
 type SortType = "event" | "creator";
 
-export default function YourReservations({onNavigate, setReservationId}: Props) {
+export default function CustomerReservations({onNavigate, setReservationId, customerId}: Props) {
     const [reservations, setReservations] = useState<ReservationData[] | null>(null);
     const [sortType, setSortType] = useState<SortType>("event");
     const [selectedReservationIndexes, setSelectedReservationIndexes] = useState<Set<number>>(new Set());
@@ -52,11 +53,11 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         if (typeof id !== 'number') return;
 
         setReservationId(id);
-        onNavigate("/change-reservation");
+        onNavigate("/change-customer-reservation");
     }
 
     async function getReservations() {
-        const message = await invoke<ReservationData[]>("get_reservations", {});
+        const message = await invoke<ReservationData[]>("get_reservations_specific", {id: customerId});
         setReservations(message);
         
         // Clear index-based selections after refresh
@@ -134,13 +135,13 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
     };
 
     return (
-        <div className="your-reservations">
-            <button className="back-to-menu-button" onClick={() => onNavigate("/customer-menu")}>
-                BACK TO MENU
+        <div className="customer-reservations">
+            <button className="back-button" onClick={() => onNavigate("/customers")}>
+                BACK TO CUSTOMER VIEWER
             </button>
 
             <div className="reservation-label">
-                <h1 style={{fontSize:"38px"}}> YOUR RESERVATIONS </h1>
+                <h1 style={{fontSize:"38px"}}> CUSTOMER RESERVATIONS </h1>
             </div>
 
             <div className="amount-of-selections">

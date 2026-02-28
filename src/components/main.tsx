@@ -20,6 +20,14 @@ import ReservationSearch from "./windows/customer_area/reservation_search/reserv
 import Customers from "./windows/staff_area/customer_search/customers";
 import ChangeCustomer from "./windows/staff_area/customer_search/change_customer";
 import ChangeCustomerInfo from "./windows/staff_area/customer_search/change_customer_info";
+import ChangeCustomerValidate from "./windows/staff_area/customer_search/change_customer_validate";
+import ChangeCustomerApply from "./windows/staff_area/customer_search/change_customer_apply";
+import CustomerSearch from "./windows/staff_area/customer_search/customer_search";
+import CustomerReservations from "./windows/staff_area/customer_search/customer_reservations";
+import ChangeCustomerReservation from "./windows/staff_area/customer_search/change_customer_reservation";
+import CustomerReservationSearch from "./windows/staff_area/customer_search/customer_reservation_search";
+import Events from "./windows/staff_area/event_search/events";
+import Analytics from "./windows/staff_area/event_search/analytics";
 
 export default function App() {
     const navigate = useNavigate();
@@ -49,7 +57,7 @@ export default function App() {
 
     return (
         <Routes>
-            <Route path="/a" element={<LoginWindow onNavigate={onNavigate} />} />
+            <Route path="/" element={<LoginWindow onNavigate={onNavigate} />} />
             <Route path="/signup" element={<SignupWindow onNavigate={onNavigate} />} />
             <Route path="/signup-set-info" element={<SignupSetInfo onNavigate={onNavigate} />} />
 
@@ -84,8 +92,16 @@ export default function App() {
 
             <Route path="/staff-menu" element={<StaffAreaMenu onNavigate={onNavigate} />} />
             <Route path="/customers" element={<Customers onNavigate={onNavigate} setCustomerId={setCustomerId} />} />
-            <Route path="/" element={<ChangeCustomer onNavigate={onNavigate} customerId={customerId} />} /> 
+            <Route path="/customer-search" element={<CustomerSearch onNavigate={onNavigate} setCustomerId={setCustomerId} />} />
+            <Route path="/customer-reservations" element={<CustomerReservations onNavigate={onNavigate} customerId={customerId} setReservationId={setReservationId} />} />
+            <Route path="/customer-reservation-search" element={<CustomerReservationSearch onNavigate={onNavigate} customerId={customerId} setReservationId={setReservationId} />} />
+            <Route path="/change-customer-reservation" element={<ChangeCustomerReservation onNavigate={onNavigate} reservationId={reservationId} />} />
+            <Route path="/change-customer" element={<ChangeCustomer onNavigate={onNavigate} customerId={customerId} />} /> 
             <Route path="change-customer-info" element={<ChangeCustomerInfo onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
+            <Route path="/change-customer-validate" element={<ChangeCustomerValidate onNavigate={onNavigate} />}/>
+            <Route path="/change-customer-apply" element={<ChangeCustomerApply onNavigate={onNavigate} customerId={customerId} customerAccountChange={customerAccountChange} />} />
+            <Route path="/events" element={<Events onNavigate={onNavigate} />} />
+            <Route path="/analytics" element={<Analytics />} />
         </Routes>
     );
 }

@@ -1,4 +1,4 @@
-.change-customer-validate .insert-password-label {
+.change-customer-apply .insert-info-label {
     position: absolute;  
     width: 100%;
     left: 0%;
@@ -10,11 +10,11 @@
     align-items: center;
     justify-content: center;
 }
-.change-customer-validate .insert-password-input {
+
+.change-customer-apply .insert-info-input {
     position: absolute;  
     width: 100%;
     height: 20%;
-
     top: 25%;
     left: 0%;
     background-color: #EDEBE6;
@@ -22,23 +22,34 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 18px;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
-.change-customer-validate .show-validate-password-button {
+
+.change-customer-apply.requirements-mode .insert-info-input.large-input {
+    height: 30%;
+}
+
+.change-customer-apply.requirements-mode .info-error {
+    top: 55%;
+}
+
+.change-customer-apply .show-password-button {
     position: absolute;
     top: 35%;
     right: 5%;
-
     font-size: 45px;
-
-    z-index: 5; /* For some reason it was appearing below the input field, nah nah */
-
+    z-index: 5;
     transform: translateY(-100%);
+    cursor: pointer;
+    user-select: none;
 }
-.change-customer-validate .insert-password-error {
+
+.change-customer-apply .info-error {
     position: absolute;  
     width: 100%;
     height: 15%;
-
     top: 45%;
     left: 0%;
     background-color: #EDEBE6;
@@ -46,9 +57,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 16px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.change-customer-validate .validate-password-confirm-button {
+.change-customer-apply .confirm-button {
     position: absolute;
     left: 50%;
     bottom: 10%;
@@ -61,4 +76,10 @@
     align-items: center;
     justify-content: center;
     border-radius: 7.5%;
+    background-color: #EDEBE6;
+    border: none;
+}
+
+.change-customer-apply.requirements-mode .confirm-button {
+    bottom: 5%;
 }

@@ -4,13 +4,14 @@ use tauri::{AppHandle, Manager, WindowEvent};
 use crate::database::{Database, customer::CustomerId, staff::StaffId};
 
 mod database;
-mod windows;
 
 use database::functions::{
     signup_validate_details, signup_add_extra, login_validate_details, sign_out, account_get_info, 
     account_validate_password, change_name, change_email, change_password, change_phone_number, change_requirements,
     get_events, autofill_customer, open_extra_information_window, commit_reservation, delete_reservations,
-    get_reservation_info, update_reservation, get_reservations, get_customers, delete_customers, account_get_info_specific
+    get_reservation_info, update_reservation, get_reservations, get_customers, delete_customers, account_get_info_specific,
+    change_name_specific, change_email_specific, change_password_specific, change_phone_number_specific, change_requirements_specific,
+    get_reservations_specific, get_events_minimum, open_extra_information_window_from_id, open_analytics_window
 };
 
 pub enum LoggedUser {
@@ -96,7 +97,17 @@ pub fn run() {
             get_reservations,
             get_customers,
             delete_customers,
-            account_get_info_specific
+            account_get_info_specific,
+            change_name_specific,
+            change_email_specific,
+            change_password,
+            change_phone_number_specific,
+            change_requirements_specific,
+            change_password_specific,
+            get_reservations_specific,
+            get_events_minimum,
+            open_extra_information_window_from_id,
+            open_analytics_window
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
