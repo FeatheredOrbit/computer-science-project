@@ -77,6 +77,10 @@ export default function ChangeCustomerInfo({onNavigate, setCustomerAccountChange
             <button className="settings-button requirements-button" onClick={() => {buttonClicked(ButtonType.Requirements)}}>
                 CHANGE REQUIREMENTS
             </button>
+
+            <button className="back-to-account-button" onClick={() => {onNavigate("/change-customer")}}>
+                BACK TO CUSTOMER ACCOUNT
+            </button>
         </div>
     );
 }

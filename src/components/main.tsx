@@ -88,7 +88,7 @@ export default function App() {
             <Route path="/customer-account" element={<CustomerAccountWindow onNavigate={onNavigate} />} />
             <Route path="/customer-account-change-info" element={<CustomerChangeAccount onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
             <Route path="/customer-account-validate" element={<CustomerAccountValidate onNavigate={onNavigate} />} />
-            <Route path="/customer-menu/account/new-info" element={<CustomerAccountNewInfo onNavigate={onNavigate} customerAccountChange={customerAccountChange}/>} />
+            <Route path="/customer-account-new-info" element={<CustomerAccountNewInfo onNavigate={onNavigate} customerAccountChange={customerAccountChange}/>} />
 
             <Route path="/staff-menu" element={<StaffAreaMenu onNavigate={onNavigate} />} />
             <Route path="/customers" element={<Customers onNavigate={onNavigate} setCustomerId={setCustomerId} />} />
@@ -97,7 +97,7 @@ export default function App() {
             <Route path="/customer-reservation-search" element={<CustomerReservationSearch onNavigate={onNavigate} customerId={customerId} setReservationId={setReservationId} />} />
             <Route path="/change-customer-reservation" element={<ChangeCustomerReservation onNavigate={onNavigate} reservationId={reservationId} />} />
             <Route path="/change-customer" element={<ChangeCustomer onNavigate={onNavigate} customerId={customerId} />} /> 
-            <Route path="change-customer-info" element={<ChangeCustomerInfo onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
+            <Route path="/change-customer-info" element={<ChangeCustomerInfo onNavigate={onNavigate} setCustomerAccountChange={setCustomerAccountChange} />} />
             <Route path="/change-customer-validate" element={<ChangeCustomerValidate onNavigate={onNavigate} />}/>
             <Route path="/change-customer-apply" element={<ChangeCustomerApply onNavigate={onNavigate} customerId={customerId} customerAccountChange={customerAccountChange} />} />
             <Route path="/events" element={<Events onNavigate={onNavigate} />} />

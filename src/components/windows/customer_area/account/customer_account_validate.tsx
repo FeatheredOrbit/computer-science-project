@@ -42,7 +42,7 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
             return;
         }
 
-        onNavigate("/customer-menu/account/new-info");
+        onNavigate("/customer-account-new-info");
     }
 
     return (
