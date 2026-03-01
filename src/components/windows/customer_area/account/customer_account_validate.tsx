@@ -38,7 +38,8 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
         let result = await invoke<boolean>("account_validate_password", {password: passwordInput});
 
         if (!result) {
-            setPasswordError("Password doesn;t match");
+            setPasswordError("Password doesn't match");
+            return;
         }
 
         onNavigate("/customer-menu/account/new-info");
