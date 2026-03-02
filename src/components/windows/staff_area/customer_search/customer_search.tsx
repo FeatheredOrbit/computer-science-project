@@ -60,7 +60,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
     }
 
     // Search function - searches in order: name, email, date
-    const performSearch = (query: string) => {
+    const performSearch = function(query: string) {
         if (!customers) return;
         
         if (query.trim() === "") {
@@ -69,7 +69,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         }
 
         const lowerQuery = query.toLowerCase();
-        const filtered = customers.filter(customer => {
+        const filtered = customers.filter(function(customer) {
             // Search in name first
             if (customer[1].toLowerCase().includes(lowerQuery)) return true;
             // Then search in email
@@ -82,14 +82,14 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         setFilteredCustomers(filtered);
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = function(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value;
         setSearchQuery(query);
         performSearch(query);
     };
 
     // Sort customers - always sort by name for consistent display
-    const getSortedCustomers = () => {
+    const getSortedCustomers = function() {
         if (!filteredCustomers) return [];
 
         const sorted = [...filteredCustomers];
@@ -99,7 +99,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
     };
 
     // Calculate optimal column widths based on content
-    const calculateColumnWidths = () => {
+    const calculateColumnWidths = function() {
         if (!filteredCustomers || filteredCustomers.length === 0) return;
 
         // Label widths
@@ -118,7 +118,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         let maxThirdWidth = context.measureText(thirdLabel).width + 30;
 
         // Measure all customer data
-        filteredCustomers.forEach(customer => {
+        filteredCustomers.forEach(function(customer) {
             const firstWidth = context.measureText(customer[1]).width + 30; // name
             const secondWidth = context.measureText(customer[2]).width + 30; // email
             const thirdWidth = context.measureText(customer[3]).width + 30; // date
@@ -143,25 +143,25 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         await appWindow.setSize(new LogicalSize(950, 640)); // Even wider for emails
     }
 
-    useEffect(() => {
+    useEffect(function() {
         setDeleteDisabled(selectedCustomerIndexes.size === 0);
         setChangeDisabled(selectedCustomerIndexes.size !== 1);
     }, [selectedCustomerIndexes]);
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getCustomers();
     }, []);
 
     // Recalculate widths when filtered customers change
-    useEffect(() => {
+    useEffect(function() {
         if (filteredCustomers) {
             calculateColumnWidths();
         }
     }, [filteredCustomers]);
 
-    const handleCustomerClick = (index: number) => {
-        setSelectedCustomerIndexes(prev => {
+    const handleCustomerClick = function(index: number) {
+        setSelectedCustomerIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
                 newSet.delete(index);
@@ -176,7 +176,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
     return (
         <div className="customer-search">
-            <button className="back-button" onClick={() => onNavigate("/customers")}>
+            <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/customers'); } }} onClick={function() { onNavigate("/customers"); }}> 
                 BACK TO CUSTOMER VIEWER
             </button>
 

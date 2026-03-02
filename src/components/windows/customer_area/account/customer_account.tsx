@@ -68,9 +68,12 @@ export default function CustomerAccountWindow({onNavigate}: Props) {
                 <p> {requirements} </p>
             </div>
 
-            <button className="back-to-menu-button-customer-account" onClick={() => {onNavigate("/customer-menu")}}> BACK TO MENU </button>
+            <button 
+            className="back-to-menu-button-customer-account" 
+            onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate("/customer-menu"); } }}
+            onClick={function() {onNavigate("/customer-menu")}}> BACK TO MENU </button>
 
-            <button className="change-info-button-customer-account" onClick={() => {onNavigate("/customer-account-change-info")}}> CHANGE ACCOUNT INFO </button>
+            <button className="change-info-button-customer-account" onClick={function() {onNavigate("/customer-account-change-info")}}> CHANGE ACCOUNT INFO </button>
         </div>
     );
 }

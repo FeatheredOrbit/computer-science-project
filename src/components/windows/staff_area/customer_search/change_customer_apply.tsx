@@ -160,7 +160,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
         onNavigate("/change-customer");
     }
 
-    const getPlaceholder = () => {
+    const getPlaceholder = function() {
         switch(customerAccountChange) {
             case AccountChange.Name: return "John";
             case AccountChange.Email: return "person@gmail.com";
@@ -180,7 +180,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
                 className={`insert-info-input ${customerAccountChange === AccountChange.Requirements ? 'large-input' : ''}`}
                 type={customerAccountChange === AccountChange.Password ? (showPassword ? "text" : "password") : "text"}
                 placeholder={getPlaceholder()}
-                onChange={(e) => {
+                onChange={function(e) {
                     setInfoInput(e.target.value);
                     setInfoError("");
                 }} 
@@ -188,7 +188,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
             {customerAccountChange === AccountChange.Password && (
                 <p 
                     className="show-password-button" 
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={function() { setShowPassword(!showPassword); }}
                 > 
                     👁 
                 </p>
@@ -200,7 +200,8 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
             <button 
                 className={`confirm-button ${customerAccountChange === AccountChange.Requirements ? 'large-input' : ''}`} 
                 disabled={isButtonDisabled}
-                onClick={validateInfo}
+                onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { validateInfo(); } }}
+                onClick={function() { validateInfo(); }}
             > 
                 CONFIRM 
             </button>

@@ -58,27 +58,27 @@ export default function ChangeCustomerInfo({onNavigate, setCustomerAccountChange
 
     return (
         <div className="customer-change-info">
-            <button className="settings-button username-button" onClick={() => {buttonClicked(ButtonType.Name)}}>
+            <button className="settings-button username-button" onClick={function() {buttonClicked(ButtonType.Name)}}>
                 CHANGE USERNAME
             </button>
             
-            <button className="settings-button email-button" onClick={() => {buttonClicked(ButtonType.Email)}}>
+            <button className="settings-button email-button" onClick={function() {buttonClicked(ButtonType.Email)}}>
                 CHANGE EMAIL ADDRESS
             </button>
             
-            <button className="settings-button password-button" onClick={() => {buttonClicked(ButtonType.Password)}}>
+            <button className="settings-button password-button" onClick={function() {buttonClicked(ButtonType.Password)}}>
                 CHANGE PASSWORD
             </button>
             
-            <button className="settings-button phone-button" onClick={() => {buttonClicked(ButtonType.Phone)}}>
+            <button className="settings-button phone-button" onClick={function() {buttonClicked(ButtonType.Phone)}}>
                 CHANGE PHONE NUMBER
             </button>
             
-            <button className="settings-button requirements-button" onClick={() => {buttonClicked(ButtonType.Requirements)}}>
+            <button className="settings-button requirements-button" onClick={function() {buttonClicked(ButtonType.Requirements)}}>
                 CHANGE REQUIREMENTS
             </button>
 
-            <button className="back-to-account-button" onClick={() => {onNavigate("/change-customer")}}>
+            <button className="back-to-account-button" onClick={function() {onNavigate("/change-customer")}}>
                 BACK TO CUSTOMER ACCOUNT
             </button>
         </div>

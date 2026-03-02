@@ -70,7 +70,8 @@ export default function LoginWindow({onNavigate}: Props) {
             className="email-input" 
             type="email" 
             placeholder="person@gmail.com"
-            onChange={(e) => {setEmailInput(e.target.value)}} 
+                onChange={function(e) { setEmailInput(e.target.value); }} 
+                onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { loginClicked(); } }}
             />
             <div className="email-error-container">
                 <p className="email-error"> {emailError} </p>
@@ -83,11 +84,12 @@ export default function LoginWindow({onNavigate}: Props) {
                 className="password-input" 
                 type={showPassword ? "text" : "password"}
                 placeholder="b@:ybz3VD#@:PyBJe"
-                onChange={(e) => {setPasswordInput(e.target.value)}}
+                onChange={function(e) { setPasswordInput(e.target.value); }}
+                onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { loginClicked(); } }}
             />
             <p 
                 className="show-password-button" 
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={function() { setShowPassword(!showPassword); }}
             > 
                 👁 
             </p>

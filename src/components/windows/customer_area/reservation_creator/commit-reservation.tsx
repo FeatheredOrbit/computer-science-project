@@ -30,7 +30,7 @@ export default function CommitReservation({onNavigate, chosenEventId, peopleCoun
         onNavigate("/customer-menu");
     }
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
     }, []);
 
@@ -41,7 +41,10 @@ export default function CommitReservation({onNavigate, chosenEventId, peopleCoun
             </div>
 
             <button className="no-button" onClick={noClicked}> NO </button>
-            <button className="yes-button" onClick={yesClicked}> YES </button>
+            <button className="yes-button" 
+                onClick={yesClicked}
+                onKeyDown={function(e) { if (e.key === 'Enter') { yesClicked() } }}
+            > YES </button>
         </div>
     );
 }

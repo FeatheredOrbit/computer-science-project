@@ -107,7 +107,7 @@ export default function SignupWindow({onNavigate}: Props) {
             className="email-input" 
             type="email" 
             placeholder="person@gmail.com" 
-            onChange={(e) => {
+            onChange={function(e) {
                 setEmailInput(e.target.value);
                 setEmailError("");
             }}
@@ -123,14 +123,14 @@ export default function SignupWindow({onNavigate}: Props) {
                 className="password-input" 
                 type={showPassword ? "text" : "password"}
                 placeholder="b@:ybz3VD#@:PyBJe" 
-                onChange={(e) => {
+                onChange={function(e) {
                     setPasswordInput(e.target.value);
                     setPasswordError("");
                 }}
             />
             <p 
                 className="show-password-button" 
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={function() { setShowPassword(!showPassword); }}
             > 
                 👁 
             </p>
@@ -141,7 +141,8 @@ export default function SignupWindow({onNavigate}: Props) {
             <button 
             className="signup-button" 
             disabled={isButtonDisabled}
-            onClick={signupClicked}> SIGN UP </button>
+            onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { signupClicked(); } }}
+            onClick={function() { signupClicked(); }}> SIGN UP </button>
 
             <img className="logo-image" src="assets/logo.png"/>
 

@@ -22,11 +22,14 @@ export default function CustomerAreaMenu({onNavigate}: Props) {
         <div className="customer-area-menu">
             <img className="logo-image_menu" src="assets/logo.png" />
 
-            <button className="back-to-login-button" onClick={() => {onNavigate("/")}}> BACK TO LOGIN </button>
+            <button 
+            className="back-to-login-button" 
+            onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate("/"); } }}
+            onClick={function() {onNavigate("/");}}> BACK TO LOGIN </button>
 
-            <button className="reservation-creator-button" onClick={() => {onNavigate("/reservation-creator")}}> RESERVATION CREATOR </button>
-            <button className="your-reservations-button" onClick={() => {onNavigate("your-reservations")}}> YOUR RESERVATIONS </button>
-            <button className="customer-account-button" onClick={() => {onNavigate("customer-account")}}> ACCOUNT </button>
+            <button className="reservation-creator-button" onClick={function() {onNavigate("/reservation-creator");}}> RESERVATION CREATOR </button>
+            <button className="your-reservations-button" onClick={function() {onNavigate("your-reservations");}}> YOUR RESERVATIONS </button>
+            <button className="customer-account-button" onClick={function() {onNavigate("customer-account");}}> ACCOUNT </button>
         </div>
     );
 }

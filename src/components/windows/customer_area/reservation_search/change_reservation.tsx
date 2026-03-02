@@ -88,18 +88,24 @@ export default function ChangeReservation({onNavigate, reservationId}: Props) {
         onNavigate("/your-reservations");
     }
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getReservationInfo();
     }, []);
 
     return (
         <div className="change-reservation">
-            <button className="back-button" onClick={() => {onNavigate("/your-reservations");}}>
+            <button 
+                className="back-button" 
+                onClick={function() {onNavigate("/your-reservations");}}
+                onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate("/your-reservations") } }}>
                 BACK TO RESERVATION VIEWER
             </button>
 
-            <button className="update-button" onClick={updateClicked}>
+            <button 
+                className="update-button" 
+                onClick={updateClicked}
+                onKeyDown={function(e) { if (e.key === 'Enter') { updateClicked() } }}>
                 UPDATE
             </button>
 
@@ -110,7 +116,7 @@ export default function ChangeReservation({onNavigate, reservationId}: Props) {
             <div className="name-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> FULL NAME </h1>
             </div>
-            <input className="name-input" type="text" placeholder="John" onChange={(e) => {setNameInput(e.target.value); setNameError("")}} value={nameInput}/>
+            <input className="name-input" type="text" placeholder="John" onChange={function(e) { setNameInput(e.target.value); setNameError(""); }} value={nameInput}/>
             <div className="name-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {nameError} </p>
             </div>
@@ -118,7 +124,7 @@ export default function ChangeReservation({onNavigate, reservationId}: Props) {
             <div className="phone-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> PHONE NUMBER </h1>
             </div>
-            <input className="phone-input" type="text" placeholder="1234567890" onChange={(e) => {setPhoneInput(e.target.value); setPhoneError("")}} value={phoneInput}/>
+            <input className="phone-input" type="text" placeholder="1234567890" onChange={function(e) { setPhoneInput(e.target.value); setPhoneError(""); }} value={phoneInput}/>
             <div className="phone-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {phoneError} </p>
             </div>
@@ -126,12 +132,12 @@ export default function ChangeReservation({onNavigate, reservationId}: Props) {
             <div className="requirements-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> OTHER REQUIREMENTS </h1>
             </div>
-            <input className="requirements-input" type="text" placeholder="I'm in a wheelchair" onChange={(e) => {setRequirementsInput(e.target.value)}} value={requirementsInput} />
+            <input className="requirements-input" type="text" placeholder="I'm in a wheelchair" onChange={function(e) { setRequirementsInput(e.target.value); }} value={requirementsInput} />
 
             <div className="people-count-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> NUMBER OF PEOPLE </h1>
             </div>
-            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={(e) => {setPeopleCountInput(e.target.value); setPeopleCountError("")}} />
+            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={function(e) { setPeopleCountInput(e.target.value); setPeopleCountError(""); }} />
             <div className="people-count-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {peopleCountError} </p>
             </div>

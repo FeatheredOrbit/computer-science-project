@@ -160,7 +160,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
         onNavigate("/customer-account");
     }
 
-    const getPlaceholder = () => {
+    const getPlaceholder = function() {
         switch(customerAccountChange) {
             case AccountChange.Name: return "John";
             case AccountChange.Email: return "person@gmail.com";
@@ -180,7 +180,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
                 className={`insert-info-input ${customerAccountChange === AccountChange.Requirements ? 'large-input' : ''}`}
                 type={customerAccountChange === AccountChange.Password ? (showPassword ? "text" : "password") : "text"}
                 placeholder={getPlaceholder()}
-                onChange={(e) => {
+                onChange={function(e) {
                     setInfoInput(e.target.value);
                     setInfoError("");
                 }} 
@@ -201,6 +201,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
                 className={`confirm-button ${customerAccountChange === AccountChange.Requirements ? 'large-input' : ''}`} 
                 disabled={isButtonDisabled}
                 onClick={validateInfo}
+                onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { validateInfo() } }}
             > 
                 CONFIRM 
             </button>

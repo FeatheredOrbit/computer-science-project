@@ -22,10 +22,10 @@ export default function StaffAreaMenu({onNavigate}: Props) {
         <div>
             <img className="logo-image_menu" src="assets/logo.png" />
 
-            <button className="back-to-login-button" onClick={() => {onNavigate("/")}}> BACK TO LOGIN </button>
+            <button className="back-to-login-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/'); } }} onClick={function() {onNavigate("/")}}> BACK TO LOGIN </button>
 
-            <button className="search-customer-button" onClick={() => {onNavigate("/customers")}}> SEARCH CUSTOMER </button>
-            <button className="search-event-button" onClick={() => {onNavigate("/events")}}> SEARCH EVENT </button>
+            <button className="search-customer-button" onClick={function() {onNavigate("/customers");}}> SEARCH CUSTOMER </button>
+            <button className="search-event-button" onClick={function() {onNavigate("/events");}}> SEARCH EVENT </button>
         </div>
     );
 }

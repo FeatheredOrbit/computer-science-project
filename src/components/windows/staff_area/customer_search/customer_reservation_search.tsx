@@ -66,7 +66,7 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
     }
 
     // Search function
-    const performSearch = (query: string) => {
+    const performSearch = function(query: string) {
         if (!reservations) return;
         
         if (query.trim() === "") {
@@ -75,7 +75,7 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
         }
 
         const lowerQuery = query.toLowerCase();
-        const filtered = reservations.filter(reservation => {
+        const filtered = reservations.filter(function(reservation) {
             // Search in creator name first
             if (reservation[2].toLowerCase().includes(lowerQuery)) return true;
             // Then search in event name
@@ -88,7 +88,7 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
         setFilteredReservations(filtered);
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = function(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value;
         setSearchQuery(query);
         performSearch(query);
@@ -99,7 +99,7 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
         await appWindow.setSize(new LogicalSize(800, 640));
     }
 
-    useEffect(() => {
+    useEffect(function() {
         // Delete button enabled if at least one is selected
         setDeleteDisabled(selectedReservationIndexes.size === 0);
 
@@ -107,13 +107,13 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
         setChangeDisabled(selectedReservationIndexes.size !== 1);
     }, [selectedReservationIndexes]);
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getReservations();
     }, []);
 
     // Measure label widths after render
-    useEffect(() => {
+    useEffect(function() {
         if (firstLabelRef.current && secondLabelRef.current && thirdLabelRef.current) {
             setColumnWidths({
                 first: firstLabelRef.current.offsetWidth,
@@ -123,8 +123,8 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
         }
     }, [filteredReservations]); // Re-measure when filtered results change
 
-    const handleReservationClick = (index: number) => {
-        setSelectedReservationIndexes(prev => {
+    const handleReservationClick = function(index: number) {
+        setSelectedReservationIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
                 newSet.delete(index);
@@ -137,7 +137,7 @@ export default function CustomerReservationSearch({onNavigate, setReservationId,
 
     return (
         <div className="customer-reservation-search">
-            <button className="back-button" onClick={() => onNavigate("/customers")}>
+            <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/customers'); } }} onClick={function() { onNavigate("/customers") }}> 
                 BACK TO CUSTOMER VIEWER
             </button>
 

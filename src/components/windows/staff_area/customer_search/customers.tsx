@@ -73,17 +73,17 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
     }
 
     // Sort customers based on current sort type
-    const getSortedCustomers = () => {
+    const getSortedCustomers = function() {
         if (!customers) return [];
 
         const sorted = [...customers];
         
         switch (sortType) {
             case "name":
-                sorted.sort((a, b) => a[1].localeCompare(b[1]));
+                sorted.sort(function(a, b) { return a[1].localeCompare(b[1]); });
                 break;
             case "email":
-                sorted.sort((a, b) => a[2].localeCompare(b[2]));
+                sorted.sort(function(a, b) { return a[2].localeCompare(b[2]); });
                 break;
         }
         
@@ -91,7 +91,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
     };
 
     // Calculate optimal column widths based on content
-    const calculateColumnWidths = () => {
+    const calculateColumnWidths = function() {
         if (!customers || customers.length === 0) return;
 
         // Start with label widths
@@ -111,7 +111,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         let maxThirdWidth = context.measureText(thirdLabel).width + 30;
 
         // Measure all customer data
-        customers.forEach(customer => {
+        customers.forEach(function(customer) {
             const firstContent = sortType === "name" ? customer[1] : customer[2];
             const secondContent = sortType === "email" ? customer[1] : customer[2];
             const thirdContent = customer[3];
@@ -141,26 +141,26 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         await appWindow.setSize(new LogicalSize(900, 640));
     }
 
-    useEffect(() => {
+    useEffect(function() {
         setDeleteDisabled(selectedCustomerIndexes.size === 0);
         setChangeDisabled(selectedCustomerIndexes.size !== 1);
         setViewReservationsDisabled(selectedCustomerIndexes.size !== 1);
     }, [selectedCustomerIndexes]);
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getCustomers();
     }, []);
 
     // Recalculate widths when customers or sort type changes
-    useEffect(() => {
+    useEffect(function() {
         if (customers) {
             calculateColumnWidths();
         }
     }, [customers, sortType]);
 
-    const handleCustomerClick = (index: number) => {
-        setSelectedCustomerIndexes(prev => {
+    const handleCustomerClick = function(index: number) {
+        setSelectedCustomerIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
                 newSet.delete(index);
@@ -174,17 +174,17 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
     const sortedCustomers = getSortedCustomers();
 
     // Get label texts based on sort type
-    const getFirstLabel = () => {
+    const getFirstLabel = function() {
         return sortType === "name" ? "NAME" : "EMAIL";
     };
 
-    const getSecondLabel = () => {
+    const getSecondLabel = function() {
         return sortType === "email" ? "NAME" : "EMAIL";
     };
 
     return (
         <div className="customers">
-            <button className="back-to-menu-button" onClick={() => onNavigate("/staff-menu")}>
+            <button className="back-to-menu-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/staff-menu'); } }} onClick={function() { onNavigate("/staff-menu") }}>
                 BACK TO MENU
             </button>
 
@@ -209,7 +209,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
             </button>
 
             <div className="customers-container">
-                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={() => {onNavigate("/customer-search")}}/>
+                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={function() {onNavigate("/customer-search")}}/>
 
                 <div className="customers-header">
                     <div className="labels-container">
@@ -235,7 +235,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
                     <select 
                         className="sorting-dropdown"
                         value={sortType}
-                        onChange={(e) => setSortType(e.target.value as SortType)}
+                        onChange={function(e) { setSortType(e.target.value as SortType); }}
                     >
                         <option value="name">Sort by Name</option>
                         <option value="email">Sort by Email</option>
@@ -247,33 +247,35 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
                         <div className="loading-message">Loading customers...</div>
                     ) : (
                         <div className="customers-list" ref={contentRef}>
-                            {sortedCustomers.map((customer, index) => (
-                                <div 
-                                    key={`${customer[0]}-${index}`}
-                                    className={`customer-card ${selectedCustomerIndexes.has(index) ? 'selected' : ''}`}
-                                    onClick={() => handleCustomerClick(index)}
-                                >
-                                    <div 
-                                        className="customer-field first-field"
-                                        style={{ width: columnWidths.first }}
-                                    >
-                                        {sortType === "name" ? customer[1] : customer[2]}
-                                    </div>
-                                    <div 
-                                        className="customer-field second-field"
-                                        style={{ width: columnWidths.second }}
-                                    >
-                                        {sortType === "email" ? customer[1] : customer[2]}
-                                    </div>
-                                    <div 
-                                        className="customer-field third-field"
-                                        style={{ width: columnWidths.third }}
-                                    >
-                                        {customer[3]}
-                                    </div>
+                                    {sortedCustomers.map(function(customer, index) {
+                                        return (
+                                        <div 
+                                            key={`${customer[0]}-${index}`}
+                                            className={`customer-card ${selectedCustomerIndexes.has(index) ? 'selected' : ''}`}
+                                            onClick={function() { handleCustomerClick(index); }}
+                                        >
+                                            <div 
+                                                className="customer-field first-field"
+                                                style={{ width: columnWidths.first }}
+                                            >
+                                                {sortType === "name" ? customer[1] : customer[2]}
+                                            </div>
+                                            <div 
+                                                className="customer-field second-field"
+                                                style={{ width: columnWidths.second }}
+                                            >
+                                                {sortType === "email" ? customer[1] : customer[2]}
+                                            </div>
+                                            <div 
+                                                className="customer-field third-field"
+                                                style={{ width: columnWidths.third }}
+                                            >
+                                                {customer[3]}
+                                            </div>
+                                        </div>
+                                        );
+                                    })}
                                 </div>
-                            ))}
-                        </div>
                     )}
                 </div>
             </div>

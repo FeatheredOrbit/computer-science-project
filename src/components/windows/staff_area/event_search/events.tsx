@@ -41,7 +41,7 @@ export default function Events({onNavigate}: Props) {
     }
 
     // Calculate optimal column widths based on content
-    const calculateColumnWidths = () => {
+    const calculateColumnWidths = function() {
         if (!filteredEvents || filteredEvents.length === 0) return;
 
         // Label widths
@@ -58,7 +58,7 @@ export default function Events({onNavigate}: Props) {
         let maxSecondWidth = context.measureText(secondLabel).width + 40;
 
         // Measure all event data
-        filteredEvents.forEach(event => {
+        filteredEvents.forEach(function(event) {
             const firstWidth = context.measureText(event[0]).width + 40;
             const secondWidth = context.measureText(event[1]).width + 40;
 
@@ -93,7 +93,7 @@ export default function Events({onNavigate}: Props) {
     };
 
     // Search function
-    const performSearch = (query: string) => {
+    const performSearch = function(query: string) {
         if (!events) return;
         
         if (query.trim() === "") {
@@ -102,7 +102,7 @@ export default function Events({onNavigate}: Props) {
         }
 
         const lowerQuery = query.toLowerCase();
-        const filtered = events.filter(event => {
+        const filtered = events.filter(function(event) {
             if (event[0].toLowerCase().includes(lowerQuery)) return true;
             if (event[1].toLowerCase().includes(lowerQuery)) return true;
             return false;
@@ -112,7 +112,7 @@ export default function Events({onNavigate}: Props) {
         setSelectedEventIndexes(new Set());
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = function(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value;
         setSearchQuery(query);
         performSearch(query);
@@ -123,24 +123,24 @@ export default function Events({onNavigate}: Props) {
         await appWindow.setSize(new LogicalSize(800, 500)); // Slightly wider
     }
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getEvents();
     }, []);
 
     // Recalculate widths when filtered events change
-    useEffect(() => {
+    useEffect(function() {
         if (filteredEvents) {
             // Small delay to ensure DOM is ready
-            setTimeout(() => {
+            setTimeout(function() {
                 calculateColumnWidths();
             }, 50);
         }
     }, [filteredEvents]);
 
     // Recalculate on window resize
-    useEffect(() => {
-        const handleResize = () => {
+    useEffect(function() {
+        const handleResize = function() {
             if (filteredEvents) {
                 calculateColumnWidths();
             }
@@ -150,8 +150,8 @@ export default function Events({onNavigate}: Props) {
         return () => window.removeEventListener('resize', handleResize);
     }, [filteredEvents]);
 
-    const handleEventClick = (index: number) => {
-        setSelectedEventIndexes(prev => {
+    const handleEventClick = function(index: number) {
+        setSelectedEventIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
                 newSet.delete(index);
@@ -164,7 +164,7 @@ export default function Events({onNavigate}: Props) {
 
     return (
         <div className="events">
-            <button className="back-button" onClick={async() => {await invoke("close_extra_windows", {}); onNavigate("/staff-menu")}}>
+            <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { (async function() { await invoke("close_extra_windows", {}); onNavigate('/staff-menu'); })(); } }} onClick={function() { (async function() { invoke("close_extra_windows", {}); onNavigate('/staff-menu'); })(); }}>
                 BACK TO MENU
             </button>
 

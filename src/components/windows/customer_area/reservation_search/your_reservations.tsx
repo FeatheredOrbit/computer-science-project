@@ -64,7 +64,7 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
     }
 
     // Sort reservations based on current sort type
-    const getSortedReservations = () => {
+    const getSortedReservations = function() {
         if (!reservations) return [];
 
         const sorted = [...reservations];
@@ -86,7 +86,7 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         await appWindow.setSize(new LogicalSize(800, 640));
     }
 
-    useEffect(() => {
+    useEffect(function() {
         // Delete button enabled if at least one is selected
         setDeleteDisabled(selectedReservationIndexes.size === 0);
 
@@ -94,13 +94,13 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         setChangeDisabled(selectedReservationIndexes.size !== 1);
     }, [selectedReservationIndexes]);
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getReservations();
     }, []);
 
     // Measure label widths after render and when sort type changes
-    useEffect(() => {
+    useEffect(function() {
         if (firstLabelRef.current && secondLabelRef.current && thirdLabelRef.current) {
             setColumnWidths({
                 first: firstLabelRef.current.offsetWidth,
@@ -110,8 +110,8 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         }
     }, [sortType, reservations]);
 
-    const handleReservationClick = (index: number) => {
-        setSelectedReservationIndexes(prev => {
+    const handleReservationClick = function(index: number) {
+        setSelectedReservationIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
                 newSet.delete(index); // Unselect if already selected
@@ -125,17 +125,20 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
     const sortedReservations = getSortedReservations();
 
     // Get label texts based on sort type
-    const getFirstLabel = () => {
+    const getFirstLabel = function() {
         return sortType === "creator" ? "CREATOR NAME" : "EVENT NAME";
     };
 
-    const getSecondLabel = () => {
+    const getSecondLabel = function() {
         return sortType === "creator" ? "EVENT NAME" : "CREATOR NAME";
     };
 
     return (
         <div className="your-reservations">
-            <button className="back-to-menu-button" onClick={() => onNavigate("/customer-menu")}>
+            <button 
+                className="back-to-menu-button" 
+                onClick={() => onNavigate("/customer-menu")}
+                onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate("/customer-menu") } }}>
                 BACK TO MENU
             </button>
 
@@ -156,7 +159,7 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
             </button>
 
             <div className="reservations-container">
-                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={() => {onNavigate("/reservation-search")}}/>
+                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={function() {onNavigate("/reservation-search")}}/>
 
                 <div className="reservations-header">
                     <div className="labels-container">

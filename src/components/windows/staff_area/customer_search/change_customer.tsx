@@ -69,9 +69,9 @@ export default function ChangeCustomer({onNavigate, customerId}: Props) {
                 <p> {requirements} </p>
             </div>
 
-            <button className="back-button" onClick={() => {onNavigate("/customers")}}> BACK TO CUSTOMERS VIEWER </button>
+            <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/customers'); } }} onClick={function() {onNavigate("/customers")}}> BACK TO CUSTOMERS VIEWER </button>
 
-            <button className="change-info-button" onClick={() => {onNavigate("/change-customer-info")}}> CHANGE ACCOUNT INFO </button>
+            <button className="change-info-button" onClick={function() {onNavigate("/change-customer-info")}}> CHANGE ACCOUNT INFO </button>
         </div>
     );
 }

@@ -70,6 +70,8 @@ export default function ReservationCreatorWindow({
     async function handleEventClick(eventId: number, date: string, information: string) {
         setSelectedEventId(eventId);
 
+        await invoke("close_extra_windows", {});
+
         await invoke("open_extra_information_window", {information: information, date: date});
     }
 
@@ -137,24 +139,27 @@ export default function ReservationCreatorWindow({
         onNavigate("/commit-reservation");
     }
 
-    useEffect(() => {
+    useEffect(function() {
         resizeWindow();
         getEvents();
     }, []);
 
     return (
         <div className="reservation-creator">
-            <button className="back-to-menu-button" onClick={async() => {await invoke("close_extra_windows", {}); onNavigate("/customer-menu");}}>
+            <button 
+                className="back-to-menu-button" 
+                onClick={function() { (async function() { await invoke("close_extra_windows", {}); onNavigate("/customer-menu"); })(); }}
+                onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate("/customer-menu") } }}>
                 BACK TO MENU
             </button>
 
-            <button className="autofill-button" onClick={autofill}>
-                AUTOFILL
-            </button>
+            <button 
+                className="autofill-button" onClick={function() { autofill(); }}
+                onKeyDown={function(e) { if (e.key === 'e') { autofill(); } }}> AUTOFILL </button>
 
-            <button className="continue-button" onClick={continueClicked}>
-                CONTINUE
-            </button>
+            <button 
+                onKeyDown={function(e) { if (e.key === 'Enter') { continueClicked(); } }}
+                className="continue-button" onClick={function() { continueClicked(); }}> CONTINUE </button>
 
             <div className="select-play-label">
                 <h1 style={{fontSize:"42px", textAlign:"center"}}> SELECT A PLAY </h1>
@@ -166,7 +171,7 @@ export default function ReservationCreatorWindow({
             <div className="name-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> FULL NAME </h1>
             </div>
-            <input className="name-input" type="text" placeholder="John" onChange={(e) => {setNameInput(e.target.value); setNameError("")}} value={nameInput}/>
+            <input className="name-input" type="text" placeholder="John" onChange={function(e) { setNameInput(e.target.value); setNameError(""); }} value={nameInput}/>
             <div className="name-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {nameError} </p>
             </div>
@@ -174,7 +179,7 @@ export default function ReservationCreatorWindow({
             <div className="phone-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> PHONE NUMBER </h1>
             </div>
-            <input className="phone-input" type="text" placeholder="1234567890" onChange={(e) => {setPhoneInput(e.target.value); setPhoneError("")}} value={phoneInput}/>
+            <input className="phone-input" type="text" placeholder="1234567890" onChange={function(e) { setPhoneInput(e.target.value); setPhoneError(""); }} value={phoneInput}/>
             <div className="phone-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {phoneError} </p>
             </div>
@@ -182,12 +187,12 @@ export default function ReservationCreatorWindow({
             <div className="requirements-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> OTHER REQUIREMENTS </h1>
             </div>
-            <input className="requirements-input" type="text" placeholder="I'm in a wheelchair" onChange={(e) => {setRequirementsInput(e.target.value)}} value={requirementsInput} />
+            <input className="requirements-input" type="text" placeholder="I'm in a wheelchair" onChange={function(e) { setRequirementsInput(e.target.value); }} value={requirementsInput} />
 
             <div className="people-count-label">
                 <h1 style={{textAlign: "center", fontSize: "35px", lineHeight:"50%"}}> NUMBER OF PEOPLE </h1>
             </div>
-            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={(e) => {setPeopleCountInput(e.target.value); setPeopleCountError("")}} />
+            <input className="people-count-input" type="text" placeholder="1" value={peopleCountInput} onChange={function(e) { setPeopleCountInput(e.target.value); setPeopleCountError(""); }} />
             <div className="people-count-error">
                 <p style={{textAlign: "left", color: "red", fontSize: "13px", lineHeight: "85%"}}> {peopleCountError} </p>
             </div>
@@ -197,7 +202,7 @@ export default function ReservationCreatorWindow({
                 // Essentially decides between 2 contents for the container based on whether events is null or not.
                 events === null ? (
                     // A tinyyyyyy bit of dots.
-                    <div className="loading-message">Loading events ....................................................................... </div>
+                    <div className="loading-message"> Loading events </div>
                 ) : (
                     <div className="events-track">
                         {events.map(([id, name, date, imagePath, extraInfo]) => (
@@ -211,7 +216,7 @@ export default function ReservationCreatorWindow({
                                         src={imagePath} 
                                         alt={name}
                                         className="event-image"
-                                        onError={(e) => {
+                                        onError={function(e) {
                                             (e.target as HTMLImageElement).src = "assets/placeholder.png";
                                         }}
                                     />

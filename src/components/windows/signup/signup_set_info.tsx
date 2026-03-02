@@ -22,29 +22,33 @@ export default function SignupSetInfo({onNavigate}: Props) {
     async function saveClicked() {
         let valid = true;
 
-        // Checks if the full name sits below 100, if not shows an error.
-        if (nameInput.trim().length > 100) {
-            setNameError("Name must be below 100 characters");
-            valid = false;
+        if (nameInput.trim().length > 0) {
+            // Checks if the full name sits below 100, if not shows an error.
+            if (nameInput.trim().length > 100) {
+                setNameError("Name must be below 100 characters");
+                valid = false;
+            }
+
+            // Checks if the field is empty, if so shows an error.
+            if (nameInput.trim().length === 0) {
+                setNameError("Field can't be empty");
+                valid = false;
+            }
         }
 
-        // Checks if the field is empty, if so shows an error.
-        if (nameInput.trim().length === 0) {
-            setNameError("Field can't be empty");
-            valid = false;
-        }
+        if (phoneInput.trim().length) {
+            // We check if the phone numbers is only made of digits, if not shows an error.
+            const digitsOnly = phoneInput.replace(/\D/g, '');
+            if (!(digitsOnly.length > 0 && digitsOnly === phoneInput.replace(/[^0-9+]/g, ''))) {
+                setPhoneError("Phone number must only contain digits");
+                valid = false;
+            }
 
-        // We check if the phone numbers is only made of digits, if not shows an error.
-        const digitsOnly = phoneInput.replace(/\D/g, '');
-        if (!(digitsOnly.length > 0 && digitsOnly === phoneInput.replace(/[^0-9+]/g, ''))) {
-            setPhoneError("Phone number must only contain digits");
-            valid = false;
-        }
-
-        // Check if the phone number sits between 10 and 15 digits, apparently there isn't a standard length? If not shows an error.
-        if (digitsOnly.length < 10 || digitsOnly.length > 15) {
-            setPhoneError("Phone number must be between 10 and 15 digits");
-            valid = false;
+            // Check if the phone number sits between 10 and 15 digits, apparently there isn't a standard length? If not shows an error.
+            if (digitsOnly.length < 10 || digitsOnly.length > 15) {
+                setPhoneError("Phone number must be between 10 and 15 digits");
+                valid = false;
+            }
         }
 
         if (!valid) { return; }
@@ -65,7 +69,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
     }, []);
 
     useEffect(function() {
-        if (nameInput.trim().length > 0 && phoneInput.trim().length > 0) {
+        if (nameInput.trim().length > 0 || phoneInput.trim().length > 0) {
             setIsButtonDisabled(false);
         } else {
             setIsButtonDisabled(true);
@@ -81,7 +85,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
             className="name-input" 
             type="text" 
             placeholder="John" 
-            onChange={(e) => {
+            onChange={function(e) {
                 setNameInput(e.target.value);
                 setNameError("");
             }}
@@ -97,7 +101,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
             className="phone-input" 
             type="text" 
             placeholder="123-456-7890"
-            onChange={(e) => {
+            onChange={function(e) {
                 setPhoneInput(e.target.value);
                 setPhoneError("");
             }}
@@ -113,18 +117,19 @@ export default function SignupSetInfo({onNavigate}: Props) {
             className="requirements-input" 
             type="text" 
             placeholder="I'm in a wheelchair" 
-            onChange={(e) => {
+            onChange={function(e) {
                 setRequirementsInput(e.target.value);
             }}
             />
 
             <button 
             className="skip-button" 
-            onClick={() => {onNavigate("/customer-menu")}}> SKIP </button>
+            onClick={function() {onNavigate("/customer-menu")}}> SKIP </button>
 
             <button 
             className="save-button" 
             disabled={isButtonDisabled}
+            onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { saveClicked(); } }}
             onClick={saveClicked}> SAVE </button>
         </div>  
     );

@@ -53,11 +53,11 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
             className="insert-password-input" 
             type={showPassword ? "text" : "password"} 
             placeholder="841234u2343bvdfjniudcru"
-            onChange={(e) => {setPasswordInput(e.target.value); setPasswordError("")}} 
+            onChange={function(e) {setPasswordInput(e.target.value); setPasswordError("")}} 
             />
             <p 
                 className="show-validate-password-button" 
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={function() { setShowPassword(!showPassword); }}
             > 
                 👁 
             </p>
@@ -65,7 +65,7 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
                 <p> {passwordError} </p>
             </div>
 
-            <button className="validate-password-confirm-button" disabled={isButtonDisabled} onClick={validatePassword}> CONFIRM </button>
+            <button className="validate-password-confirm-button" disabled={isButtonDisabled} onKeyDown={function(e) { if (e.key === 'Enter' && !isButtonDisabled) { validatePassword(); } }} onClick={function() { validatePassword(); }}> CONFIRM </button>
         </div>
     );
 }
