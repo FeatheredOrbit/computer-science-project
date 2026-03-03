@@ -4,14 +4,18 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 
+// Type alias for customer data.
 type CustomerData = [number, string, string, string]; // [id, name, email, date joined]
 
+// Props accepted by this component.
 type Props = {
     onNavigate: (input: string) => void
     setCustomerId: React.Dispatch<React.SetStateAction<number | undefined>>
 };
 
+// Component that provides a searchable view of customers for staff. Takes "onNavigate" and "setCustomerId".
 export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
+    // Set up states.
     const [customers, setCustomers] = useState<CustomerData[] | null>(null);
     const [filteredCustomers, setFilteredCustomers] = useState<CustomerData[] | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -24,6 +28,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
     const contentRef = useRef<HTMLDivElement>(null);
 
+    // Function that deletes selected customers via backend call.
     async function deleteClicked() {
         if (selectedCustomerIndexes.size === 0) return;
 
@@ -40,6 +45,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         await getCustomers();
     }
 
+    // Function that opens the change-customer view for the selected customer.
     async function changeClicked() {
         if (selectedCustomerIndexes.size !== 1) return;
 
@@ -52,6 +58,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         onNavigate("/change-customer");
     }
 
+    // Function that retrieves all customers and initializes the filtered list.
     async function getCustomers() {
         const message = await invoke<CustomerData[]>("get_customers", {});
         setCustomers(message);
@@ -59,8 +66,8 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         setSelectedCustomerIndexes(new Set());
     }
 
-    // Search function - searches in order: name, email, date
-    const performSearch = function(query: string) {
+    // Function that filters customers by name, email or date in that order.
+    function performSearch(query: string) {
         if (!customers) return;
         
         if (query.trim() === "") {
@@ -70,11 +77,8 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
         const lowerQuery = query.toLowerCase();
         const filtered = customers.filter(function(customer) {
-            // Search in name first
             if (customer[1].toLowerCase().includes(lowerQuery)) return true;
-            // Then search in email
             if (customer[2].toLowerCase().includes(lowerQuery)) return true;
-            // Then search in date
             if (customer[3].toLowerCase().includes(lowerQuery)) return true;
             return false;
         });
@@ -82,27 +86,26 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         setFilteredCustomers(filtered);
     };
 
-    const handleSearchChange = function(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value;
         setSearchQuery(query);
         performSearch(query);
     };
 
-    // Sort customers - always sort by name for consistent display
-    const getSortedCustomers = function() {
+    // Function that sorts the filtered customers by name for consistent display.
+    function getSortedCustomers() {
         if (!filteredCustomers) return [];
 
         const sorted = [...filteredCustomers];
-        sorted.sort((a, b) => a[1].localeCompare(b[1])); // Always sort by name
+        sorted.sort((a, b) => a[1].localeCompare(b[1]));
         
         return sorted;
     };
 
-    // Calculate optimal column widths based on content
-    const calculateColumnWidths = function() {
+    // Function that calculates optimal column widths based on content and labels.
+    function calculateColumnWidths() {
         if (!filteredCustomers || filteredCustomers.length === 0) return;
 
-        // Label widths
         const firstLabel = "NAME";
         const secondLabel = "EMAIL";
         const thirdLabel = "DATE JOINED";
@@ -117,11 +120,10 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         let maxSecondWidth = context.measureText(secondLabel).width + 30;
         let maxThirdWidth = context.measureText(thirdLabel).width + 30;
 
-        // Measure all customer data
         filteredCustomers.forEach(function(customer) {
-            const firstWidth = context.measureText(customer[1]).width + 30; // name
-            const secondWidth = context.measureText(customer[2]).width + 30; // email
-            const thirdWidth = context.measureText(customer[3]).width + 30; // date
+            const firstWidth = context.measureText(customer[1]).width + 30;
+            const secondWidth = context.measureText(customer[2]).width + 30;
+            const thirdWidth = context.measureText(customer[3]).width + 30;
 
             maxFirstWidth = Math.max(maxFirstWidth, firstWidth);
             maxSecondWidth = Math.max(maxSecondWidth, secondWidth);
@@ -129,7 +131,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         });
 
         const minWidth = 100;
-        const maxWidth = 350; // Slightly wider for emails
+        const maxWidth = 350;
 
         setColumnWidths({
             first: Math.min(Math.max(maxFirstWidth, minWidth), maxWidth),
@@ -138,9 +140,10 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         });
     };
 
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
-        await appWindow.setSize(new LogicalSize(950, 640)); // Even wider for emails
+        await appWindow.setSize(new LogicalSize(950, 640));
     }
 
     useEffect(function() {
@@ -148,19 +151,20 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         setChangeDisabled(selectedCustomerIndexes.size !== 1);
     }, [selectedCustomerIndexes]);
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getCustomers();
     }, []);
 
-    // Recalculate widths when filtered customers change
+    // Recalculate widths when filtered customers change.
     useEffect(function() {
         if (filteredCustomers) {
             calculateColumnWidths();
         }
     }, [filteredCustomers]);
 
-    const handleCustomerClick = function(index: number) {
+    function handleCustomerClick(index: number) {
         setSelectedCustomerIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
@@ -174,6 +178,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
     const sortedCustomers = getSortedCustomers();
 
+    // Structure of the page.
     return (
         <div className="customer-search">
             <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/customers'); } }} onClick={function() { onNavigate("/customers"); }}> 
@@ -233,9 +238,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
                 <div className="customers-scroll-area">
                     {customers === null ? (
-                        <div className="loading-message">Loading customers...</div>
-                    ) : sortedCustomers.length === 0 ? (
-                        <div className="no-customers-message">No customers found</div>
+                        <div className="loading-message"> Loading customers </div>
                     ) : (
                         <div className="customers-list" ref={contentRef}>
                             {sortedCustomers.map((customer, index) => (
@@ -248,19 +251,19 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
                                         className="customer-field first-field"
                                         style={{ width: columnWidths.first }}
                                     >
-                                        {customer[1]} {/* Name */}
+                                        {customer[1]}
                                     </div>
                                     <div 
                                         className="customer-field second-field"
                                         style={{ width: columnWidths.second }}
                                     >
-                                        {customer[2]} {/* Email */}
+                                        {customer[2]}
                                     </div>
                                     <div 
                                         className="customer-field third-field"
                                         style={{ width: columnWidths.third }}
                                     >
-                                        {customer[3]} {/* Date joined */}
+                                        {customer[3]}
                                     </div>
                                 </div>
                             ))}

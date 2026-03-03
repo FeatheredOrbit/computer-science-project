@@ -9,18 +9,22 @@ type Props = {
     customerId: number | undefined
 };
 
+// Component that shows detailed information for a specific customer. Takes "onNavigate" and "customerId" to control navigation and fetch data.
 export default function ChangeCustomer({onNavigate, customerId}: Props) {
+    // Set up states for customer fields.
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [requirements, setRequirements] = useState("");
 
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(1000, 600));
     }
 
+    // Function that fetches the customer information from the backend.
     async function getCustomerInfo() {
         let info = await invoke<[string, string, string, string]>("account_get_info_specific", {id: customerId});
 
@@ -30,11 +34,13 @@ export default function ChangeCustomer({onNavigate, customerId}: Props) {
         setRequirements(info[3]);
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getCustomerInfo();
     }, []);
 
+    // Structure of the page.
     return (
         <div className="change-customer">
             <div className="account-label">

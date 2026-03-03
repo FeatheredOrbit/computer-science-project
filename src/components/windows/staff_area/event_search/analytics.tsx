@@ -1,14 +1,14 @@
 import "../../../../styles/analytics.css";
 import { useSearchParams } from "react-router-dom";
 
-
+// Analytics view for staff showing simple metrics. Reads encoded values from the URL to display metrics.
 export default function Analytics() {
-    // We get the information that was encoded into the url.
+    // Extract metrics encoded into the URL search parameters.
     const [searchParams] = useSearchParams();
     const reservationAmount = searchParams.get("reservation-amount");
     const expectedRevenue = searchParams.get("expected-revenue");
 
-
+    // Structure of the page.
     return (
         <div className="analytics">
             <div className="reservation-amount">

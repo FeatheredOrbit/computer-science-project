@@ -8,7 +8,9 @@ type Props = {
     onNavigate: (input: string) => void
 };
 
+// Component that acts as a validation step for customers before they change something about their account. Takes "onNavigate" to move to other windows.
 export default function CustomerAccountValidate({onNavigate}: Props) {
+    // Set up states.
     const [passwordInput, setPasswordInput] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
@@ -16,16 +18,19 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
 
     const [showPassword, setShowPassword] = useState(false);
 
+    // Resize window to meet component expectations.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(600, 400));
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
     }, []);
 
+    // Enabled/disabled button based on whether or not there is input in the field.
     useEffect(function() {
         if (passwordInput.trim().length > 0) {
             setIsButtonDisabled(false);
@@ -34,6 +39,7 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
         }
     }, [passwordInput]);
 
+    // Function that invokes a backend function which essentially compares the inputted password with the user's actual password.
     async function validatePassword() {
         let result = await invoke<boolean>("account_validate_password", {password: passwordInput});
 
@@ -42,9 +48,12 @@ export default function CustomerAccountValidate({onNavigate}: Props) {
             return;
         }
 
+        // Error or continue based on result.
+
         onNavigate("/customer-account-new-info");
     }
 
+    // Structure of the page.
     return (
         <div className="customer-account-validate">
             <div className="insert-password-label">

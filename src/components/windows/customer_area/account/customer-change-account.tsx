@@ -17,17 +17,22 @@ enum ButtonType {
     Requirements
 }
 
+// Component that lets customers choose which information about their account to change. Takes "onNavigate" to move to different pages, and "setCustomerAccountChange"
+// to make the chosen info to change global for future windows.
 export default function CustomerChangeAccount({onNavigate, setCustomerAccountChange}: Props) {
+    // Resize the window to meet component expectations.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(500, 700));
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
     }, []);
 
+    // Function that check which button was clicked, and subsequently makes the choice global and moves to the next page.
     async function buttonClicked(arg: ButtonType) {
         switch (arg) {
             case ButtonType.Name:
@@ -56,6 +61,7 @@ export default function CustomerChangeAccount({onNavigate, setCustomerAccountCha
         } 
     }
 
+    // Structure of the page.
     return (
         <div className="customer-change-account">
             <button className="settings-button username-button" onClick={function() {buttonClicked(ButtonType.Name)}}>

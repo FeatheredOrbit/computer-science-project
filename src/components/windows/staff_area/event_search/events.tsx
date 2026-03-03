@@ -4,35 +4,41 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 
+// Type alias for event data.
 type EventData = [string, string]; // [name, dueDate]
 
+// Props accepted by this component.
 type Props = {
     onNavigate: (input: string) => void
 };
 
+// Component that allows staff to search and select events. Provides actions for analytics and extra information. Takes "onNavigate".
 export default function Events({onNavigate}: Props) {
+    // Set up states.
     const [events, setEvents] = useState<EventData[] | null>(null);
     const [filteredEvents, setFilteredEvents] = useState<EventData[] | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedEventIndexes, setSelectedEventIndexes] = useState<Set<number>>(new Set());
 
-    // Refs to measure label widths
     const firstLabelRef = useRef<HTMLDivElement>(null);
     const secondLabelRef = useRef<HTMLDivElement>(null);
-    const [columnWidths, setColumnWidths] = useState({ first: 200, second: 150 }); // Those are defaults widths, so with no events this should be used.
+    const [columnWidths, setColumnWidths] = useState({ first: 200, second: 150 });
 
+    // Function that opens analytics for the selected event.
     async function viewAnalyticsClicked() {
         if (selectedEventIndexes.size === 0 || !filteredEvents) return;
         await invoke("close_extra_windows", {});
         await invoke("open_analytics_window", {id: selectedEventIndexes.entries().next().value?.[0]});
     }
 
+    // Function that opens the extra information window for the selected event.
     async function extraInformationClicked() {
         if (selectedEventIndexes.size === 0 || !filteredEvents) return;
         await invoke("close_extra_windows", {});
         await invoke("open_extra_information_window_from_id", {id: selectedEventIndexes.entries().next().value?.[0]});
     }
  
+    // Function that retrieves the minimal events list from the backend and initializes the filtered list.
     async function getEvents() {
         const message = await invoke<EventData[]>("get_events_minimum", {});
         setEvents(message);
@@ -40,11 +46,10 @@ export default function Events({onNavigate}: Props) {
         setSelectedEventIndexes(new Set());
     }
 
-    // Calculate optimal column widths based on content
-    const calculateColumnWidths = function() {
+    // Function that calculates optimal column widths based on content and container width.
+    function calculateColumnWidths() {
         if (!filteredEvents || filteredEvents.length === 0) return;
 
-        // Label widths
         const firstLabel = "EVENT NAME";
         const secondLabel = "DUE DATE";
 
@@ -54,10 +59,9 @@ export default function Events({onNavigate}: Props) {
 
         context.font = '16px Arial';
 
-        let maxFirstWidth = context.measureText(firstLabel).width + 40; // Add padding
+        let maxFirstWidth = context.measureText(firstLabel).width + 40;
         let maxSecondWidth = context.measureText(secondLabel).width + 40;
 
-        // Measure all event data
         filteredEvents.forEach(function(event) {
             const firstWidth = context.measureText(event[0]).width + 40;
             const secondWidth = context.measureText(event[1]).width + 40;
@@ -66,18 +70,14 @@ export default function Events({onNavigate}: Props) {
             maxSecondWidth = Math.max(maxSecondWidth, secondWidth);
         });
 
-        // Set minimum and maximum constraints
         const minWidth = 120;
         const maxWidth = 400;
 
-        // Calculate total available width (container width minus gaps)
         const container = document.querySelector('.events .events-container');
         if (container) {
             const containerWidth = container.clientWidth;
-            const totalGapWidth = containerWidth * 0.02; // 2% gap
-            const availableWidth = containerWidth - totalGapWidth - 40; // 40px for padding
-            
-            // If total width exceeds container, scale proportionally
+            const totalGapWidth = containerWidth * 0.02;
+            const availableWidth = containerWidth - totalGapWidth - 40;
             const totalNeededWidth = maxFirstWidth + maxSecondWidth;
             if (totalNeededWidth > availableWidth) {
                 const scale = availableWidth / totalNeededWidth;
@@ -92,8 +92,8 @@ export default function Events({onNavigate}: Props) {
         });
     };
 
-    // Search function
-    const performSearch = function(query: string) {
+    // Function that filters events by name or due date.
+    function performSearch(query: string) {
         if (!events) return;
         
         if (query.trim() === "") {
@@ -112,35 +112,36 @@ export default function Events({onNavigate}: Props) {
         setSelectedEventIndexes(new Set());
     };
 
-    const handleSearchChange = function(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value;
         setSearchQuery(query);
         performSearch(query);
     };
 
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
-        await appWindow.setSize(new LogicalSize(800, 500)); // Slightly wider
+        await appWindow.setSize(new LogicalSize(800, 500));
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getEvents();
     }, []);
 
-    // Recalculate widths when filtered events change
+    // Recalculate widths when filtered events change.
     useEffect(function() {
         if (filteredEvents) {
-            // Small delay to ensure DOM is ready
             setTimeout(function() {
                 calculateColumnWidths();
             }, 50);
         }
     }, [filteredEvents]);
 
-    // Recalculate on window resize
+    // Recalculate on window resize.
     useEffect(function() {
-        const handleResize = function() {
+        function handleResize() {
             if (filteredEvents) {
                 calculateColumnWidths();
             }
@@ -150,7 +151,7 @@ export default function Events({onNavigate}: Props) {
         return () => window.removeEventListener('resize', handleResize);
     }, [filteredEvents]);
 
-    const handleEventClick = function(index: number) {
+    function handleEventClick(index: number) {
         setSelectedEventIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
@@ -162,6 +163,7 @@ export default function Events({onNavigate}: Props) {
         });
     };
 
+    // Structure of the page.
     return (
         <div className="events">
             <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { (async function() { await invoke("close_extra_windows", {}); onNavigate('/staff-menu'); })(); } }} onClick={function() { (async function() { invoke("close_extra_windows", {}); onNavigate('/staff-menu'); })(); }}>
@@ -222,7 +224,7 @@ export default function Events({onNavigate}: Props) {
 
                 <div className="events-scroll-area">
                     {filteredEvents === null ? (
-                        <div className="loading-message">Loading events...</div>
+                        <div className="loading-message"> Loading events </div>
                     ) : (
                         <div className="events-list">
                             {filteredEvents.map((event, index) => (

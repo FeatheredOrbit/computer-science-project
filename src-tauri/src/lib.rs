@@ -14,12 +14,14 @@ use database::functions::{
     get_reservations_specific, get_events_minimum, open_extra_information_window_from_id, open_analytics_window
 };
 
+// Represents the current state of a logged user.
 pub enum LoggedUser {
     None,
     Customer(CustomerId),
     Staff(StaffId)
 }
 
+// Represents the current logged session.
 pub struct Session {
     pub state: LoggedUser
 }
@@ -29,6 +31,7 @@ impl Session {
     }
 }
 
+/// Function used to close any extra windows apart from the main one. Iterates through each active window, skips the main one, and closes every other.
 #[tauri::command]
 fn close_extra_windows(app: AppHandle) {
     for (label, window) in app.webview_windows().iter_mut() {

@@ -1,7 +1,7 @@
 import { Route, Routes, BrowserRouter, useNavigate } from "react-router-dom";
 import { createRoot } from "react-dom/client";
-import LoginWindow from "./windows/login";
-import SignupWindow from "./windows/signup/signup";
+import Login from "./windows/login";
+import Signup from "./windows/signup/signup";
 import SignupSetInfo from "./windows/signup/signup_set_info";
 import CustomerAreaMenu from "./windows/customer_area/customer_area_menu";
 import StaffAreaMenu from "./windows/staff_area/staff_area_menu";
@@ -29,6 +29,7 @@ import CustomerReservationSearch from "./windows/staff_area/customer_search/cust
 import Events from "./windows/staff_area/event_search/events";
 import Analytics from "./windows/staff_area/event_search/analytics";
 
+// This is the main component, it handles every other component by assigning it a path and passing it parameters.
 export default function App() {
     const navigate = useNavigate();
 
@@ -47,6 +48,7 @@ export default function App() {
     const [customerId, setCustomerId] = useState<number | undefined>();
     const [reservationId, setReservationId] = useState<number | undefined>();
 
+    // A function to be passed to every component to allow navigation throughout the program.
     function onNavigate(input: string) {
         if (location.pathname === input) {
             return;
@@ -55,10 +57,11 @@ export default function App() {
         navigate(input);
     }
 
+    // Every component registered as a route in the program.
     return (
         <Routes>
-            <Route path="/" element={<LoginWindow onNavigate={onNavigate} />} />
-            <Route path="/signup" element={<SignupWindow onNavigate={onNavigate} />} />
+            <Route path="/" element={<Login onNavigate={onNavigate} />} />
+            <Route path="/signup" element={<Signup onNavigate={onNavigate} />} />
             <Route path="/signup-set-info" element={<SignupSetInfo onNavigate={onNavigate} />} />
 
             <Route path="/customer-menu" element={<CustomerAreaMenu onNavigate={onNavigate} />} />
@@ -106,6 +109,7 @@ export default function App() {
     );
 }
 
+// This section just retreives an html element of id "root", where we then insert and start rendering our (mine) app.
 const container = document.getElementById("root");
 if (container) {
     const root = createRoot(container);

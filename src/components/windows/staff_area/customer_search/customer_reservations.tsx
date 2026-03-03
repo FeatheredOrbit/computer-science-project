@@ -4,8 +4,10 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 
+// Type alias for reservation dat. Format is
 type ReservationData = [number, string, string, number, string]; // [id, eventName, creatorName, peopleCount, dateCreated]
 
+// Props accepted by this component.
 type Props = {
     onNavigate: (input: string) => void
     setReservationId: React.Dispatch<React.SetStateAction<number | undefined>>
@@ -14,7 +16,9 @@ type Props = {
 
 type SortType = "event" | "creator";
 
+// Component where staff can view and manage reservations for a specific customer. Takes "onNavigate", "setReservationId" and "customerId".
 export default function CustomerReservations({onNavigate, setReservationId, customerId}: Props) {
+    // Set up states.
     const [reservations, setReservations] = useState<ReservationData[] | null>(null);
     const [sortType, setSortType] = useState<SortType>("event");
     const [selectedReservationIndexes, setSelectedReservationIndexes] = useState<Set<number>>(new Set());
@@ -27,6 +31,7 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
     const thirdLabelRef = useRef<HTMLDivElement>(null);
     const [columnWidths, setColumnWidths] = useState({ first: 0, second: 0, third: 0 });
 
+    // Function that deletes selected reservations via backend call.
     async function deleteClicked() {
         if (selectedReservationIndexes.size === 0) return;
 
@@ -39,11 +44,11 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
 
         await invoke("delete_reservations", { ids: idsToDelete });
 
-        // Clear selection and refresh the list
         setSelectedReservationIndexes(new Set());
-        await getReservations(); // Refresh the list
+        await getReservations();
     }
 
+    // Function that opens the reservation change view for the selected reservation.
     async function changeClicked() {
         if (selectedReservationIndexes.size !== 1) return;
 
@@ -56,16 +61,15 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
         onNavigate("/change-customer-reservation");
     }
 
+    // Function that retrieves reservations for the specified customer from the backend.
     async function getReservations() {
         const message = await invoke<ReservationData[]>("get_reservations_specific", {id: customerId});
         setReservations(message);
-        
-        // Clear index-based selections after refresh
         setSelectedReservationIndexes(new Set());
     }
 
-    // Sort reservations based on current sort type
-    const getSortedReservations = function() {
+    // Function that returns a sorted array of reservations based on the current sort type.
+    function getSortedReservations() {
         if (!reservations) return [];
 
         const sorted = [...reservations];
@@ -82,25 +86,24 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
         return sorted;
     };
 
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
         await appWindow.setSize(new LogicalSize(800, 640));
     }
 
     useEffect(function() {
-        // Delete button enabled if at least one is selected
         setDeleteDisabled(selectedReservationIndexes.size === 0);
-
-        // Change button enabled only if exactly one is selected
         setChangeDisabled(selectedReservationIndexes.size !== 1);
     }, [selectedReservationIndexes]);
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getReservations();
     }, []);
 
-    // Measure label widths after render and when sort type changes
+    // Measure label widths after render and when sort type or reservations change.
     useEffect(function() {
         if (firstLabelRef.current && secondLabelRef.current && thirdLabelRef.current) {
             setColumnWidths({
@@ -111,13 +114,13 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
         }
     }, [sortType, reservations]);
 
-    const handleReservationClick = function(index: number) {
+    function handleReservationClick(index: number) {
         setSelectedReservationIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
-                newSet.delete(index); // Unselect if already selected
+                newSet.delete(index);
             } else {
-                newSet.add(index); // Select if not selected
+                newSet.add(index);
             }
             return newSet;
         });
@@ -125,15 +128,17 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
 
     const sortedReservations = getSortedReservations();
 
-    // Get label texts based on sort type
-    const getFirstLabel = function() {
+    // Helper that returns the first column label based on sort type.
+    function getFirstLabel() {
         return sortType === "creator" ? "CREATOR NAME" : "EVENT NAME";
     };
 
-    const getSecondLabel = function() {
+    // Helper that returns the second column label based on sort type.
+    function getSecondLabel() {
         return sortType === "creator" ? "EVENT NAME" : "CREATOR NAME";
     };
 
+    // Structure of the page.
     return (
         <div className="customer-reservations">
             <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/customers'); } }} onClick={function() { onNavigate("/customers") }}> 
@@ -183,7 +188,7 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
 
                 <div className="reservations-scroll-area">
                     {reservations === null ? (
-                        <div className="loading-message">Loading reservations...</div>
+                        <div className="loading-message"> Loading reservations </div>
                     ) : (
                         <div className="reservations-list">
                             {sortedReservations.map((reservation, index) => (

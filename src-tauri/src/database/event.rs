@@ -2,9 +2,11 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use time::{Date, OffsetDateTime, PrimitiveDateTime, Time};
 
+// Represents an id valid only in event tables.
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct EventId(pub usize);
 
+// Represents data about an event.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct EventData {
     pub name: String,
@@ -14,6 +16,7 @@ pub struct EventData {
     pub cost: u16
 }
 
+// Stores data about all existing events.
 #[derive(Serialize, Deserialize)]
 pub struct EventTable {
     pub main: HashMap<EventId, EventData>,

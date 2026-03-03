@@ -13,10 +13,12 @@ type Props = {
     setChosenRequirements: React.Dispatch<React.SetStateAction<string>>
 };
 
-type EventData = [number, string, string, string, string];
+// Since the data received from the backend is needed in more variables, it's easier to make it a type so to avoid having to repeat it multiple times.
+type EventData = [number, string, string, string, string, number]; // [id, name, date, imagePath, extraInfo, cost]
 
-// Yeah there has been a bit of a misunderstanding with myself and I often found myself interchanging event and play. In this context they are the same thing!!!
-
+// The reservation creator component of the program, it allows customers to create reservation with the details they prefer. It takes quite a lot as arguments,
+// I could explain them all but I can't be bothered, just now that each input field in this window needs to be rembered for future windows, so I'm passing function
+// to change the global variables.
 export default function ReservationCreatorWindow({
     onNavigate, 
     setChosenEventId, 
@@ -25,6 +27,7 @@ export default function ReservationCreatorWindow({
     setChosenPhoneNumber,
     setChosenRequirements
 }: Props) {
+    // Set up states.
     const [events, setEvents] = useState<EventData[] | null>(null);
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
@@ -41,17 +44,19 @@ export default function ReservationCreatorWindow({
     const [peopleCountInput, setPeopleCountInput] = useState("1");
     const [peopleCountError, setPeopleCountError] = useState("");
 
-
+    // Resize window to meet the expectations of the window.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
         await appWindow.setSize(new LogicalSize(900, 600));
     }
 
+    // Asks the backend for an array of event data.
     async function getEvents() {
         const message = await invoke<EventData[]>("get_events", {});
         setEvents(message);
     }
 
+    // Function that asks the backend for customer credentials, and automatically writes to them to each input field, avoiding empty ones.
     async function autofill() {
         const message = await invoke<[string, string, string]>("autofill_customer", {});
 
@@ -67,14 +72,20 @@ export default function ReservationCreatorWindow({
         }
     }
 
-    async function handleEventClick(eventId: number, date: string, information: string) {
+    // Function called when a play/event in the window is clicked, it focuses the state on the id of the event, and opens an extra window on top to display more
+    // information about the event/play.
+    async function handleEventClick(eventId: number, date: string, information: string, cost: number) {
         setSelectedEventId(eventId);
 
         await invoke("close_extra_windows", {});
 
-        await invoke("open_extra_information_window", {information: information, date: date});
+        await invoke("open_extra_information_window", {information: information, date: date, cost: cost});
     }
 
+    // Function that handles validation of each input field, and subsequently moves to the next window.
+    // An event/play must be selected, the name must be between 0 and 100 characters, 
+    // the phone number must be numerics only and must be between 10 and 15 characters
+    // and the people count must be higher than 0 and lower or equal to 10.
     async function continueClicked() {
         let valid = true;
 
@@ -84,13 +95,13 @@ export default function ReservationCreatorWindow({
         setPhoneError("");
         setPeopleCountError("");
 
-        // We check if an event is selected, if not show an error.
+        // Event/play validation.
         if (selectedEventId === null) {
             setEventError("Please select a play");
             valid = false;
         }
 
-        // We check if the name is between 0 and 100 characters. Showing an error if either is not met.
+        // Name validation.
         if (nameInput.trim().length === 0) {
             setNameError("Field can't be empty");
             valid = false;
@@ -99,20 +110,18 @@ export default function ReservationCreatorWindow({
             valid = false;
         }
 
-        // We check if the phone numbers is only made of digits, if not shows an error.
+        // Phone number validation.
         const digitsOnly = phoneInput.replace(/\D/g, '');
         if (!(digitsOnly.length > 0 && digitsOnly === phoneInput.replace(/[^0-9+]/g, ''))) {
             setPhoneError("Phone number must only contain digits");
             valid = false;
         }
-
-        // Check if the phone number sits between 10 and 15 digits, apparently there isn't a standard length? If not shows an error.
         if (digitsOnly.length < 10 || digitsOnly.length > 15) {
             setPhoneError("Phone number must be between 10 and 15 digits");
             valid = false;
         }
 
-        // We check if people count is between 0 and 10 inclusive and not empty, showing an error if anything fails.
+        // People count validation.
         const peopleCount = parseInt(peopleCountInput);
         if (peopleCountInput.trim().length === 0) {
             setPeopleCountError("Field can't be empty");
@@ -127,23 +136,26 @@ export default function ReservationCreatorWindow({
 
         if (!valid) { return; }
 
-        // We make the event id anf people count global so that is it available in the next window.
+        // We make everything global so that they are available in the next windows.
         setChosenEventId(selectedEventId);
         setPeopleCount(peopleCountInput);
         setChosenName(nameInput);
         setChosenPhoneNumber(phoneInput);
         setChosenRequirements(requirementsInput);
 
+        // Make sure to close extra windows, as the extra information window might still be active.
         await invoke("close_extra_windows", {});
 
         onNavigate("/commit-reservation");
     }
 
+    // Call srartup functions.
     useEffect(function() {
         resizeWindow();
         getEvents();
     }, []);
 
+    // Structure of the page.
     return (
         <div className="reservation-creator">
             <button 
@@ -201,15 +213,18 @@ export default function ReservationCreatorWindow({
                 {
                 // Essentially decides between 2 contents for the container based on whether events is null or not.
                 events === null ? (
-                    // A tinyyyyyy bit of dots.
                     <div className="loading-message"> Loading events </div>
                 ) : (
                     <div className="events-track">
-                        {events.map(([id, name, date, imagePath, extraInfo]) => (
+                        { /* This function creates a callback for every element in the array, taking the data of that element as arguments.
+                             As a result we are able to create as many elements as there are entries in the events array, and correctly link the data to each
+                             event */ 
+                        }
+                        {events.map(([id, name, date, imagePath, extraInfo, cost]) => (
                             <div 
                                 key={id} 
                                 className="event-card"
-                                onClick={() => handleEventClick(id, date, extraInfo)}
+                                onClick={() => handleEventClick(id, date, extraInfo, cost)}
                             >
                                 <div className="event-image-container">
                                     <img 

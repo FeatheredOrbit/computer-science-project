@@ -11,7 +11,9 @@ type Props = {
     customerId: number | undefined
 };
 
+// Component that accepts new customer information input and applies changes. Takes "onNavigate", "customerAccountChange" and "customerId".
 export default function ChangeCustomerApply({onNavigate, customerAccountChange, customerId}: Props) {
+    // Set up states for the input and validation.
     const [infoType, setInfoType] = useState("");
     const [infoInput, setInfoInput] = useState("");
     const [infoError, setInfoError] = useState("");
@@ -19,6 +21,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
 
+    // Function that resizes the window depending on the selected change type.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
@@ -29,6 +32,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
         }
     }
 
+    // Call startup functions and set the displayed info type.
     useEffect(function() {
         resizeWindow();
 
@@ -62,6 +66,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
         }
     }, [infoInput]);
 
+    // Function that validates the input and sends the change to the backend when valid.
     async function validateInfo() {
         let valid = true;
 
@@ -153,14 +158,14 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
                 break;
 
             case AccountChange.None:
-                // This should be unreachable, as this page is unreachable through normal means without this getting changed to something else.
                 return;
         }
 
         onNavigate("/change-customer");
     }
 
-    const getPlaceholder = function() {
+    // Helper that returns an appropriate placeholder for the current change type.
+    function getPlaceholder() {
         switch(customerAccountChange) {
             case AccountChange.Name: return "John";
             case AccountChange.Email: return "person@gmail.com";
@@ -171,6 +176,7 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
         }
     };
 
+    // Structure of the page.
     return (
         <div className={`change-customer-apply ${customerAccountChange === AccountChange.Requirements ? 'requirements-mode' : ''}`}>
             <div className="insert-info-label">

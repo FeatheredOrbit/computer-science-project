@@ -4,6 +4,7 @@ use tauri::{AppHandle, State, WebviewWindowBuilder};
 
 use crate::{LoggedUser, Session, database::{Database, customer::CustomerId, event::EventId, reservation::ReservationId}};
 
+/// Function that signs the user out.
 #[tauri::command]
 pub fn sign_out(session: State<Mutex<Session>>) {
     let mut session = session.lock().unwrap();
@@ -11,6 +12,8 @@ pub fn sign_out(session: State<Mutex<Session>>) {
     session.change(LoggedUser::None);
 }
 
+/// Function that validates email and password and subsequently logs in the user.
+/// Email must exist in the database and the password must match the one under the email. 
 #[tauri::command]
 pub fn login_validate_details(
     database: State<Mutex<Database>>, 
@@ -67,6 +70,8 @@ pub fn login_validate_details(
     (email_error, password_error, login_type)
 }
 
+/// Function that validates email and password and subsequently creates a new customer from them.
+/// Email must not be in use in the database already. 
 #[tauri::command]
 pub fn signup_validate_details(
     app: AppHandle,
@@ -104,6 +109,7 @@ pub fn signup_validate_details(
     return "".to_string();
 }
 
+/// Function that inserts extra data into a new customer account. The data being name, phone number and requirements.
 #[tauri::command]
 pub fn signup_add_extra(
     app: AppHandle,
@@ -130,6 +136,7 @@ pub fn signup_add_extra(
     }
 }
 
+/// Function that returns data about the user's account.
 #[tauri::command]
 pub fn account_get_info(
     session: State<Mutex<Session>>,
@@ -158,6 +165,7 @@ pub fn account_get_info(
     );
 }
 
+/// Function that compares the argument password to the one of the logged user.
 #[tauri::command]
 pub fn account_validate_password(
     session: State<Mutex<Session>>,
@@ -173,6 +181,7 @@ pub fn account_validate_password(
     return false;
 }
 
+/// Function that replaces the user's name with a new one.
 #[tauri::command]
 pub fn change_name(
     app: AppHandle,
@@ -193,6 +202,7 @@ pub fn change_name(
     }
 }
 
+/// Function that replaces the user's email with a new one.
 #[tauri::command]
 pub fn change_email(
     app: AppHandle,
@@ -224,6 +234,7 @@ pub fn change_email(
     return "No logged user".to_string();
 }
 
+/// Function that replaces the user's password with a new one.
 #[tauri::command]
 pub fn change_password(
     app: AppHandle,
@@ -245,6 +256,7 @@ pub fn change_password(
     }
 }
 
+/// Function that replaces the user's phone number with a new one.
 #[tauri::command]
 pub fn change_phone_number(
     app: AppHandle,
@@ -265,6 +277,7 @@ pub fn change_phone_number(
     }
 }
 
+/// Function that replaces the user's requirements with new ones.
 #[tauri::command]
 pub fn change_requirements(
     app: AppHandle,
@@ -285,11 +298,12 @@ pub fn change_requirements(
     }
 }
 
+/// Function that returns a vector of data of all existing events.
 #[tauri::command]
-pub fn get_events(database: State<Mutex<Database>>) -> Vec<(u32, String, String, String, String)> {
+pub fn get_events(database: State<Mutex<Database>>) -> Vec<(u32, String, String, String, String, u16)> {
     let database = database.lock().unwrap();
 
-    let mut events: Vec<(u32, String, String, String, String)> = vec![];
+    let mut events: Vec<(u32, String, String, String, String, u16)> = vec![];
 
     // We iterate through ever event in the event table to insert in the vector above, pretty useless as there's a single hardcoded event, but it's at least
     // supposed to allow for multiple existing events, and I perhaps might add more, who knows (I won't).
@@ -299,13 +313,15 @@ pub fn get_events(database: State<Mutex<Database>>) -> Vec<(u32, String, String,
             event.name,
             event.event_date.to_string(),
             event.image_path,
-            event.extra_information
+            event.extra_information,
+            event.cost
         ));
     }
 
     return events;
 }
 
+/// Function that opens an extra information window and encodes event data into it's url.
 #[tauri::command]
 pub fn open_extra_information_window(
     app: AppHandle,
@@ -333,6 +349,7 @@ pub fn open_extra_information_window(
     window.show().unwrap();
 }
 
+/// Function that opens an enxtra information window and econdes event data into it's url. This one instead uses an id to retreive event data. 
 #[tauri::command]
 pub fn open_extra_information_window_from_id(
     app: AppHandle,
@@ -344,9 +361,10 @@ pub fn open_extra_information_window_from_id(
 
     // Creating a new window though brings a few issues. It creates a new context on the frontend, meaning any data stored on the app on the main window is not
     // directly accessible in the this new one. So we an alternative way of sharing it information. We do this by encoding the information into the url.
-        let url = format!("/event-information?date={}&info={}", 
+        let url = format!("/event-information?date={}&info={}£cost={}", 
         urlencoding::encode(&data.event_date.to_string()),
-        urlencoding::encode(&data.extra_information)
+        urlencoding::encode(&data.extra_information),
+        urlencoding::encode(&data.cost.to_string())
     );
     
 
@@ -362,6 +380,7 @@ pub fn open_extra_information_window_from_id(
     window.show().unwrap();
 }
 
+/// Function that returns a customer's account information.
 #[tauri::command]
 pub fn autofill_customer(
     session: State<Mutex<Session>>,
@@ -384,6 +403,7 @@ pub fn autofill_customer(
    return ("".to_string(), "".to_string(), "".to_string()); 
 }
 
+/// Function that inserts a new reservation into the database.
 #[tauri::command]
 pub fn commit_reservation(
     app: AppHandle,
@@ -411,6 +431,7 @@ pub fn commit_reservation(
     }
 }
 
+/// Function that returns a vector of data from all existing reservations.
 #[tauri::command]
 pub fn get_reservations(
     database: State<Mutex<Database>>
@@ -437,6 +458,7 @@ pub fn get_reservations(
     return vec;
 }
 
+/// Function that uses a vector of ids to delete reservations.
 #[tauri::command]
 pub fn delete_reservations(
     app: AppHandle,
@@ -457,6 +479,7 @@ pub fn delete_reservations(
     }
 }
 
+/// Funtion that returns data about a specific reservation.
 #[tauri::command]
 pub fn get_reservation_info(
     database: State<Mutex<Database>>,
@@ -476,6 +499,7 @@ pub fn get_reservation_info(
     return (name, phone, requirements, people_count);
 }
 
+/// Function used to update information linked to a reservation.
 #[tauri::command]
 pub fn update_reservation(
     app: AppHandle,
@@ -501,6 +525,7 @@ pub fn update_reservation(
     }
 }
 
+/// Function that returns a vector of customer data from all existing customers.
 #[tauri::command]
 pub fn get_customers(
     database: State<Mutex<Database>>
@@ -521,6 +546,7 @@ pub fn get_customers(
     return vec;
 } 
 
+/// Function that uses a vector of ids to delete customers.
 #[tauri::command]
 pub fn delete_customers(
     app: AppHandle,
@@ -541,6 +567,7 @@ pub fn delete_customers(
     }
 }
 
+/// Function that returns account data of a specific customer.
 #[tauri::command]
 pub fn account_get_info_specific(
     database: State<Mutex<Database>>,
@@ -559,6 +586,7 @@ pub fn account_get_info_specific(
     );
 }
 
+/// Function that replaces a specific customer's name with a new one.
 #[tauri::command]
 pub fn change_name_specific(
     app: AppHandle,
@@ -578,6 +606,7 @@ pub fn change_name_specific(
     }
 }
 
+/// Function that replaces a specific customer's email with a new one.
 #[tauri::command]
 pub fn change_email_specific(
     app: AppHandle,
@@ -606,6 +635,7 @@ pub fn change_email_specific(
     return "".to_string();
 }
 
+/// Function that replaces a specific customer's password with a new one.
 #[tauri::command]
 pub fn change_password_specific(
     app: AppHandle,
@@ -625,6 +655,7 @@ pub fn change_password_specific(
     }
 }
 
+/// Function that replaces a specific customer's phone number with a new one.
 #[tauri::command]
 pub fn change_phone_number_specific(
     app: AppHandle,
@@ -644,6 +675,7 @@ pub fn change_phone_number_specific(
     }
 }
 
+/// Function that replaces a specific customer's requirements with a new one.
 #[tauri::command]
 pub fn change_requirements_specific(
     app: AppHandle,
@@ -663,6 +695,7 @@ pub fn change_requirements_specific(
     }
 }
 
+/// Function that returns data about a specific reservation.
 #[tauri::command]
 pub fn get_reservations_specific(
     database: State<Mutex<Database>>,
@@ -692,6 +725,7 @@ pub fn get_reservations_specific(
     return vec;
 }
 
+// Function that returns data about an event.
 #[tauri::command]
 pub fn get_events_minimum(database: State<Mutex<Database>>) -> Vec<(String, String)> {
     let database = database.lock().unwrap();
@@ -710,6 +744,7 @@ pub fn get_events_minimum(database: State<Mutex<Database>>) -> Vec<(String, Stri
     return events;
 }
 
+// Function that opens an analytics window and encodes data into it's url.
 #[tauri::command]
 pub fn open_analytics_window(
     app: AppHandle,

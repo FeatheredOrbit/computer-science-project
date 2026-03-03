@@ -4,6 +4,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 
+
+// Since the data received from the backend is needed in more variables, it's easier to make it a type so to avoid having to repeat it multiple times.
 type ReservationData = [number, string, string, number, string]; // [id, eventName, creatorName, peopleCount, dateCreated]
 
 type Props = {
@@ -11,9 +13,13 @@ type Props = {
     setReservationId: React.Dispatch<React.SetStateAction<number | undefined>>
 };
 
+// Same reasoning as the type shown above, it also provides autofill and just easier to keep track of.
 type SortType = "event" | "creator";
 
+// Component that allows customers to sort through all their reservation through different filters. Takes "usenavigate" to navigate to other windows, and
+// "setReservationId" to allow the id of a selected reservation to exist globally.
 export default function YourReservations({onNavigate, setReservationId}: Props) {
+    // Set up states.
     const [reservations, setReservations] = useState<ReservationData[] | null>(null);
     const [sortType, setSortType] = useState<SortType>("event");
     const [selectedReservationIndexes, setSelectedReservationIndexes] = useState<Set<number>>(new Set());
@@ -26,49 +32,56 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
     const thirdLabelRef = useRef<HTMLDivElement>(null);
     const [columnWidths, setColumnWidths] = useState({ first: 0, second: 0, third: 0 });
 
+    // Function called after clicking the delete button, it essentially deletes all the reservations that the user selected.
     async function deleteClicked() {
         if (selectedReservationIndexes.size === 0) return;
 
         const sorted = getSortedReservations();
+        // This looks a bit weird, but all it does it simply map the indexes to the actual event ids in the event data array.
         const idsToDelete = Array.from(selectedReservationIndexes)
-            .map(i => sorted[i]?.[0])
-            .filter((id): id is number => typeof id === 'number');
+            .map(function(i) { return sorted[i]?.[0]; })
+            .filter(function(id): id is number { return typeof id === 'number'; });
 
         if (idsToDelete.length === 0) return;
 
         await invoke("delete_reservations", { ids: idsToDelete });
 
-        // Clear selection and refresh the list
+        // Clear selection and refresh the list.
         setSelectedReservationIndexes(new Set());
-        await getReservations(); // Refresh the list
+        await getReservations();
     }
 
+    // Navigates to the change-reservation page, only works with only one reservation selected.
     async function changeClicked() {
         if (selectedReservationIndexes.size !== 1) return;
 
+        // Extract the only selected index and translate it to a reservation id.
         const idx = selectedReservationIndexes.values().next().value as number;
         const sorted = getSortedReservations();
         const id = sorted[idx]?.[0];
         if (typeof id !== 'number') return;
 
+        // Make the id global and navigate to the window.
         setReservationId(id);
         onNavigate("/change-reservation");
     }
 
+    // Function that asks the backend for an array of reservation data from the backend.
     async function getReservations() {
         const message = await invoke<ReservationData[]>("get_reservations", {});
         setReservations(message);
         
-        // Clear index-based selections after refresh
+        // Clear all selection as they might be invalid after update the reservations.
         setSelectedReservationIndexes(new Set());
     }
 
-    // Sort reservations based on current sort type
-    const getSortedReservations = function() {
+    // // Functions that returns a sorted clone of the reservations. A clone because we want to avoid mutating the original array.
+    function getSortedReservations() {
         if (!reservations) return [];
 
         const sorted = [...reservations];
         
+        // Sorts the data depending on the current filter.
         switch (sortType) {
             case "event":
                 sorted.sort((a, b) => a[1].localeCompare(b[1]));
@@ -81,25 +94,28 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         return sorted;
     };
 
+    // Resize the application window to this component's preferred dimensions.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
         await appWindow.setSize(new LogicalSize(800, 640));
     }
 
+    // Disables/enabled buttons depending on the amount of selected reservations.
     useEffect(function() {
-        // Delete button enabled if at least one is selected
+        // Delete button enabled if at least one is selected.
         setDeleteDisabled(selectedReservationIndexes.size === 0);
 
-        // Change button enabled only if exactly one is selected
+        // Change button enabled only if exactly one is selected.
         setChangeDisabled(selectedReservationIndexes.size !== 1);
     }, [selectedReservationIndexes]);
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getReservations();
     }, []);
 
-    // Measure label widths after render and when sort type changes
+    // Essentially just measures label sizes to adapt them to the content, content being the underlying reservations.
     useEffect(function() {
         if (firstLabelRef.current && secondLabelRef.current && thirdLabelRef.current) {
             setColumnWidths({
@@ -110,29 +126,35 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
         }
     }, [sortType, reservations]);
 
-    const handleReservationClick = function(index: number) {
+    // Function that handles selecting and unselecting reservations, we update the set immutably by creating a new set from the previous one.
+    function handleReservationClick(index: number) {
         setSelectedReservationIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
-                newSet.delete(index); // Unselect if already selected
+                // Unselect if it was already selected.
+                newSet.delete(index);
             } else {
-                newSet.add(index); // Select if not selected
+                // Select if it wasn't already.
+                newSet.add(index);
             }
+
             return newSet;
         });
     };
 
     const sortedReservations = getSortedReservations();
 
-    // Get label texts based on sort type
-    const getFirstLabel = function() {
+    // Helper function that returns the first header label depending on the current sort type.
+    function getFirstLabel() {
         return sortType === "creator" ? "CREATOR NAME" : "EVENT NAME";
     };
 
-    const getSecondLabel = function() {
+    // Helper function that returns the second header label depending on the current sort type.
+    function getSecondLabel() {
         return sortType === "creator" ? "EVENT NAME" : "CREATOR NAME";
     };
 
+    // Structure of the page.
     return (
         <div className="your-reservations">
             <button 
@@ -185,9 +207,12 @@ export default function YourReservations({onNavigate, setReservationId}: Props) 
 
                 <div className="reservations-scroll-area">
                     {reservations === null ? (
-                        <div className="loading-message">Loading reservations...</div>
+                        <div className="loading-message"> Loading reservations </div>
                     ) : (
                         <div className="reservations-list">
+                            { /* This function creates a callback for every element in the array, taking the data of that element as arguments.
+                                 As a result we are able to create as many elements as there are entries in the reservations array, and correctly link the data to each
+                                 reservation */ }
                             {sortedReservations.map((reservation, index) => (
                                 <div 
                                     key={`${reservation[0]}-${index}`}

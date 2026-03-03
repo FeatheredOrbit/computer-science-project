@@ -13,6 +13,7 @@ pub mod functions;
 
 const DATABASE_FILE_PATH: &'static str = "database/database.moonlight_db";
 
+// The database storing everything about anything.
 #[derive(Default, Serialize, Deserialize)]
 pub struct Database {
     pub customer_table: CustomerTable,

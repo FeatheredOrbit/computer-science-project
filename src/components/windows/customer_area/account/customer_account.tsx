@@ -8,18 +8,23 @@ type Props = {
     onNavigate: (input: string) => void
 };
 
+
+// The customer account component of the program, allows users to view and change their credentials. Takes "onNavigate" to move to other components.
 export default function CustomerAccountWindow({onNavigate}: Props) {
+    // Set up states.
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [requirements, setRequirements] = useState("");
 
+    // Resize window to meet window expectations.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(1000, 600));
     }
 
+    // Function that asks the backend for the account information of the customer to display in the window.
     async function getCustomerInfo() {
         let info = await invoke<[string, string, string, string]>("account_get_info", {});
 
@@ -29,11 +34,13 @@ export default function CustomerAccountWindow({onNavigate}: Props) {
         setRequirements(info[3]);
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getCustomerInfo();
     }, []);
 
+    // Structure of the page.
     return (
         <div className="customer-account">
             <div className="account-label">

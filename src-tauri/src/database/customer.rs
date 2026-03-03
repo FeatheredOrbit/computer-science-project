@@ -8,9 +8,11 @@ use argon2::{
 };
 use time::OffsetDateTime;
 
+// Represents an id valid only in customer tables.
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct CustomerId(pub usize);
 
+// Represents data about a customer.
 #[derive(Serialize, Deserialize)]
 pub struct CustomerData {
     pub name: String,
@@ -21,6 +23,7 @@ pub struct CustomerData {
     pub created_at: Date
 }
 
+//Holds data about all existing customers.
 #[derive(Default, Serialize, Deserialize)]
 pub struct CustomerTable {
     pub main: HashMap<CustomerId, CustomerData>,

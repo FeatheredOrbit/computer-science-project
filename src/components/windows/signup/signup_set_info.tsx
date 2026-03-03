@@ -8,7 +8,10 @@ type Props = {
     onNavigate: (input: string) => void
 };
 
+// This component is opened right after signing up, it provides a quick way to fill in account information without having to go through several steps of validation
+// in the account page. Takes "onNavigate" to move to other components.
 export default function SignupSetInfo({onNavigate}: Props) {
+    // Set up states.
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
     const [nameInput, setNameInput] = useState("");
@@ -19,9 +22,12 @@ export default function SignupSetInfo({onNavigate}: Props) {
 
     const [requirementsInput, setRequirementsInput] = useState("");
 
+    // Function that validates name, phone number and requirements and subsequently adds them to the customer data and navigates to the next page.
+    // The name goes through range check (0 < x <= 100), and phone number format check (numerics only) and range check (10 <= x <= 15).
     async function saveClicked() {
         let valid = true;
 
+        // Name validation.
         if (nameInput.trim().length > 0) {
             // Checks if the full name sits below 100, if not shows an error.
             if (nameInput.trim().length > 100) {
@@ -36,6 +42,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
             }
         }
 
+        // Phone number validation.
         if (phoneInput.trim().length) {
             // We check if the phone numbers is only made of digits, if not shows an error.
             const digitsOnly = phoneInput.replace(/\D/g, '');
@@ -53,21 +60,25 @@ export default function SignupSetInfo({onNavigate}: Props) {
 
         if (!valid) { return; }
 
+        // Add them to the customer and move to the next page.
         await invoke("signup_add_extra", {name: nameInput, phoneNumber: phoneInput, otherRequirements: requirementsInput});
 
         onNavigate("/customer-menu");
     }
 
+    // Changes the window size to meet the expection of the component.
     async function changeWindowSize() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(800, 900));
     }
 
+    // Call startup functions.
     useEffect(function() {
         changeWindowSize();
     }, []);
 
+    // Disables/enables the login button depending on the length of the input fields.
     useEffect(function() {
         if (nameInput.trim().length > 0 || phoneInput.trim().length > 0) {
             setIsButtonDisabled(false);
@@ -76,6 +87,7 @@ export default function SignupSetInfo({onNavigate}: Props) {
         }
     }, [nameInput, phoneInput]);
 
+    // Structure of the page, nothing interesting.
     return (
         <div className="signup-set-info">   
             <div className="name-label-container">

@@ -10,7 +10,10 @@ type Props = {
     customerAccountChange: AccountChange
 };
 
+// Component that allows customer to change something about their account. Takes "onNavigate" to move to other windows, and "customerAccountChange" to know what
+// to change.
 export default function CustomerAccountNewInfo({onNavigate, customerAccountChange}: Props) {
+    // Set up states.
     const [infoType, setInfoType] = useState("");
     const [infoInput, setInfoInput] = useState("");
     const [infoError, setInfoError] = useState("");
@@ -18,6 +21,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
 
+    // Resize window to meet component expectations. The window is larger when changing requirements as more might be needed to be wrote down.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
@@ -28,6 +32,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
         }
     }
 
+    // Call startup functions and set up the correct label based on the value of "customerAccountChange".
     useEffect(function() {
         resizeWindow();
 
@@ -53,6 +58,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
         }
     }, []);
 
+    // Enables/disables button based on whether or not there's input in the input field. 
     useEffect(function() {
         if (infoInput.trim().length > 0) {
             setIsButtonDisabled(false);
@@ -61,11 +67,19 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
         }
     }, [infoInput]);
 
+    // Function that applies the correct validation on the data based on what's getting changed, and subsequently calls the correct backend function to update it.
+    // Mane length must be higher than 0 and lower or equal to 100.
+    // Email must follow email format.
+    // Password must be at least 8 characters long, have upper and lower case letters, numbers and special characters.
+    // Phone number must be only numerics and must be between 10 and 15 characters in length.
+    // Requirements has no needed validation.
     async function validateInfo() {
         let valid = true;
 
+        // Reset error.
         setInfoError("");
 
+        // Use correct validation.
         switch(customerAccountChange) {
             case AccountChange.Name:
                 if (infoInput.trim().length === 0) {
@@ -124,6 +138,7 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
 
         if (!valid) { return; }
 
+        // Call correct backend function.
         switch (customerAccountChange) {
             case AccountChange.Name:
                 await invoke("change_name", {name: infoInput});
@@ -152,15 +167,15 @@ export default function CustomerAccountNewInfo({onNavigate, customerAccountChang
                 break;
 
             case AccountChange.None:
-                // This should be unreachable, the only moments this is none is before a button for the first time is clicked in the window prior to this, 
-                // so you can't reach this window with this staying as None.
+                // This should be unreachable by normal usage.
                 return;
         }
 
         onNavigate("/customer-account");
     }
 
-    const getPlaceholder = function() {
+    // Function that simply sets up the placeholder text of the input field based on what's getting changed.
+    function getPlaceholder() {
         switch(customerAccountChange) {
             case AccountChange.Name: return "John";
             case AccountChange.Email: return "person@gmail.com";

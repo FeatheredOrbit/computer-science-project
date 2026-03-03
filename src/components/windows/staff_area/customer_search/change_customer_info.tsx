@@ -17,17 +17,21 @@ enum ButtonType {
     Requirements
 }
 
+// Component that presents different account change options for a customer. Takes "onNavigate" and "setCustomerAccountChange" to control navigation and the selected change type.
 export default function ChangeCustomerInfo({onNavigate, setCustomerAccountChange}: Props) {
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(500, 700));
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
     }, []);
 
+    // Handler for when one of the change buttons is clicked. Sets the requested change and navigates to validation.
     async function buttonClicked(arg: ButtonType) {
         switch (arg) {
             case ButtonType.Name:
@@ -56,6 +60,7 @@ export default function ChangeCustomerInfo({onNavigate, setCustomerAccountChange
         } 
     }
 
+    // Structure of the page.
     return (
         <div className="customer-change-info">
             <button className="settings-button username-button" onClick={function() {buttonClicked(ButtonType.Name)}}>

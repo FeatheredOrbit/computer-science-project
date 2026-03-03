@@ -9,9 +9,9 @@ type Props = {
     reservationId: number | undefined
 };
 
-// Yeah there has been a bit of a misunderstanding with myself and I often found myself interchanging event and play. In this context they are the same thing!!!
-
+// Component that allows staff to change a specific reservation. Takes "onNavigate" and "reservationId".
 export default function ChangeCustomerReservation({onNavigate, reservationId}: Props) {
+    // Set up states for form fields and validation messages.
     const [nameInput, setNameInput] = useState("");
     const [nameError, setNameError] = useState("");
 
@@ -23,12 +23,13 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
     const [peopleCountInput, setPeopleCountInput] = useState("1");
     const [peopleCountError, setPeopleCountError] = useState("");
 
-
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
         await appWindow.setSize(new LogicalSize(900, 600));
     }
 
+    // Function that fetches reservation details and populates the form.
     async function getReservationInfo() {
         const message = await invoke<[string, string, string, number]>("get_reservation_info", {id: reservationId});
 
@@ -38,15 +39,14 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
         setPeopleCountInput(message[3].toLocaleString());
     }
 
+    // Function that validates inputs and submits an update to the backend.
     async function updateClicked() {
         let valid = true;
 
-        // Resets all the errors to avoid carry overs.
         setNameError("");
         setPhoneError("");
         setPeopleCountError("");
 
-        // We check if the name is between 0 and 100 characters. Showing an error if either is not met.
         if (nameInput.trim().length === 0) {
             setNameError("Field can't be empty");
             valid = false;
@@ -55,20 +55,17 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
             valid = false;
         }
 
-        // We check if the phone numbers is only made of digits, if not shows an error.
         const digitsOnly = phoneInput.replace(/\D/g, '');
         if (!(digitsOnly.length > 0 && digitsOnly === phoneInput.replace(/[^0-9+]/g, ''))) {
             setPhoneError("Phone number must only contain digits");
             valid = false;
         }
 
-        // Check if the phone number sits between 10 and 15 digits, apparently there isn't a standard length? If not shows an error.
         if (digitsOnly.length < 10 || digitsOnly.length > 15) {
             setPhoneError("Phone number must be between 10 and 15 digits");
             valid = false;
         }
 
-        // We check if people count is between 0 and 10 inclusive and not empty, showing an error if anything fails.
         const peopleCount = parseInt(peopleCountInput);
         if (peopleCountInput.trim().length === 0) {
             setPeopleCountError("Field can't be empty");
@@ -88,11 +85,13 @@ export default function ChangeCustomerReservation({onNavigate, reservationId}: P
         onNavigate("/customer-reservations");
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getReservationInfo();
     }, []);
 
+    // Structure of the page.
     return (
         <div className="change-customer-reservation">
             <button className="back-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/customer-reservations'); } }} onClick={function() {onNavigate("/customer-reservations");}}>

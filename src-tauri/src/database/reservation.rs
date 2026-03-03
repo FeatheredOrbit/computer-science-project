@@ -4,9 +4,11 @@ use time::{Date, OffsetDateTime};
 
 use crate::database::{customer::CustomerId, event::EventId};
 
+// Represents an id valid only in reservation tables.
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct ReservationId(pub usize);
 
+// Represents data about a single reservation.
 #[derive(Serialize, Deserialize)]
 pub struct ReservationData {
     pub creator_name: String,
@@ -20,6 +22,7 @@ pub struct ReservationData {
     created_at: Date
 }
 
+// Stores data of every existing reservation.
 #[derive(Default, Serialize, Deserialize)]
 pub struct ReservationTable {
     pub main: HashMap<ReservationId, ReservationData>,
@@ -27,6 +30,7 @@ pub struct ReservationTable {
     from_created_at: HashMap<Date, ReservationId>
 }
 impl ReservationTable {
+    /// Function that adds a new reservation to the table.
     pub fn add_reservation(
         &mut self, 
         creator_name: String, 
@@ -34,11 +38,15 @@ impl ReservationTable {
         requirements: String,
         event_id: EventId, 
         customer_id: CustomerId, 
-        people_count: u8) {
+        people_count: u8
+    ) {
+            
+        // Create an id.
         let new_id = ReservationId(self.main.len());
 
         let now = OffsetDateTime::now_utc().date();
 
+        // Insert and update lookups.
         self.main.insert(new_id, ReservationData {
             creator_name,
             creator_phone_number,
@@ -53,6 +61,7 @@ impl ReservationTable {
         self.from_created_at.insert(now, new_id);
     }
 
+    /// Function used to remove a reservation using an id.
     pub fn remove_reservation(&mut self, reservation_id: ReservationId) {
         if let Some(data) = self.main.remove(&reservation_id) {
             self.from_customer.remove(&data.customer_id);

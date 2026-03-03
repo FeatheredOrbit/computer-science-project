@@ -3,9 +3,11 @@ use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_ha
 use serde::{Deserialize, Serialize};
 use time::{Date, OffsetDateTime};
 
+// Represents an id valid only in staff tables.
 #[derive(Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct StaffId(usize);
 
+// Represents data about a single staff member.
 #[derive(Serialize, Deserialize)]
 pub struct StaffData {
     pub name: String,
@@ -15,6 +17,7 @@ pub struct StaffData {
     pub created_at: Date
 }
 
+// Stores data about every existing staff member.
 #[derive(Serialize, Deserialize)]
 pub struct StaffTable {
     pub main: HashMap<StaffId, StaffData>,

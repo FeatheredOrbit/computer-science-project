@@ -8,7 +8,9 @@ type Props = {
     onNavigate: (input: string) => void
 };
 
+// Component that validates the staff member's password before applying customer changes. Takes "onNavigate".
 export default function ChangeCustomerValidate({onNavigate}: Props) {
+    // Set up states for password input and validation message.
     const [passwordInput, setPasswordInput] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
@@ -16,12 +18,14 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
 
     const [showPassword, setShowPassword] = useState(false);
 
+    // Function that resizes the window for this view.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
 
         await appWindow.setSize(new LogicalSize(600, 400));
     }
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
     }, []);
@@ -34,6 +38,7 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
         }
     }, [passwordInput]);
 
+    // Function that validates the entered password with the backend and navigates to the apply page.
     async function validatePassword() {
         let result = await invoke<boolean>("account_validate_password", {password: passwordInput});
 
@@ -44,6 +49,7 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
         onNavigate("/change-customer-apply");
     }
 
+    // Structure of the page.
     return (
         <div className="change-customer-validate">
             <div className="insert-password-label">

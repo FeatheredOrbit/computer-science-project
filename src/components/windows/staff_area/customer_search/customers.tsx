@@ -4,8 +4,10 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 
+// Type alias for customer data.s
 type CustomerData = [number, string, string, string]; // [id, name, email, date joined]
 
+// Props accepted by this component.
 type Props = {
     onNavigate: (input: string) => void
     setCustomerId: React.Dispatch<React.SetStateAction<number | undefined>>
@@ -13,7 +15,9 @@ type Props = {
 
 type SortType = "name" | "email";
 
+// Component where staff can view and manage existing customers. Takes "onNavigate" and "setCustomerId" to navigate and select a customer id.
 export default function Customers({onNavigate, setCustomerId}: Props) {
+    // Set up states.
     const [customers, setCustomers] = useState<CustomerData[] | null>(null);
     const [sortType, setSortType] = useState<SortType>("name");
     const [selectedCustomerIndexes, setSelectedCustomerIndexes] = useState<Set<number>>(new Set());
@@ -22,10 +26,11 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
     const [changeDisabled, setChangeDisabled] = useState(true);
     const [viewReservationsDisabled, setViewReservationsDisabled] =useState(true);
 
-    const [columnWidths, setColumnWidths] = useState({ first: 150, second: 150, third: 120 }); // Default min widths
+    const [columnWidths, setColumnWidths] = useState({ first: 150, second: 150, third: 120 });
 
     const contentRef = useRef<HTMLDivElement>(null);
 
+    // Function that deletes the selected customers via backend call.
     async function deleteClicked() {
         if (selectedCustomerIndexes.size === 0) return;
 
@@ -42,6 +47,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         await getCustomers();
     }
 
+    // Function that opens the change-customer view for the selected customer.
     async function changeClicked() {
         if (selectedCustomerIndexes.size !== 1) return;
 
@@ -54,6 +60,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         onNavigate("/change-customer");
     }
 
+    // Function that opens the reservations view for the selected customer.
     async function viewReservationsClicked() {
         if (selectedCustomerIndexes.size !== 1) return;
 
@@ -66,14 +73,15 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         onNavigate("/customer-reservations");
     }
 
+    // Function that retrieves customers from the backend and resets selection.
     async function getCustomers() {
         const message = await invoke<CustomerData[]>("get_customers", {});
         setCustomers(message);
         setSelectedCustomerIndexes(new Set());
     }
 
-    // Sort customers based on current sort type
-    const getSortedCustomers = function() {
+    // Function that returns a sorted array of customers based on the current sort type.
+    function getSortedCustomers() {
         if (!customers) return [];
 
         const sorted = [...customers];
@@ -90,27 +98,24 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         return sorted;
     };
 
-    // Calculate optimal column widths based on content
-    const calculateColumnWidths = function() {
+    // Function that calculates optimal column widths based on content and labels.
+    function calculateColumnWidths() {
         if (!customers || customers.length === 0) return;
 
-        // Start with label widths
         const firstLabel = sortType === "name" ? "NAME" : "EMAIL";
         const secondLabel = sortType === "email" ? "NAME" : "EMAIL";
         const thirdLabel = "DATE JOINED";
 
-        // Measure label widths using a temporary canvas
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         if (!context) return;
 
-        context.font = '16px Arial'; // Match your font
+        context.font = '16px Arial';
 
-        let maxFirstWidth = context.measureText(firstLabel).width + 30; // Add padding
+        let maxFirstWidth = context.measureText(firstLabel).width + 30;
         let maxSecondWidth = context.measureText(secondLabel).width + 30;
         let maxThirdWidth = context.measureText(thirdLabel).width + 30;
 
-        // Measure all customer data
         customers.forEach(function(customer) {
             const firstContent = sortType === "name" ? customer[1] : customer[2];
             const secondContent = sortType === "email" ? customer[1] : customer[2];
@@ -125,9 +130,8 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
             maxThirdWidth = Math.max(maxThirdWidth, thirdWidth);
         });
 
-        // Set minimum and maximum constraints
         const minWidth = 100;
-        const maxWidth = 300; // Prevent ridiculously wide columns
+        const maxWidth = 300;
 
         setColumnWidths({
             first: Math.min(Math.max(maxFirstWidth, minWidth), maxWidth),
@@ -136,6 +140,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         });
     };
 
+    // Function that resizes the window to the customers view dimensions.
     async function resizeWindow() {
         const appWindow = getCurrentWebviewWindow();
         await appWindow.setSize(new LogicalSize(900, 640));
@@ -147,19 +152,20 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
         setViewReservationsDisabled(selectedCustomerIndexes.size !== 1);
     }, [selectedCustomerIndexes]);
 
+    // Call startup functions.
     useEffect(function() {
         resizeWindow();
         getCustomers();
     }, []);
 
-    // Recalculate widths when customers or sort type changes
+    // Recalculate widths when customers or sort type changes.
     useEffect(function() {
         if (customers) {
             calculateColumnWidths();
         }
     }, [customers, sortType]);
 
-    const handleCustomerClick = function(index: number) {
+    function handleCustomerClick(index: number) {
         setSelectedCustomerIndexes(function(prev) {
             const newSet = new Set(prev);
             if (newSet.has(index)) {
@@ -173,15 +179,17 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
 
     const sortedCustomers = getSortedCustomers();
 
-    // Get label texts based on sort type
-    const getFirstLabel = function() {
+    // Helper that returns the first column label based on sort type.
+    function getFirstLabel() {
         return sortType === "name" ? "NAME" : "EMAIL";
     };
 
-    const getSecondLabel = function() {
+    // Helper that returns the second column label based on sort type.
+    function getSecondLabel() {
         return sortType === "email" ? "NAME" : "EMAIL";
     };
 
+    // Structure of the page.
     return (
         <div className="customers">
             <button className="back-to-menu-button" onKeyDown={function(e) { if (e.key === 'Escape') { onNavigate('/staff-menu'); } }} onClick={function() { onNavigate("/staff-menu") }}>
@@ -244,7 +252,7 @@ export default function Customers({onNavigate, setCustomerId}: Props) {
 
                 <div className="customers-scroll-area">
                     {customers === null ? (
-                        <div className="loading-message">Loading customers...</div>
+                        <div className="loading-message"> Loading customers </div>
                     ) : (
                         <div className="customers-list" ref={contentRef}>
                                     {sortedCustomers.map(function(customer, index) {
