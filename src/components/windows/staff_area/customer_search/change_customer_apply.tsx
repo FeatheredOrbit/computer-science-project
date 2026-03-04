@@ -27,6 +27,8 @@ export default function ChangeCustomerApply({onNavigate, customerAccountChange, 
 
         if (customerAccountChange === AccountChange.Requirements) {
             await appWindow.setSize(new LogicalSize(800, 600));
+        } else if (customerAccountChange == AccountChange.Phone) {
+            await appWindow.setSize(new LogicalSize(750, 450));
         } else {
             await appWindow.setSize(new LogicalSize(600, 450));
         }

@@ -46,7 +46,24 @@
     top: 67.5%;
     right: 2.5%;
     width: 45%;
-    height: 12.5%;
+    height: 8%;
+    background-color: #EDEBE6;
+    outline: 2px solid black;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7.5%;
+}
+
+.customer-search .reservations-button {
+    position: absolute;
+    bottom: 2.5%;
+    right: 2.5%;
+    width: 45%;
+    height: 8%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     border: none;
@@ -60,10 +77,10 @@
 
 .customer-search .change-button {
     position: absolute;
-    bottom: 2.5%;
+    top: 78.5%;
     right: 2.5%;
     width: 45%;
-    height: 12.5%;
+    height: 8%;
     background-color: #EDEBE6;
     outline: 2px solid black;
     border: none;

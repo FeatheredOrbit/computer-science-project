@@ -23,6 +23,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
     const [deleteDisabled, setDeleteDisabled] = useState(true);
     const [changeDisabled, setChangeDisabled] = useState(true);
+    const [viewReservationsDisabled, setViewReservationsDisabled] =useState(true);
 
     const [columnWidths, setColumnWidths] = useState({ first: 150, second: 150, third: 120 });
 
@@ -64,6 +65,19 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
         setCustomers(message);
         setFilteredCustomers(message);
         setSelectedCustomerIndexes(new Set());
+    }
+
+    // Function that opens the reservations view for the selected customer.
+    async function viewReservationsClicked() {
+        if (selectedCustomerIndexes.size !== 1) return;
+
+        const idx = selectedCustomerIndexes.values().next().value as number;
+        const sorted = getSortedCustomers();
+        const id = sorted[idx]?.[0];
+        if (typeof id !== 'number') return;
+
+        setCustomerId(id);
+        onNavigate("/customer-reservations");
     }
 
     // Function that filters customers by name, email or date in that order.
@@ -149,6 +163,7 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
     useEffect(function() {
         setDeleteDisabled(selectedCustomerIndexes.size === 0);
         setChangeDisabled(selectedCustomerIndexes.size !== 1);
+        setViewReservationsDisabled(selectedCustomerIndexes.size !== 1);
     }, [selectedCustomerIndexes]);
 
     // Call startup functions.
@@ -199,6 +214,10 @@ export default function CustomerSearch({onNavigate, setCustomerId}: Props) {
 
             <button className="change-button" disabled={changeDisabled} onClick={changeClicked}>
                 CHANGE SELECTED
+            </button>
+
+            <button className="reservations-button" disabled={viewReservationsDisabled} onClick={viewReservationsClicked}>
+                VIEW RESERVATIONS
             </button>
 
             <div className="customers-container">
