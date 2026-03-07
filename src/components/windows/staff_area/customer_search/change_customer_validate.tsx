@@ -44,6 +44,7 @@ export default function ChangeCustomerValidate({onNavigate}: Props) {
 
         if (!result) {
             setPasswordError("Password doesn't match");
+            return;
         }
 
         onNavigate("/change-customer-apply");
