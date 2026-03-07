@@ -326,14 +326,16 @@ pub fn get_events(database: State<Mutex<Database>>) -> Vec<(u32, String, String,
 pub fn open_extra_information_window(
     app: AppHandle,
     information: String,
-    date: String
+    date: String,
+    cost: u32
 ) {
 
     // Creating a new window though brings a few issues. It creates a new context on the frontend, meaning any data stored on the app on the main window is not
     // directly accessible in the this new one. So we an alternative way of sharing it information. We do this by encoding the information into the url.
-        let url = format!("/event-information?date={}&info={}", 
+        let url = format!("/event-information?date={}&info={}&cost={}", 
         urlencoding::encode(&date),
-        urlencoding::encode(&information)
+        urlencoding::encode(&information),
+        urlencoding::encode(&cost.to_string())
     );
     
 
@@ -361,7 +363,7 @@ pub fn open_extra_information_window_from_id(
 
     // Creating a new window though brings a few issues. It creates a new context on the frontend, meaning any data stored on the app on the main window is not
     // directly accessible in the this new one. So we an alternative way of sharing it information. We do this by encoding the information into the url.
-        let url = format!("/event-information?date={}&info={}£cost={}", 
+        let url = format!("/event-information?date={}&info={}&cost={}", 
         urlencoding::encode(&data.event_date.to_string()),
         urlencoding::encode(&data.extra_information),
         urlencoding::encode(&data.cost.to_string())
@@ -555,10 +557,41 @@ pub fn delete_customers(
 ) {
     let mut database = database.lock().unwrap();
 
-    for id in ids.iter() {
-        let id = CustomerId(*id as usize);
+    // Sort ids descending so shifting/compaction doesn't change yet to be deleted indices.
+    let mut ids_desc = ids.clone();
+    ids_desc.sort_unstable_by(|a, b| b.cmp(a));
 
-        database.customer_table.remove_customer(id);
+    for id in ids_desc.iter() {
+        let cust_id = CustomerId(*id as usize);
+
+        // First remove any reservations linked to this customer.
+        let mut res_to_remove: Vec<ReservationId> = Vec::new();
+        for (res_id, data) in database.reservation_table.main.iter() {
+            if data.customer_id == cust_id {
+                res_to_remove.push(*res_id);
+            }
+        }
+        for res_id in res_to_remove {
+            database.reservation_table.remove_reservation(res_id);
+        }
+
+        // Now remove the customer and handle compaction.
+        if let Some((old_last, new_id)) = database.customer_table.remove_customer(cust_id) {
+            // If a different customer was moved (old_last -> new_id), update reservations that referenced old_last.
+            if old_last != new_id {
+                // Update customer_id in reservation records.
+                for (_res_id, data) in database.reservation_table.main.iter_mut() {
+                    if data.customer_id == old_last {
+                        data.customer_id = new_id;
+                    }
+                }
+
+                // Update the from_customer lookup if present.
+                if let Some(res_id) = database.reservation_table.from_customer.remove(&old_last) {
+                    database.reservation_table.from_customer.insert(new_id, res_id);
+                }
+            }
+        }
     }
 
     // Save the database; log error if it fails.

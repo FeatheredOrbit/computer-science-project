@@ -162,7 +162,7 @@ export default function CustomerReservations({onNavigate, setReservationId, cust
             </button>
 
             <div className="reservations-container">
-                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={function() { onNavigate("/reservation-search")}}/>
+                <img className="search-symbol" src="assets/mangifying_glass.png" onClick={function() { onNavigate("/customer-reservation-search")}}/>
 
                 <div className="reservations-header">
                     <div className="labels-container">

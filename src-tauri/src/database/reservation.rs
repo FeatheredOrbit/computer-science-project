@@ -26,7 +26,7 @@ pub struct ReservationData {
 #[derive(Default, Serialize, Deserialize)]
 pub struct ReservationTable {
     pub main: HashMap<ReservationId, ReservationData>,
-    from_customer: HashMap<CustomerId, ReservationId>,
+    pub from_customer: HashMap<CustomerId, ReservationId>,
     from_created_at: HashMap<Date, ReservationId>
 }
 impl ReservationTable {
@@ -61,11 +61,36 @@ impl ReservationTable {
         self.from_created_at.insert(now, new_id);
     }
 
-    /// Function used to remove a reservation using an id.
+    /// Function used to safely remove a reservation using an id, and reorders the existing ids.
     pub fn remove_reservation(&mut self, reservation_id: ReservationId) {
-        if let Some(data) = self.main.remove(&reservation_id) {
-            self.from_customer.remove(&data.customer_id);
-            self.from_created_at.remove(&data.created_at);
+        // Remember current length before attempting removal.
+        let prev_len = self.main.len();
+        if prev_len == 0 {
+            return;
+        }
+
+        // Remove the requested reservation and its lookup entries, if it exists.
+        if let Some(removed) = self.main.remove(&reservation_id) {
+            self.from_customer.remove(&removed.customer_id);
+            self.from_created_at.remove(&removed.created_at);
+
+            // If the removed id was not the last index, move the last entry into the freed slot so IDs remain contiguous (0..len-1). 
+            // This prevents subsequent adds that use "main.len()" from creating duplicate ids.
+            let last_index = prev_len - 1;
+            if reservation_id.0 != last_index {
+
+                let last_id = ReservationId(last_index);
+
+                if let Some(last_data) = self.main.remove(&last_id) {
+                    let cust_id = last_data.customer_id.clone();
+                    let created_at = last_data.created_at.clone();
+
+                    // Insert the moved data into the freed slot and update lookups.
+                    self.main.insert(reservation_id, last_data);
+                    self.from_customer.insert(cust_id, reservation_id);
+                    self.from_created_at.insert(created_at, reservation_id);
+                }
+            }
         }
     }
 }

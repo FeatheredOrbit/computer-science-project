@@ -117,6 +117,7 @@ impl CustomerTable {
         }
     }
 
+    /// Function that genereates a hash and a salt from a password.
     pub fn new_password(&mut self, customer_id: CustomerId, password: String) {
         // Hash the password using Argon2.
         let salt = SaltString::generate(&mut OsRng);
@@ -127,11 +128,39 @@ impl CustomerTable {
         self.main.get_mut(&customer_id).unwrap().password_hash = password_hash;
     }
 
-    pub fn remove_customer(&mut self, customer_id: CustomerId) {
-        if let Some(data) = self.main.remove(&customer_id) {
-            self.from_email.remove(&data.email);
-            self.from_name.remove(&data.name);
+    /// Function that safely removes a customer and updates lookups.
+    /// It returns the removed id, as it needed to also remove linked reservations.
+    pub fn remove_customer(&mut self, customer_id: CustomerId) -> Option<(CustomerId, CustomerId)> {
+        let prev_len = self.main.len();
+        if prev_len == 0 {
+            return None;
         }
+
+        if let Some(removed) = self.main.remove(&customer_id) {
+
+            self.from_email.remove(&removed.email);
+            self.from_name.remove(&removed.name);
+
+            let last_index = prev_len - 1;
+            if customer_id.0 != last_index {
+
+                let last_id = CustomerId(last_index);
+
+                if let Some(last_data) = self.main.remove(&last_id) {
+
+                    let email = last_data.email.clone();
+                    let name = last_data.name.clone();
+
+                    self.main.insert(customer_id, last_data);
+                    self.from_email.insert(email, customer_id);
+                    self.from_name.insert(name, customer_id);
+
+                    return Some((last_id, customer_id));
+                }
+            }
+        }
+
+        return None;
     }
 
     /// Set the customer's name and update the name lookup table.
