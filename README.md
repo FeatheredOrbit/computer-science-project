@@ -1,4 +1,4 @@
-Unless you are someone from WJEC and marking pls dont look at this I'm not proud of it.
+This is my computer science project done during my second year of A levels 2025/2026.
 
 Staff email: emilyjones.
 Staff password: admin123ABCabc@@@
